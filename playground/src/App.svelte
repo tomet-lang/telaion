@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { Button, Field, Icon, Input } from "@telaion/ui";
+  import { Button, Field, Icon, IconButton, Input, Modal } from "@telaion/ui";
   import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
 
   type Theme = "system" | "light" | "dark";
 
   let theme = $state<Theme>("system");
   let clicks = $state(0);
+
+  let modalOpen = $state(false);
+  let fullOpen = $state(false);
+  let closedCount = $state(0);
+  let newPath = $state("");
 
   let path = $state("notes/idea.tmt");
   let token = $state("");
@@ -97,6 +102,24 @@
   </section>
 
   <section>
+    <h2>Modal</h2>
+    <div class="row">
+      <Button variant="primary" onclick={() => (modalOpen = true)}>Open modal</Button>
+      <Button onclick={() => (fullOpen = true)}>Open full-screen</Button>
+      <span class="muted">closed {closedCount} times</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>IconButton</h2>
+    <div class="row">
+      <IconButton icon={X} label="Close" />
+      <IconButton icon={Plus} label="Add" variant="secondary" />
+      <IconButton icon={Trash} label="Delete" disabled />
+    </div>
+  </section>
+
+  <section>
     <h2>Icon</h2>
     <div class="row">
       <span class="sample"><Icon icon={X} label="Close" /> decorative off, labelled</span>
@@ -105,6 +128,20 @@
     </div>
   </section>
 </main>
+
+<Modal bind:open={modalOpen} title="New page" onclose={() => closedCount++}>
+  <Field label="Path" hint="Relative to the vault root.">
+    <Input bind:value={newPath} autofocus placeholder="notes/idea.tmt" />
+  </Field>
+  {#snippet footer()}
+    <Button onclick={() => (modalOpen = false)}>Cancel</Button>
+    <Button variant="primary" onclick={() => (modalOpen = false)}>Create</Button>
+  {/snippet}
+</Modal>
+
+<Modal bind:open={fullOpen} title="Editor" size="full" onclose={() => closedCount++}>
+  <p>A full-screen modal, like the editing overlay of the wiki.</p>
+</Modal>
 
 <style>
   .bar {

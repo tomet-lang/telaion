@@ -46,3 +46,9 @@ play:
 # Build the playground (catches errors the type-check cannot)
 play-build:
     pnpm --filter @telaion/playground build
+
+#[ Test ]
+
+# Run the browser tests against the playground
+test:
+    pnpm exec playwright test

@@ -10,6 +10,10 @@ node_modules/
 .svelte-kit/
 .wireit/
 
+#== Playwright
+test-results/
+playwright-report/
+
 #== git worktrees
 .worktrees/
 

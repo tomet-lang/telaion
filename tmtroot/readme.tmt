@@ -48,6 +48,14 @@ nix develop
 just install
 ```
 
+===[ Looking at the components ]
+
+```bash
+just play    # the playground, with hot reload
+just test    # browser tests against the playground
+just check   # type-check
+```
+
 ==[ License ]
 
 Licensed under either of MIT or Apache-2.0, at your option.

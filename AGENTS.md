@@ -53,6 +53,13 @@ These rules keep the layers separable. Do not break them for convenience.
 - Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token: a `--tln-*` custom property defined in `packages/ui/src/tokens.css`. When a new value is needed, ask instead of inventing one.
 - Do not add shadows, gradients, or a second border radius. Do not add a utility CSS framework to a shared package.
 
+## Looking at and testing components
+
+- `just play` runs the playground: one Vite page that shows every component. Add a section to it for each new component and each state worth looking at.
+- `just test` runs the browser tests (Playwright, Chromium) against the playground. Behavior that a type-check cannot see, such as focus, Escape, and the backdrop, needs a test here.
+- `just check` type-checks every package. Run it with the tests before calling a component done.
+- The browsers come from Nix. `@playwright/test` in `package.json` must stay pinned to exactly the version of `pkgs.playwright-driver` in the flake; when the flake input is updated, update the pin with it.
+
 ## Changes in tomet or sibling repositories
 
 `@tomet/cms` is an npm dependency pinned by the lockfile. A change in a sibling checkout reaches this repository by being published there and taken with the package manager. Never point a dependency at a local checkout in a committed manifest or lockfile.
