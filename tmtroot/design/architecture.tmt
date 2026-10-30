@@ -21,23 +21,41 @@ Telaion is the shared frame. It carries structure and behavior. It carries no th
 
 -| `@telaion/ui` -- Generic primitives (button, input, modal, tabs, tree, split) and the design tokens. No Tomet knowledge.
 -| `@telaion/editor` -- The editor frame. Takes a storage adapter and a language slot. No Tomet knowledge.
--| `@telaion/tomet` -- Tomet-specific parts: highlighting, conflict blocks, AST-bound editor extensions. Depends on `@tomet/cms`.
+-| `@telaion/tomet` -- Tomet-specific parts: syntax highlighting, conflict blocks and their resolution. It knows the shapes of Tomet data, not the engine that computes them.
 
 The split is by what a package must know, not by size. `@telaion/ui` can be extracted into its own repository later without touching the others.
 
 ==[ Dependency direction ]
 
 ```text
-@tomet/cms          knows nothing about Svelte
+tomet-wiki, ordiola     each owns one Tomet engine (@tomet/cms, @tomet/wasm, or Rust)
+    |   supplies TometServices and a DocumentAdapter
+    v
+@telaion/tomet          knows the shapes of Tomet data; no engine
     ^
-@telaion/tomet      the only package that knows both
+@telaion/editor         knows nothing about Tomet
     ^
-@telaion/editor     knows nothing about Tomet
-    ^
-@telaion/ui         knows nothing about Tomet or the editor
-    ^
-tomet-wiki, ordiola
+@telaion/ui             knows nothing about Tomet or the editor
 ```
+
+Telaion points up at nothing: it imports no Tomet package. The arrows into it are the interfaces an application fills in.
+
+==[ No Tomet engine inside ]
+
+The wiki already ships `@tomet/cms` as WebAssembly, and `ordiola` runs Tomet as Rust behind its desktop shell. If Telaion carried its own copy of Tomet, each application would hold two. So Telaion carries none. Whatever it needs from Tomet comes in through a small interface, in the same way a storage adapter brings in storage.
+
+```ts
+interface TometServices {
+  /** Ranges to color. Offsets are UTF-16 code units, as CodeMirror counts them. */
+  highlight(source: string): HighlightSpan[] | Promise<HighlightSpan[]>;
+  listConflicts(source: string): Conflict[] | Promise<Conflict[]>;
+  resolveConflict(source: string, index: number, side: "a" | "b"): string | Promise<string>;
+}
+```
+
+-| Every method may be asynchronous. A WebAssembly engine answers at once; a desktop shell reaches Rust through a message and answers later. Telaion handles a late answer for an old text by ignoring it.
+-| The types are defined in `@telaion/tomet`. An application writes a few lines that turn the output of its engine into them, for example converting byte offsets to UTF-16 when the engine counts bytes.
+-| Where the logic lives: in the Tomet crates, once. The engines that applications use are different packaging of the same code.
 
 ==[ Why Svelte ]
 
@@ -141,7 +159,7 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 
 -| Typography of a document body (headings, prose, code blocks). The tokens above cover the interface, not the reading surface.
 -| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
--| Highlighting source. It should come from the tokens of the Tomet parser (`@tomet/cms`), not from a second grammar written in JavaScript that can drift.
+-| The highlight function of Tomet. Telaion takes it as `TometServices.highlight`. The one in `@tomet/wasm` is lexer-based, counts bytes, and does not know the current heading syntax (`=[`); it is to be corrected in the Tomet crates, and offered from `@tomet/cms` too, which the wiki already ships.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
 -| The quick open palette of `ordiola` needs a Modal without a header and aligned to the top, and a listbox driven by `aria-activedescendant`. Both wait for a second consumer before they enter `@telaion/ui`.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.

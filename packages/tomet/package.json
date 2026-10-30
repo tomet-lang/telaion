@@ -22,8 +22,7 @@
   ],
   "dependencies": {
     "@telaion/editor": "workspace:*",
-    "@telaion/ui": "workspace:*",
-    "@tomet/cms": "^0.1.0"
+    "@telaion/ui": "workspace:*"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

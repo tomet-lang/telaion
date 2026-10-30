@@ -12,7 +12,7 @@ Telaion keeps the parts that every Tomet editor needs in one place, so that an e
 
 - `@telaion/ui` -- Themeless primitives and design tokens. Knows nothing about Tomet.
 - `@telaion/editor` -- The editor frame: content in, content out, and a storage adapter for loading and saving. The language is a plug-in slot.
-- `@telaion/tomet` -- The glue between the Tomet parser (`@tomet/cms`) and the editor frame: highlighting, conflict blocks, Tomet-specific extensions.
+- `@telaion/tomet` -- The Tomet-specific parts of an editor: syntax highlighting, conflict blocks and their resolution. It knows what a highlight span or a conflict looks like, but it carries no Tomet engine: the application supplies one.
 
 The design is written down in `tmtroot/design/`.
 

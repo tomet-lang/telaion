@@ -47,7 +47,8 @@ Read `CONTRIBUTING.md` for the contribution workflow, commit conventions, and ve
 These rules keep the layers separable. Do not break them for convenience.
 -| `@telaion/ui` must not import Tomet code. It is a generic UI kit.
 -| `@telaion/editor` must not import Tomet code. Anything that depends on the Tomet grammar or AST belongs in `@telaion/tomet`.
--| `@telaion/tomet` is the only package that knows both Svelte and `@tomet/cms`.
+-| No Telaion package bundles or imports a Tomet engine (`@tomet/cms`, `@tomet/wasm`, or the like). An application already has one, as WebAssembly or as Rust, and a second copy would double its size. What Telaion needs from Tomet is written as a `TometServices` interface; the application passes an implementation backed by its own engine.
+-| `@telaion/tomet` knows the shapes of Tomet data (highlight spans, conflicts) and how to show them. It does not know how to compute them.
 -| Components know nothing about where a document is stored. They talk to a storage adapter that the application supplies.
 -| Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token: a `--tln-*` custom property defined in `packages/ui/src/tokens.css`. When a new value is needed, ask instead of inventing one.
 -| Do not add shadows, gradients, or a second border radius. Do not add a utility CSS framework to a shared package.
@@ -61,7 +62,7 @@ These rules keep the layers separable. Do not break them for convenience.
 
 ==[ Changes in tomet or sibling repositories ]
 
-`@tomet/cms` is an npm dependency pinned by the lockfile. A change in a sibling checkout reaches this repository by being published there and taken with the package manager. Never point a dependency at a local checkout in a committed manifest or lockfile.
+Telaion has no dependency on a Tomet package. When Tomet changes what it returns, adapt it where the application builds its `TometServices`, or change the types in `@telaion/tomet`. Never add a Tomet engine as a dependency, and never point anything at a local checkout in a committed manifest or lockfile.
 
 ==[ Environment & Tooling ]
 
