@@ -1,6 +1,6 @@
 {
   "name": "@telaion/tomet",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Telaion Tomet - Tomet syntax highlighting and conflict resolution that take the Tomet engine from the application",
   "keywords": [
     "svelte",

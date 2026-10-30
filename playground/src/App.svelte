@@ -4,6 +4,7 @@
   import ConfirmDelete from "./ConfirmDelete.svelte";
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
   import { MemoryAdapter } from "./memory-adapter.js";
+  import ExtensionsDemo from "./ExtensionsDemo.svelte";
   import NewPageDialog from "./NewPageDialog.svelte";
   import ConflictDemo from "./ConflictDemo.svelte";
   import TometHighlightDemo from "./TometHighlightDemo.svelte";
@@ -220,6 +221,11 @@
     </div>
     <div class="editor-frame"><Editor {session} readOnly={editorReadOnly} /></div>
     <pre class="result" aria-label="stored text">{stored.last}</pre>
+  </section>
+
+  <section>
+    <h2>CodeEditor extensions</h2>
+    <ExtensionsDemo />
   </section>
 
   <section>

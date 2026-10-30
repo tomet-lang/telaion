@@ -17,6 +17,7 @@
     readOnly = false,
     label = "Document source",
     language,
+    extensions,
     onChange,
     onSave,
   }: {
@@ -26,6 +27,11 @@
     label?: string;
     /** Syntax support, as a CodeMirror extension. @telaion/tomet supplies the one for Tomet. */
     language?: Extension;
+    /**
+     * More CodeMirror extensions, for what an application wants beyond the minimal editor: code
+     * folding, bracket matching, search, and so on. The editor itself stays small.
+     */
+    extensions?: Extension;
     /** Called when a person edits. Not called when `content` is replaced from outside. */
     onChange?: (content: string) => void;
     /** Called on Ctrl+S or Cmd+S. */
@@ -36,6 +42,7 @@
   const fromOutside = Annotation.define<boolean>();
   const readOnlyConfig = new Compartment();
   const languageConfig = new Compartment();
+  const extensionsConfig = new Compartment();
 
   let host: HTMLDivElement;
   let view: EditorView | undefined;
@@ -69,6 +76,7 @@
           telaionTheme,
           readOnlyConfig.of(EditorState.readOnly.of(readOnly)),
           languageConfig.of(language ?? []),
+          extensionsConfig.of(extensions ?? []),
           EditorView.updateListener.of((update) => {
             if (!update.docChanged) return;
             const next = update.state.doc.toString();
@@ -96,6 +104,10 @@
 
   $effect(() => {
     view?.dispatch({ effects: languageConfig.reconfigure(language ?? []) });
+  });
+
+  $effect(() => {
+    view?.dispatch({ effects: extensionsConfig.reconfigure(extensions ?? []) });
   });
 </script>
 
