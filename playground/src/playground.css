@@ -1,0 +1,18 @@
+/* Page chrome of the playground itself. Tokens only, like the components. */
+
+body {
+  margin: 0;
+  background: var(--tln-bg);
+  color: var(--tln-fg);
+  font-family: var(--tln-font-sans);
+  font-size: var(--tln-text-md);
+  line-height: var(--tln-leading);
+}
+
+a {
+  color: var(--tln-accent);
+}
+
+a:hover {
+  color: var(--tln-accent-hover);
+}

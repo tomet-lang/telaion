@@ -36,3 +36,13 @@ docs:
 # Check that all documents parse, format cleanly, and match export targets.
 docs-check:
     sisho check .
+
+#[ Playground ]
+
+# Run the playground with hot reload
+play:
+    pnpm --filter @telaion/playground dev
+
+# Build the playground (catches errors the type-check cannot)
+play-build:
+    pnpm --filter @telaion/playground build
