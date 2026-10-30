@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Icon } from "@telaion/ui";
-  import { Check, TriangleAlert, X } from "@telaion/ui/icons";
+  import { Button, Icon } from "@telaion/ui";
+  import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
 
   type Theme = "system" | "light" | "dark";
 
   let theme = $state<Theme>("system");
+  let clicks = $state(0);
 
   // data-theme on <html> overrides the operating system; removing it follows the system again.
   $effect(() => {
@@ -48,6 +49,28 @@
           <span>{name}</span>
         </div>
       {/each}
+    </div>
+  </section>
+
+  <section>
+    <h2>Button</h2>
+    <div class="row">
+      <Button variant="primary" onclick={() => clicks++}>Save</Button>
+      <Button onclick={() => clicks++}>Cancel</Button>
+      <Button variant="danger" onclick={() => clicks++}>
+        <Icon icon={Trash} /> Delete
+      </Button>
+      <Button variant="quiet" onclick={() => clicks++}>
+        <Icon icon={Plus} /> New page
+      </Button>
+      <span class="muted">clicked {clicks} times</span>
+    </div>
+    <div class="row">
+      <Button variant="primary" disabled>Save</Button>
+      <Button disabled>Cancel</Button>
+      <Button variant="danger" disabled>Delete</Button>
+      <Button variant="quiet" disabled>New page</Button>
+      <span class="muted">disabled</span>
     </div>
   </section>
 
@@ -141,7 +164,14 @@
   .row {
     display: flex;
     flex-wrap: wrap;
-    gap: calc(var(--tln-space) * 6);
+    align-items: center;
+    gap: calc(var(--tln-space) * 3);
+    margin-bottom: calc(var(--tln-space) * 3);
+  }
+
+  .muted {
+    color: var(--tln-fg-muted);
+    font-size: var(--tln-text-sm);
   }
 
   .sample {
