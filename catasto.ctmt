@@ -34,3 +34,21 @@
 "packages/ui/vendor/lucide/LICENSE": {
   source: { upstream: tomet-shelf, path: "LICENSE" }
 }
+"packages/ui/LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"packages/ui/LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}
+"packages/editor/LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"packages/editor/LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}
+"packages/tomet/LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"packages/tomet/LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}

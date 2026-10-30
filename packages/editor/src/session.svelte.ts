@@ -1,4 +1,4 @@
-import type { DocumentAdapter } from "./adapter.ts";
+import type { DocumentAdapter } from "./adapter.js";
 
 export type SessionStatus = "idle" | "loading" | "ready" | "saving";
 

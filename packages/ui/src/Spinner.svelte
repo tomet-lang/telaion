@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "./Icon.svelte";
-  import { LoaderCircle } from "./icons.generated.ts";
+  import { LoaderCircle } from "./icons.generated.js";
 
   let { label = "Loading" }: { label?: string } = $props();
 </script>

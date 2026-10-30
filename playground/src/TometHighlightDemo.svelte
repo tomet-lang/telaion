@@ -8,7 +8,7 @@
     slowHighlight,
     stubSpans,
     type Mode,
-  } from "./stub-tomet.ts";
+  } from "./stub-tomet.js";
 
   const modes = [
     { value: "sync", label: "Answers at once" },

@@ -1,12 +1,26 @@
 {
   "name": "@telaion/tomet",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Telaion Tomet - the glue between the Tomet parser and the editor frame",
+  "version": "0.1.0",
+  "description": "Telaion Tomet - Tomet syntax highlighting and conflict resolution that take the Tomet engine from the application",
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "tomet",
+    "codemirror",
+    "highlighting",
+    "merge-conflict"
+  ],
   "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/tomet-lang/telaion#readme",
+  "bugs": {
+    "url": "https://github.com/tomet-lang/telaion/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomet-lang/telaion.git",
+    "directory": "packages/tomet"
+  },
   "type": "module",
-  "svelte": "./src/index.ts",
-  "types": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -15,14 +29,30 @@
     }
   },
   "files": [
-    "src"
+    "dist",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "sideEffects": [
     "**/*.css"
   ],
+  "scripts": {
+    "build": "rm -rf dist && svelte-package -i src -o dist --tsconfig ../../tsconfig.json",
+    "prepack": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "svelte": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "dependencies": {
-    "@telaion/editor": "workspace:*",
-    "@telaion/ui": "workspace:*"
+    "@telaion/editor": "workspace:^",
+    "@telaion/ui": "workspace:^"
   },
   "peerDependencies": {
     "svelte": "^5.0.0",

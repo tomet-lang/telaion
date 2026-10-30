@@ -52,3 +52,9 @@ play-build:
 # Run the browser tests against the playground
 test:
     pnpm exec playwright test
+
+#[ Release ]
+
+# Build every package into its dist/ directory, as it is published
+build:
+    pnpm -r --filter "./packages/*" run build

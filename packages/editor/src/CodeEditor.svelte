@@ -10,7 +10,7 @@
     lineNumbers,
   } from "@codemirror/view";
   import { onMount } from "svelte";
-  import { telaionTheme } from "./theme.ts";
+  import { telaionTheme } from "./theme.js";
 
   let {
     content = $bindable(""),

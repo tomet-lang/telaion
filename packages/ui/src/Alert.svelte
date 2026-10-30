@@ -2,7 +2,7 @@
   import type { Snippet } from "svelte";
   import Icon from "./Icon.svelte";
   import IconButton from "./IconButton.svelte";
-  import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "./icons.generated.ts";
+  import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "./icons.generated.js";
 
   let {
     tone,

@@ -1,12 +1,25 @@
 {
   "name": "@telaion/editor",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Telaion Editor - source editor frame with a storage adapter and a pluggable language",
+  "version": "0.1.0",
+  "description": "Telaion Editor - a CodeMirror 6 source editor frame with a document session and a storage adapter",
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "editor",
+    "codemirror",
+    "tomet"
+  ],
   "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/tomet-lang/telaion#readme",
+  "bugs": {
+    "url": "https://github.com/tomet-lang/telaion/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomet-lang/telaion.git",
+    "directory": "packages/editor"
+  },
   "type": "module",
-  "svelte": "./src/index.ts",
-  "types": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -15,13 +28,29 @@
     }
   },
   "files": [
-    "src"
+    "dist",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "sideEffects": [
     "**/*.css"
   ],
+  "scripts": {
+    "build": "rm -rf dist && svelte-package -i src -o dist --tsconfig ../../tsconfig.json",
+    "prepack": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "svelte": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "dependencies": {
-    "@telaion/ui": "workspace:*",
+    "@telaion/ui": "workspace:^",
     "@codemirror/commands": "^6.8.0",
     "@codemirror/language": "^6.11.0",
     "@codemirror/state": "^6.5.0",

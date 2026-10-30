@@ -2,7 +2,7 @@
   import type { Extension } from "@codemirror/state";
   import { Alert, Badge, Button, Spinner } from "@telaion/ui";
   import CodeEditor from "./CodeEditor.svelte";
-  import type { DocumentSession } from "./session.svelte.ts";
+  import type { DocumentSession } from "./session.svelte.js";
 
   let {
     session,

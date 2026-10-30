@@ -1,0 +1,75 @@
+::config(
+  export: {
+    type: commonmark,
+    path: "packages/editor/README.md"
+  }
+)
+::meta{
+  id: doc-package-editor,
+  lang: en
+}
+
+${macro.generated_by(self.path)}
+
+=[ @telaion/editor ]
+
+A source editor for Svelte 5, built on CodeMirror 6, with a document session and a storage adapter. It knows nothing about Tomet; the language is a slot.
+
+==[ Install ]
+
+```bash
+pnpm add @telaion/editor
+```
+
+Svelte 5 is a peer dependency. Also import the design tokens of `@telaion/ui` once, for example `import "@telaion/ui/tokens.css"`.
+
+==[ Use ]
+
+The application says where documents live, by writing a `DocumentAdapter`:
+
+```ts
+import type { DocumentAdapter } from "@telaion/editor";
+
+const adapter: DocumentAdapter = {
+  async load(path) {
+    return { content: await readFile(path), rev: await currentRevision(path) };
+  },
+  async save(path, content, base) {
+    if (base !== (await currentRevision(path))) {
+      return { ok: false, conflict: { remote: await readFile(path) } };
+    }
+    await writeFile(path, content);
+    return { ok: true, rev: await currentRevision(path) };
+  },
+};
+```
+
+Then it shows a document with a session:
+
+```svelte
+<script>
+  import { DocumentSession, Editor } from "@telaion/editor";
+  import { onMount } from "svelte";
+
+  const session = new DocumentSession(adapter, "notes/idea.tmt");
+  onMount(() => session.load());
+</script>
+
+<Editor {session} />
+```
+
+==[ What is in it ]
+
+-| `DocumentSession` -- one document being edited: its text, whether it is unsaved (`dirty`), the status, the last error, and a conflict when a save found a newer stored version. It has no view.
+-| `CodeEditor` -- the text area, on CodeMirror 6. The `language` prop takes a CodeMirror extension.
+-| `Editor` -- a session and a `CodeEditor` with a path, a status badge, a Save button, and the alerts for errors and conflicts.
+
+==[ Behavior ]
+
+-| A save writes the text as it was when the save started. Text typed while it runs stays unsaved.
+-| A conflict never overwrites. The edit is kept and the session reports the conflict.
+-| Tab leaves the editor for the next control; it does not insert indentation.
+
+==[ License ]
+
+Licensed under either of MIT or Apache-2.0, at your option.

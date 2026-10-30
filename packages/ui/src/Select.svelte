@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { HTMLSelectAttributes } from "svelte/elements";
-  import { getFieldContext } from "./field-context.ts";
+  import { getFieldContext } from "./field-context.js";
   import Icon from "./Icon.svelte";
-  import { ChevronDown } from "./icons.generated.ts";
+  import { ChevronDown } from "./icons.generated.js";
 
   type Props = Omit<HTMLSelectAttributes, "class" | "style" | "value" | "children"> & {
     value?: string;

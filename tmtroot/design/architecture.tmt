@@ -167,6 +167,100 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Versions stay at 0.x while the API settles. An application depends on a caret range of one minor version and takes new ones deliberately.
 -| While a consumer is tried against unreleased Telaion, link it locally. A committed manifest or lockfile never contains a local path.
 
+===[ How a release is made ]
+
+-| `just build` turns each package into its `dist/` with `svelte-package`: TypeScript removed, declarations added. In the repository a package's `exports` point at its source, so the playground needs no build; `publishConfig.exports` points at `dist/` and replaces them in the published package.
+-| Relative imports are written with a `.js` extension, even for TypeScript files. A `.ts` extension survives into the build, where no such file exists.
+-| Publish with `pnpm publish`, never `npm publish`: only pnpm turns `workspace:^` into a real version.
+-| The three packages are versioned together.
+-| Before publishing, pack the three packages, install the tarballs in a scratch application, and check that it type-checks against the published declarations and builds with only the used icons.
+-| The first release is made by hand from a laptop (`pnpm -r publish --access public`, with the one-time password). npm's trusted publishing can be set up for a package only after the package exists. From the second release on, CI publishes with provenance.
+
+==[ Out of scope ]
+
+The following stay in the applications.
+-| The application shell: file tree, workspace and vault management, tabs, settings.
+-| Authentication and anything that talks to a host (Tauri `invoke`, the GitHub API).
+-| Rust code. Metadata handling that needs the Tomet AST belongs to the Tomet crates, not to Telaion.
+
+==[ The storage adapter ]
+
+Components never know where a document lives. The application passes an adapter; a desktop app backs it with local files, the wiki backs it with the GitHub API.
+
+This is a sketch of the shape, not a final API.
+
+```ts
+export interface DocumentAdapter {
+  load(path: string): Promise<{ content: string; rev?: string }>;
+  save(path: string, content: string, base?: string): Promise<SaveResult>;
+}
+
+export type SaveResult =
+  | { ok: true; rev?: string }
+  | { ok: false; conflict: { remote: string; rev?: string } };
+```
+
+==[ The editor frame ]
+
+`@telaion/editor` has three layers, each usable alone.
+
+-| `DocumentSession` -- one document being edited: what was loaded, what it is now (`dirty`), the status, the last error, and a conflict when a save found a newer stored version. It has no view. It is written with Svelte runes (`.svelte.ts`).
+-| `CodeEditor` -- the text area, on CodeMirror 6. It takes `content` as a bindable value and reports edits and save requests. The language is a slot (a CodeMirror extension): the editor itself does not know Tomet.
+-| `Editor` -- a session and a `CodeEditor` with a path, a status badge, a Save button and the alerts for errors and conflicts.
+
+```ts
+type CodeEditorProps = {
+  content: string; // $bindable
+  readOnly?: boolean;
+  label?: string; // accessible name of the text area
+  language?: Extension; // supplied by @telaion/tomet
+  onChange?: (content: string) => void; // edits by a person, not replacements from outside
+  onSave?: () => void; // Ctrl or Cmd + S
+};
+```
+
+===[ Decided ]
+
+-| The engine is CodeMirror 6 and nothing else: one way to edit, one entry point. A minimal CodeMirror adds about 92 KB gzipped (97 KB with a language hook) to the roughly 322 KB of the wiki's editing bundle. This is accepted for syntax highlighting and a proper undo history.
+-| The theme of the editor is written in the tokens of `@telaion/ui` only, so it follows the light and dark switch.
+-| Tab leaves the editor for the next control; it does not insert indentation. A keyboard user must not be trapped. Indent with Mod-] and Mod-[.
+-| A save writes the text as it was when it started. Text typed while the save runs stays unsaved.
+-| A conflict never overwrites. The edit is kept, the session reports the conflict, and resolving it is the job of the application or of `@telaion/tomet`.
+
+==[ Two kinds of conflict ]
+
+The word means two things, and Telaion keeps them apart.
+
+-| **The stored version moved.** A save finds that the document changed since the edit began. The `DocumentAdapter` answers `SaveResult.conflict`, the `DocumentSession` keeps the edit and sets `session.conflict`, and the `Editor` says so. Nothing was written.
+-| **The text holds `@conflict` markers.** A three-way merge could not combine two edits, so it kept both inside the document and saved it. This is part of the text. `ConflictResolver` in `@telaion/tomet` lists the markers through `TometServices.listConflicts` and replaces one at a time through `resolveConflict`.
+
+`ConflictResolver` takes the document text and the services, and gives the text back through `onResolve`. The list may arrive late and is shown with a spinner the first time; an answer for text that has since changed is dropped; while the engine resolves one conflict, the buttons wait.
+
+==[ Theme ]
+
+The most expensive failure so far was look-and-feel that is regenerated with every rewrite, and hard to steer. The answer is a small fixed vocabulary, decided once by a person.
+
+-| Visual values are CSS custom properties with the prefix `--tln-`. Components reference tokens only.
+-| The token set is small and fixed. No shadows, no gradients, one radius. A modal is separated by a border and a scrim, not by a shadow.
+-| One default value set ships with `@telaion/ui` as `tokens.css`. An application overrides token values; it does not restyle components.
+-| Plain CSS. No utility framework inside the shared packages, so that the same CSS can be embedded in the wiki's Rust assets unchanged.
+
+===[ Decided ]
+
+-| Palette: Stone neutrals and a Sky accent.
+-| Light and dark live in one declaration through `light-dark()`. The default follows the operating system; `data-theme="light"` or `data-theme="dark"` on any element overrides it for that subtree.
+-| Text pairs meet WCAG AA (4.5:1). The border of a control uses `--tln-border-strong` (3:1); `--tln-border` is for dividers only.
+-| The tokens: surface (`bg`, `bg-subtle`, `bg-sunken`), text (`fg`, `fg-muted`), lines (`border`, `border-strong`), accent (`accent`, `accent-hover`, `accent-fg`, `accent-soft`), state (`ok`, `warn`, `danger` and their `-soft` tints, and `danger-fg` for text on a danger fill), `scrim`, fonts (`font-sans`, `font-mono`), text sizes (`text-xs`, `text-sm`, `text-md`), `leading`, `space`, `radius`.
+-| `light-dark()` and `color-mix()` require a 2024-or-later browser engine. This is accepted.
+
+==[ Distribution ]
+
+-| The packages are published to npm under the `@telaion` scope. This is a requirement, not a preference: `@telaion/editor` depends on `@telaion/ui`, and a workspace dependency cannot be resolved when one package is installed from a subdirectory of a git repository. The wiki also builds with Deno through `npm:` specifiers, which have no way to take a git subdirectory.
+-| They are Svelte library packages, built with `svelte-package` into `dist/` (TypeScript removed, declarations added). Each application bundles them with its own bundler (Vite).
+-| Publication comes before the first migration of an application. Until then the API is exercised inside this repository, in the playground, as the rebuilt New Page dialog does.
+-| Versions stay at 0.x while the API settles. An application depends on a caret range of one minor version and takes new ones deliberately.
+-| While a consumer is tried against unreleased Telaion, link it locally. A committed manifest or lockfile never contains a local path.
+
 ===[ Before the first publication ]
 
 -| Create the `telaion` organization on npm.

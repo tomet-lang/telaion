@@ -1,0 +1,62 @@
+<!-- Generated from tmtroot/packages/tomet.tmt. Edit that, then `tomet export .`. -->
+
+# @telaion/tomet
+
+The Tomet-specific parts of a Telaion editor: syntax highlighting and conflict resolution. It carries no Tomet engine. The application passes one in, so it is never loaded twice.
+
+## Install
+
+```bash
+pnpm add @telaion/tomet
+```
+
+Svelte 5, `@codemirror/state` and `@codemirror/view` are peer dependencies. It uses `@telaion/ui` and `@telaion/editor`.
+
+## The engine comes from the application
+
+An application already has a Tomet engine, as WebAssembly or as Rust. It describes that engine to Telaion with `TometServices`:
+
+```ts
+import type { TometServices } from "@telaion/tomet";
+
+const services: TometServices = {
+  highlight: (source) => engine.highlight(source),
+  listConflicts: (source) => engine.listConflicts(source),
+  resolveConflict: (source, index, side) => engine.resolveConflict(source, index, side),
+};
+```
+
+Every method may answer at once or later (return a promise). Offsets count UTF-16 code units, as CodeMirror does. An engine that counts bytes passes its spans through `utf8ToUtf16Spans`.
+
+## Highlighting
+
+```svelte
+<script>
+  import { CodeEditor } from "@telaion/editor";
+  import { tometHighlighting } from "@telaion/tomet";
+
+  let content = $state("");
+  const language = tometHighlighting(services, { onError: console.warn });
+</script>
+
+<CodeEditor bind:content {language} />
+```
+
+The extension asks again after every edit. An answer for text that has since changed is dropped. If the engine fails, the last good colors stay and `onError` is told. The colors are the design tokens of `@telaion/ui`.
+
+## Conflicts
+
+A document may hold `@conflict` markers, left by a merge that could not combine two edits. `ConflictResolver` lists them and replaces them one at a time:
+
+```svelte
+<script>
+  import { ConflictResolver } from "@telaion/tomet";
+</script>
+
+<ConflictResolver {content} {services} onResolve={(next) => (content = next)} />
+```
+
+## License
+
+Licensed under either of MIT or Apache-2.0, at your option.
+

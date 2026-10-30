@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { setFieldContext } from "./field-context.ts";
+  import { setFieldContext } from "./field-context.js";
 
   let {
     label,

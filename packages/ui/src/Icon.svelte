@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IconData } from "./icon-data.ts";
+  import type { IconData } from "./icon-data.js";
 
   let {
     icon,

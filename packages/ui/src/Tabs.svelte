@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "./Icon.svelte";
-  import { X } from "./icons.generated.ts";
+  import { X } from "./icons.generated.js";
 
   type Item = { id: string; label: string; dirty?: boolean; closable?: boolean };
 

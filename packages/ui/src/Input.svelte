@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { HTMLInputAttributes } from "svelte/elements";
-  import { getFieldContext } from "./field-context.ts";
+  import { getFieldContext } from "./field-context.js";
 
   type Props = Omit<HTMLInputAttributes, "class" | "style" | "value" | "type" | "children"> & {
     value?: string;

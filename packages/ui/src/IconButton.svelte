@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { HTMLButtonAttributes } from "svelte/elements";
   import Icon from "./Icon.svelte";
-  import type { IconData } from "./icon-data.ts";
+  import type { IconData } from "./icon-data.js";
 
   type Props = Omit<HTMLButtonAttributes, "class" | "style" | "children" | "aria-label"> & {
     icon: IconData;

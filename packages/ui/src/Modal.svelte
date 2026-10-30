@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import IconButton from "./IconButton.svelte";
-  import { X } from "./icons.generated.ts";
+  import { X } from "./icons.generated.js";
 
   let {
     open = $bindable(false),

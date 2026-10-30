@@ -55,6 +55,60 @@
       },
       "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
     },
+    "packages/editor/LICENSE-APACHE": {
+      "sha256": "a549c19a5c34ad57b10e336bdfad9cb6040c2fc311ed217f01c7a9c4ddee6015",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-APACHE"
+      },
+      "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
+    },
+    "packages/editor/LICENSE-MIT": {
+      "sha256": "24d88f36f2620d2b18d70bc2136e103b1f9910a63a4614d94404577b2a41f5a0",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-MIT"
+      },
+      "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
+    },
+    "packages/tomet/LICENSE-APACHE": {
+      "sha256": "a549c19a5c34ad57b10e336bdfad9cb6040c2fc311ed217f01c7a9c4ddee6015",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-APACHE"
+      },
+      "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
+    },
+    "packages/tomet/LICENSE-MIT": {
+      "sha256": "24d88f36f2620d2b18d70bc2136e103b1f9910a63a4614d94404577b2a41f5a0",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-MIT"
+      },
+      "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
+    },
+    "packages/ui/LICENSE-APACHE": {
+      "sha256": "a549c19a5c34ad57b10e336bdfad9cb6040c2fc311ed217f01c7a9c4ddee6015",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-APACHE"
+      },
+      "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
+    },
+    "packages/ui/LICENSE-MIT": {
+      "sha256": "24d88f36f2620d2b18d70bc2136e103b1f9910a63a4614d94404577b2a41f5a0",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-MIT"
+      },
+      "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
+    },
     "packages/ui/vendor/lucide/LICENSE": {
       "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
       "source": {

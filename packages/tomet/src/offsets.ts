@@ -1,4 +1,4 @@
-import type { HighlightSpan } from "./services.ts";
+import type { HighlightSpan } from "./services.js";
 
 /**
  * Turn spans counted in UTF-8 bytes into spans counted in UTF-16 code units.

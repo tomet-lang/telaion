@@ -9,4 +9,4 @@ export { default as Modal } from "./Modal.svelte";
 export { default as Select } from "./Select.svelte";
 export { default as Spinner } from "./Spinner.svelte";
 export { default as Tabs } from "./Tabs.svelte";
-export type { IconData } from "./icon-data.ts";
+export type { IconData } from "./icon-data.js";

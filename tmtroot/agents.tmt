@@ -60,6 +60,13 @@ These rules keep the layers separable. Do not break them for convenience.
 -| `just check` type-checks every package. Run it with the tests before calling a component done.
 -| The browsers come from Nix. `@playwright/test` in `package.json` must stay pinned to exactly the version of `pkgs.playwright-driver` in the flake; when the flake input is updated, update the pin with it.
 
+==[ Publishing ]
+
+-| Write relative imports with a `.js` extension, also for TypeScript files (`import { x } from "./x.js"`). A `.ts` extension is not rewritten by the build and breaks the published package.
+-| Publish with `pnpm publish` (or `pnpm -r publish`), never `npm publish`.
+-| Packages are versioned together. Do not publish one package against an unpublished change of another.
+-| `just build` must succeed and the packed tarballs must install and build in a scratch application before a release.
+
 ==[ Changes in tomet or sibling repositories ]
 
 Telaion has no dependency on a Tomet package. When Tomet changes what it returns, adapt it where the application builds its `TometServices`, or change the types in `@telaion/tomet`. Never add a Tomet engine as a dependency, and never point anything at a local checkout in a committed manifest or lockfile.

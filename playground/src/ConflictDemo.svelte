@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ConflictResolver, type TometServices } from "@telaion/tomet";
   import { Button, Field, Select } from "@telaion/ui";
-  import { stubConflicts, stubResolve } from "./stub-tomet.ts";
+  import { stubConflicts, stubResolve } from "./stub-tomet.js";
 
   const original =
     '=[ Notes ]\n\nThe release is @conflict(a: "on Monday", b: "on Friday") for sure.\n\n@conflict(a: "Keep it short.", b: "Explain it at length, in two sentences.")\n';

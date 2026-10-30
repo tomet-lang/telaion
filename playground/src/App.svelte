@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import ConfirmDelete from "./ConfirmDelete.svelte";
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
-  import { MemoryAdapter } from "./memory-adapter.ts";
+  import { MemoryAdapter } from "./memory-adapter.js";
   import NewPageDialog from "./NewPageDialog.svelte";
   import ConflictDemo from "./ConflictDemo.svelte";
   import TometHighlightDemo from "./TometHighlightDemo.svelte";

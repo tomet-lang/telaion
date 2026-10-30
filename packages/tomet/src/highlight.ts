@@ -1,6 +1,6 @@
 import { type Extension, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, type DecorationSet, EditorView, ViewPlugin } from "@codemirror/view";
-import type { HighlightSpan, TometServices } from "./services.ts";
+import type { HighlightSpan, TometServices } from "./services.js";
 
 /**
  * Colors for the tags of the Tomet highlighter, in the design tokens of @telaion/ui.
