@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ConfirmDelete from "./ConfirmDelete.svelte";
+  import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
   import NewPageDialog from "./NewPageDialog.svelte";
   import {
     Alert,
@@ -44,6 +46,10 @@
     tabItems = tabItems.filter((item) => item.id !== id);
     if (activeTab === id) activeTab = tabItems[0]?.id ?? "";
   }
+
+  let deleting = $state<{ name: string; is_dir: boolean } | null>(null);
+  let closingTab = $state<string | null>(null);
+  let outcome = $state("nothing yet");
 
   let newPageOpen = $state(false);
   let created = $state("");
@@ -107,6 +113,7 @@
       <Button variant="danger" onclick={() => clicks++}>
         <Icon icon={Trash} /> Delete
       </Button>
+      <Button variant="danger-fill" onclick={() => clicks++}>Delete</Button>
       <Button variant="quiet" onclick={() => clicks++}>
         <Icon icon={Plus} /> New page
       </Button>
@@ -116,6 +123,7 @@
       <Button variant="primary" disabled>Save</Button>
       <Button disabled>Cancel</Button>
       <Button variant="danger" disabled>Delete</Button>
+      <Button variant="danger-fill" disabled>Delete</Button>
       <Button variant="quiet" disabled>New page</Button>
       <span class="muted">disabled</span>
     </div>
@@ -194,6 +202,16 @@
   </section>
 
   <section>
+    <h2>Trial: the ordiola confirmations, rebuilt on Telaion</h2>
+    <div class="row">
+      <Button onclick={() => (deleting = { name: "idea.tmt", is_dir: false })}>Delete a file</Button>
+      <Button onclick={() => (deleting = { name: "drafts", is_dir: true })}>Delete a folder</Button>
+      <Button onclick={() => (closingTab = "readme.tmt")}>Close an unsaved tab</Button>
+    </div>
+    <p class="muted">outcome: <span aria-label="outcome">{outcome}</span></p>
+  </section>
+
+  <section>
     <h2>Modal</h2>
     <div class="row">
       <Button variant="primary" onclick={() => (modalOpen = true)}>Open modal</Button>
@@ -220,6 +238,38 @@
     </div>
   </section>
 </main>
+
+{#if deleting}
+  <ConfirmDelete
+    entry={deleting}
+    onConfirm={() => {
+      outcome = "deleted " + deleting!.name;
+      deleting = null;
+    }}
+    onCancel={() => {
+      outcome = "delete cancelled";
+      deleting = null;
+    }}
+  />
+{/if}
+
+{#if closingTab}
+  <ConfirmUnsaved
+    title={closingTab}
+    onSave={() => {
+      outcome = "saved and closed " + closingTab;
+      closingTab = null;
+    }}
+    onDiscard={() => {
+      outcome = "discarded " + closingTab;
+      closingTab = null;
+    }}
+    onCancel={() => {
+      outcome = "close cancelled";
+      closingTab = null;
+    }}
+  />
+{/if}
 
 {#if newPageOpen}
   <NewPageDialog

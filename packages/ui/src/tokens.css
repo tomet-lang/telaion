@@ -38,6 +38,7 @@
   --tln-ok: light-dark(#15803d, #4ade80);
   --tln-warn: light-dark(#b45309, #fbbf24); /* also marks conflicts */
   --tln-danger: light-dark(#b91c1c, #f87171);
+  --tln-danger-fg: light-dark(#ffffff, #0c0a09); /* text on a danger fill */
   --tln-ok-soft: color-mix(in srgb, var(--tln-ok) 12%, var(--tln-bg));
   --tln-warn-soft: color-mix(in srgb, var(--tln-warn) 12%, var(--tln-bg));
   --tln-danger-soft: color-mix(in srgb, var(--tln-danger) 12%, var(--tln-bg));

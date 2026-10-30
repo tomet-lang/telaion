@@ -106,7 +106,7 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Palette: Stone neutrals and a Sky accent.
 -| Light and dark live in one declaration through `light-dark()`. The default follows the operating system; `data-theme="light"` or `data-theme="dark"` on any element overrides it for that subtree.
 -| Text pairs meet WCAG AA (4.5:1). The border of a control uses `--tln-border-strong` (3:1); `--tln-border` is for dividers only.
--| The tokens: surface (`bg`, `bg-subtle`, `bg-sunken`), text (`fg`, `fg-muted`), lines (`border`, `border-strong`), accent (`accent`, `accent-hover`, `accent-fg`, `accent-soft`), state (`ok`, `warn`, `danger` and their `-soft` tints), `scrim`, fonts (`font-sans`, `font-mono`), text sizes (`text-xs`, `text-sm`, `text-md`), `leading`, `space`, `radius`.
+-| The tokens: surface (`bg`, `bg-subtle`, `bg-sunken`), text (`fg`, `fg-muted`), lines (`border`, `border-strong`), accent (`accent`, `accent-hover`, `accent-fg`, `accent-soft`), state (`ok`, `warn`, `danger` and their `-soft` tints, and `danger-fg` for text on a danger fill), `scrim`, fonts (`font-sans`, `font-mono`), text sizes (`text-xs`, `text-sm`, `text-md`), `leading`, `space`, `radius`.
 -| `light-dark()` and `color-mix()` require a 2024-or-later browser engine. This is accepted.
 
 ==[ Distribution ]
@@ -131,4 +131,5 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Highlighting source. It should come from the tokens of the Tomet parser (`@tomet/cms`), not from a second grammar written in JavaScript that can drift.
 -| Source editor engine. `tomet-wiki` embeds its bundle, so size matters: CodeMirror in `@telaion/editor` against a plain textarea, behind the same interface.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
+-| The quick open palette of `ordiola` needs a Modal without a header and aligned to the top, and a listbox driven by `aria-activedescendant`. Both wait for a second consumer before they enter `@telaion/ui`.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.

@@ -3,8 +3,11 @@
   import type { HTMLButtonAttributes } from "svelte/elements";
 
   type Props = Omit<HTMLButtonAttributes, "class" | "style" | "children"> & {
-    /** primary: the one main action. danger: destructive. quiet: toolbar-like, no frame. */
-    variant?: "primary" | "secondary" | "danger" | "quiet";
+    /**
+     * primary: the one main action. danger: destructive, outlined. danger-fill: destructive
+     * when the destructive answer is the main action, as in a confirmation. quiet: no frame.
+     */
+    variant?: "primary" | "secondary" | "danger" | "danger-fill" | "quiet";
     children: Snippet;
   };
 
@@ -61,6 +64,17 @@
   }
   .tln-btn[data-variant="danger"]:hover {
     background: var(--tln-danger-soft);
+  }
+
+  .tln-btn[data-variant="danger-fill"] {
+    background: var(--tln-danger);
+    border-color: var(--tln-danger);
+    color: var(--tln-danger-fg);
+  }
+  .tln-btn[data-variant="danger-fill"]:hover {
+    /* Toward the foreground: darker in light mode, lighter in dark mode. */
+    background: color-mix(in srgb, var(--tln-danger) 85%, var(--tln-fg));
+    border-color: color-mix(in srgb, var(--tln-danger) 85%, var(--tln-fg));
   }
 
   .tln-btn[data-variant="quiet"] {
