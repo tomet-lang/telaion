@@ -9,8 +9,8 @@
     children,
   }: {
     label: string;
-    /** Help shown under the control. Replaced by `error` while there is one. */
-    hint?: string;
+    /** Help shown under the control. Replaced by `error` while there is one. A snippet allows markup such as <code>. */
+    hint?: string | Snippet;
     error?: string;
     /** The control: an Input or a Select. It picks up its id and messages from this Field. */
     children: Snippet;
@@ -40,7 +40,9 @@
   {#if error}
     <p class="tln-message tln-error" id={errorId} role="alert">{error}</p>
   {:else if hint}
-    <p class="tln-message" id={hintId}>{hint}</p>
+    <p class="tln-message" id={hintId}>
+      {#if typeof hint === "string"}{hint}{:else}{@render hint()}{/if}
+    </p>
   {/if}
 </div>
 

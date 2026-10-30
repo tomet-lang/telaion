@@ -111,8 +111,18 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 
 ==[ Distribution ]
 
--| The packages are Svelte source, not a compiled bundle. Each application builds them with its own bundler (Vite).
--| An application pins a Telaion version by git tag or commit, through the package manager. A committed lockfile never contains a local path link.
+-| The packages are published to npm under the `@telaion` scope. This is a requirement, not a preference: `@telaion/editor` depends on `@telaion/ui`, and a workspace dependency cannot be resolved when one package is installed from a subdirectory of a git repository. The wiki also builds with Deno through `npm:` specifiers, which have no way to take a git subdirectory.
+-| They are Svelte library packages, built with `svelte-package` into `dist/` (TypeScript removed, declarations added). Each application bundles them with its own bundler (Vite).
+-| Publication comes before the first migration of an application. Until then the API is exercised inside this repository, in the playground, as the rebuilt New Page dialog does.
+-| Versions stay at 0.x while the API settles. An application depends on a caret range of one minor version and takes new ones deliberately.
+-| While a consumer is tried against unreleased Telaion, link it locally. A committed manifest or lockfile never contains a local path.
+
+===[ Before the first publication ]
+
+-| Create the `telaion` organization on npm.
+-| Build with `svelte-package`; point `exports` at `dist/`; drop `private`; list `files`.
+-| A README for each package.
+-| Publish from CI with provenance (trusted publishing), not from a laptop.
 
 ==[ Open ]
 
@@ -122,4 +132,3 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Source editor engine. `tomet-wiki` embeds its bundle, so size matters: CodeMirror in `@telaion/editor` against a plain textarea, behind the same interface.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.
--| Publication: git dependency or an npm scope.

@@ -23,6 +23,10 @@
      * otherwise the browser focuses the first focusable element, which is the close button.
      */
     children: Snippet;
+    /**
+     * Buttons under the body. To submit a form that sits in the body, give the form an id
+     * and the submit button `form={id}`; Enter in a field then submits it as usual.
+     */
     footer?: Snippet;
   } = $props();
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NewPageDialog from "./NewPageDialog.svelte";
   import {
     Alert,
     Badge,
@@ -43,6 +44,10 @@
     tabItems = tabItems.filter((item) => item.id !== id);
     if (activeTab === id) activeTab = tabItems[0]?.id ?? "";
   }
+
+  let newPageOpen = $state(false);
+  let created = $state("");
+  let cancelled = $state(0);
 
   let path = $state("notes/idea.tmt");
   let token = $state("");
@@ -180,6 +185,15 @@
   </section>
 
   <section>
+    <h2>Trial: the wiki New Page dialog, rebuilt on Telaion</h2>
+    <div class="row">
+      <Button variant="primary" onclick={() => (newPageOpen = true)}>Open the New Page dialog</Button>
+      <span class="muted">cancelled {cancelled} times</span>
+    </div>
+    {#if created}<pre class="result" aria-label="created">{created}</pre>{/if}
+  </section>
+
+  <section>
     <h2>Modal</h2>
     <div class="row">
       <Button variant="primary" onclick={() => (modalOpen = true)}>Open modal</Button>
@@ -206,6 +220,19 @@
     </div>
   </section>
 </main>
+
+{#if newPageOpen}
+  <NewPageDialog
+    onCreate={(newPath, content) => {
+      created = newPath + "\n---\n" + content;
+      newPageOpen = false;
+    }}
+    onCancel={() => {
+      cancelled++;
+      newPageOpen = false;
+    }}
+  />
+{/if}
 
 <Modal bind:open={modalOpen} title="New page" onclose={() => closedCount++}>
   <Field label="Path" hint="Relative to the vault root.">
@@ -304,6 +331,17 @@
     align-items: center;
     gap: calc(var(--tln-space) * 3);
     margin-bottom: calc(var(--tln-space) * 3);
+  }
+
+  .result {
+    margin: 0;
+    padding: calc(var(--tln-space) * 3);
+    font-family: var(--tln-font-mono);
+    font-size: var(--tln-text-sm);
+    background: var(--tln-bg-sunken);
+    border: 1px solid var(--tln-border);
+    border-radius: var(--tln-radius);
+    white-space: pre-wrap;
   }
 
   .stack {
