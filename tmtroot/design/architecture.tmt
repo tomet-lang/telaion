@@ -57,6 +57,16 @@ interface TometServices {
 -| The types are defined in `@telaion/tomet`. An application writes a few lines that turn the output of its engine into them, for example converting byte offsets to UTF-16 when the engine counts bytes.
 -| Where the logic lives: in the Tomet crates, once. The engines that applications use are different packaging of the same code.
 
+===[ Highlighting ]
+
+`tometHighlighting(services)` in `@telaion/tomet` is a CodeMirror extension; it is passed as the `language` of a `CodeEditor`.
+
+-| It asks `services.highlight` after every edit and paints the ranges it gets. The ranges are kept in the editor state, so they follow the text while the next answer is on its way.
+-| An answer for text that has since changed is dropped. A slow or message-based engine never paints old ranges over new text.
+-| When the engine fails, the last good colors stay, the editor keeps working, and `onError` is told. Every edit asks again.
+-| The colors are the design tokens: `heading`, `tagName` and `list` in the accent; `string`, `number` and `atom` in the ok color; comments, punctuation and separators muted; `monospace` on the sunken surface. A tag that is not listed stays in the plain text color.
+-| `utf8ToUtf16Spans` turns spans counted in bytes into spans counted in UTF-16, for an engine that counts bytes.
+
 ==[ Why Svelte ]
 
 Asked before the first component, while a change was still free. The answer is to stay on Svelte 5. React is excluded on its own merits, not only on familiarity.

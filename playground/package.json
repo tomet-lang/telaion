@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@telaion/ui": "workspace:*",
-    "@telaion/editor": "workspace:*"
+    "@telaion/editor": "workspace:*",
+    "@telaion/tomet": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.0",

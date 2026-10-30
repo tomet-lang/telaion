@@ -5,6 +5,7 @@
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
   import { MemoryAdapter } from "./memory-adapter.ts";
   import NewPageDialog from "./NewPageDialog.svelte";
+  import TometHighlightDemo from "./TometHighlightDemo.svelte";
   import {
     Alert,
     Badge,
@@ -180,6 +181,11 @@
     </div>
     <div class="editor-frame"><Editor {session} readOnly={editorReadOnly} /></div>
     <pre class="result" aria-label="stored text">{stored.last}</pre>
+  </section>
+
+  <section>
+    <h2>Tomet highlighting (through TometServices)</h2>
+    <TometHighlightDemo />
   </section>
 
   <section>

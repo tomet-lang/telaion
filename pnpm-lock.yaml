@@ -56,6 +56,13 @@ importers:
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
+    devDependencies:
+      '@codemirror/state':
+        specifier: ^6.5.0
+        version: 6.7.6
+      '@codemirror/view':
+        specifier: ^6.36.0
+        version: 6.43.15
 
   packages/ui:
     dependencies:
@@ -68,6 +75,9 @@ importers:
       '@telaion/editor':
         specifier: workspace:*
         version: link:../packages/editor
+      '@telaion/tomet':
+        specifier: workspace:*
+        version: link:../packages/tomet
       '@telaion/ui':
         specifier: workspace:*
         version: link:../packages/ui

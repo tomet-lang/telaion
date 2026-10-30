@@ -111,7 +111,7 @@ for (const scheme of ["light", "dark"] as const) {
   test(`the editor follows the ${scheme} theme through the tokens`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme });
     const [editorBackground, tokenBackground] = await Promise.all([
-      page.locator(".cm-editor").evaluate((el) => getComputedStyle(el).backgroundColor),
+      page.locator(".tln-editor .cm-editor").evaluate((el) => getComputedStyle(el).backgroundColor),
       page.evaluate(() => {
         const probe = document.createElement("i");
         probe.style.color = "var(--tln-bg)";
