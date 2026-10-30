@@ -1,0 +1,71 @@
+/*
+ * Telaion design tokens.
+ *
+ * The whole visual vocabulary of the components. Components reference these
+ * custom properties and nothing else: no literal colors, fonts, or sizes.
+ * An application re-themes by overriding values, never by restyling components.
+ *
+ * Light and dark share one declaration through light-dark(). The default
+ * follows the operating system; set data-theme="light" or data-theme="dark"
+ * on any element to override it for that subtree.
+ *
+ * Palette: Stone neutrals, Sky accent.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Surface */
+  --tln-bg: light-dark(#ffffff, #0c0a09);
+  --tln-bg-subtle: light-dark(#fafaf9, #1c1917); /* panels, headers */
+  --tln-bg-sunken: light-dark(#f5f5f4, #292524); /* code, inset areas */
+
+  /* Text */
+  --tln-fg: light-dark(#1c1917, #f5f5f4);
+  --tln-fg-muted: light-dark(#57534e, #a8a29e);
+
+  /* Lines */
+  --tln-border: light-dark(#e7e5e4, #292524); /* dividers: decoration only */
+  --tln-border-strong: #78716c; /* controls: meets 3:1 on both themes */
+
+  /* Accent */
+  --tln-accent: light-dark(#0369a1, #38bdf8);
+  --tln-accent-hover: light-dark(#075985, #7dd3fc);
+  --tln-accent-fg: light-dark(#ffffff, #0c0a09); /* text on an accent fill */
+  --tln-accent-soft: color-mix(in srgb, var(--tln-accent) 12%, var(--tln-bg));
+
+  /* State */
+  --tln-ok: light-dark(#15803d, #4ade80);
+  --tln-warn: light-dark(#b45309, #fbbf24); /* also marks conflicts */
+  --tln-danger: light-dark(#b91c1c, #f87171);
+  --tln-ok-soft: color-mix(in srgb, var(--tln-ok) 12%, var(--tln-bg));
+  --tln-warn-soft: color-mix(in srgb, var(--tln-warn) 12%, var(--tln-bg));
+  --tln-danger-soft: color-mix(in srgb, var(--tln-danger) 12%, var(--tln-bg));
+
+  /* Overlay: separates a modal without a shadow */
+  --tln-scrim: light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.6));
+
+  /* Type */
+  --tln-font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --tln-font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  --tln-text-xs: 0.75rem;
+  --tln-text-sm: 0.875rem;
+  --tln-text-md: 1rem;
+  --tln-leading: 1.6;
+
+  /* Shape and rhythm */
+  --tln-space: 4px; /* every gap is a multiple: calc(var(--tln-space) * 3) */
+  --tln-radius: 6px;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
