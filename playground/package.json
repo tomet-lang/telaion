@@ -10,7 +10,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@telaion/ui": "workspace:*"
+    "@telaion/ui": "workspace:*",
+    "@telaion/editor": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.0",

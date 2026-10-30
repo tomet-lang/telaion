@@ -92,12 +92,12 @@ test.describe("Alert", () => {
 
 test.describe("Spinner", () => {
   test("is a status with an accessible name", async ({ page }) => {
-    await expect(page.getByRole("status", { name: "Loading" })).toBeVisible();
+    await expect(page.getByRole("status", { name: "Loading", exact: true })).toBeVisible();
   });
 
   test("stops turning when the person prefers reduced motion", async ({ page }) => {
     const animationName = () =>
-      page.getByRole("status", { name: "Loading" }).evaluate((el) => getComputedStyle(el).animationName);
+      page.getByRole("status", { name: "Loading", exact: true }).evaluate((el) => getComputedStyle(el).animationName);
     // Svelte scopes keyframe names, so check that it runs rather than what it is called.
     expect(await animationName()).not.toBe("none");
     await page.emulateMedia({ reducedMotion: "reduce" });

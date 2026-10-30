@@ -80,17 +80,30 @@ export type SaveResult =
 
 ==[ The editor frame ]
 
-The editor takes `content` as a bindable value and reports changes and save requests. The language is a slot: the frame itself does not know Tomet.
+`@telaion/editor` has three layers, each usable alone.
+
+-| `DocumentSession` -- one document being edited: what was loaded, what it is now (`dirty`), the status, the last error, and a conflict when a save found a newer stored version. It has no view. It is written with Svelte runes (`.svelte.ts`).
+-| `CodeEditor` -- the text area, on CodeMirror 6. It takes `content` as a bindable value and reports edits and save requests. The language is a slot (a CodeMirror extension): the editor itself does not know Tomet.
+-| `Editor` -- a session and a `CodeEditor` with a path, a status badge, a Save button and the alerts for errors and conflicts.
 
 ```ts
-type EditorProps = {
-  content: string;       // $bindable
+type CodeEditorProps = {
+  content: string; // $bindable
   readOnly?: boolean;
-  onChange?: (content: string) => void;
-  onSave?: () => void;
-  language?: LanguageSupport; // supplied by @telaion/tomet
+  label?: string; // accessible name of the text area
+  language?: Extension; // supplied by @telaion/tomet
+  onChange?: (content: string) => void; // edits by a person, not replacements from outside
+  onSave?: () => void; // Ctrl or Cmd + S
 };
 ```
+
+===[ Decided ]
+
+-| The engine is CodeMirror 6 and nothing else: one way to edit, one entry point. A minimal CodeMirror adds about 92 KB gzipped (97 KB with a language hook) to the roughly 322 KB of the wiki's editing bundle. This is accepted for syntax highlighting and a proper undo history.
+-| The theme of the editor is written in the tokens of `@telaion/ui` only, so it follows the light and dark switch.
+-| Tab leaves the editor for the next control; it does not insert indentation. A keyboard user must not be trapped. Indent with Mod-] and Mod-[.
+-| A save writes the text as it was when it started. Text typed while the save runs stays unsaved.
+-| A conflict never overwrites. The edit is kept, the session reports the conflict, and resolving it is the job of the application or of `@telaion/tomet`.
 
 ==[ Theme ]
 
@@ -129,7 +142,6 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Typography of a document body (headings, prose, code blocks). The tokens above cover the interface, not the reading surface.
 -| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
 -| Highlighting source. It should come from the tokens of the Tomet parser (`@tomet/cms`), not from a second grammar written in JavaScript that can drift.
--| Source editor engine. `tomet-wiki` embeds its bundle, so size matters: CodeMirror in `@telaion/editor` against a plain textarea, behind the same interface.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
 -| The quick open palette of `ordiola` needs a Modal without a header and aligned to the top, and a listbox driven by `aria-activedescendant`. Both wait for a second consumer before they enter `@telaion/ui`.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.

@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { DocumentSession, Editor } from "@telaion/editor";
+  import { onMount } from "svelte";
   import ConfirmDelete from "./ConfirmDelete.svelte";
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
+  import { MemoryAdapter } from "./memory-adapter.ts";
   import NewPageDialog from "./NewPageDialog.svelte";
   import {
     Alert,
@@ -46,6 +49,18 @@
     tabItems = tabItems.filter((item) => item.id !== id);
     if (activeTab === id) activeTab = tabItems[0]?.id ?? "";
   }
+
+  const editorPath = "notes/idea.tmt";
+  let stored = $state({ saves: 0, last: "" });
+  const adapter = new MemoryAdapter({ [editorPath]: "=[ Idea ]\n\nA first line.\n" }, 150, (_path, content) => {
+    stored.saves++;
+    stored.last = content;
+  });
+  const session = new DocumentSession(adapter, editorPath);
+  let editorReadOnly = $state(false);
+  onMount(() => {
+    session.load();
+  });
 
   let deleting = $state<{ name: string; is_dir: boolean } | null>(null);
   let closingTab = $state<string | null>(null);
@@ -149,6 +164,22 @@
         path = <code>{path}</code> · token length = {token.length} · language = <code>{language}</code>
       </p>
     </div>
+  </section>
+
+  <section>
+    <h2>Editor</h2>
+    <div class="row">
+      <Button onclick={() => adapter.remoteEdit(editorPath, "=[ Idea ]\n\nSomeone else wrote this.\n")}>
+        Simulate a remote change
+      </Button>
+      <Button onclick={() => (adapter.failNextSave = true)}>Fail the next save</Button>
+      <Button onclick={() => (editorReadOnly = !editorReadOnly)}>
+        {editorReadOnly ? "Make editable" : "Make read-only"}
+      </Button>
+      <span class="muted">stored <span aria-label="saves">{stored.saves}</span> times</span>
+    </div>
+    <div class="editor-frame"><Editor {session} readOnly={editorReadOnly} /></div>
+    <pre class="result" aria-label="stored text">{stored.last}</pre>
   </section>
 
   <section>
@@ -380,6 +411,11 @@
     flex-wrap: wrap;
     align-items: center;
     gap: calc(var(--tln-space) * 3);
+    margin-bottom: calc(var(--tln-space) * 3);
+  }
+
+  .editor-frame {
+    height: calc(var(--tln-space) * 80);
     margin-bottom: calc(var(--tln-space) * 3);
   }
 
