@@ -1,0 +1,7 @@
+{
+  "name": "telaion",
+  "private": true,
+  "description": "Telaion - Svelte component set for editing Tomet documents",
+  "license": "MIT OR Apache-2.0",
+  "packageManager": "pnpm@11.5.1"
+}

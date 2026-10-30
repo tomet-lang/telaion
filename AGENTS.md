@@ -1,0 +1,62 @@
+<!-- Generated from tmtroot/agents.tmt. Edit that, then `tomet export .`. -->
+
+# Telaion
+
+## Core Philosophy & Principles
+
+### Precedence of Instructions
+
+The rules in this document serve as the project baseline and defaults. Explicit instructions given by the user in a conversation always take precedence over these defaults.
+
+### User-First Design over Developer Convenience
+
+Always prioritize the end-user experience, syntax ergonomics, and API design.
+If there is tension between developer or implementation convenience and user simplicity, user simplicity must always win. Never compromise user experience just because an implementation is easier.
+
+### Resist Path-of-Least-Resistance & Legacy Bias
+
+The existing implementation is never a justification or reason for new design choices.
+
+- Do not justify decisions with "it is already implemented this way, so let's stick with it."
+- Prioritize architectural beauty, elegance, and long-term correctness over the path of least resistance.
+- Understand the existing context thoroughly, but never take shortcuts or settle for lazy patches.
+
+### Transparent Execution
+
+Always state what you intend to do before doing it. Never execute non-trivial actions or commands silently.
+
+## Single Source of Truth & Documentation
+
+### Never edit `.md` directly
+
+All Markdown files (`README.md`, `AGENTS.md`, `CONTRIBUTING.md`) are generated build artifacts, not source files. `CLAUDE.md` is the one exception: it holds only the line `@AGENTS.md`.
+
+- Never edit a generated `.md` file directly.
+- Always edit the corresponding `.tmt` file under `tmtroot/`.
+- Run `just docs` (or `tomet export .`) to regenerate the Markdown artifacts, and verify with `just docs-check`.
+- Direct edits to generated `.md` files will be overwritten and will fail CI / lint checks.
+
+## Project overview
+
+`telaion` is a set of themeless Svelte 5 components for editing Tomet (`.tmt`) documents. It is consumed by the Tomet editors: `tomet-wiki` (in the browser) and `ordiola` (a desktop app).
+
+Read `CONTRIBUTING.md` for the contribution workflow, commit conventions, and verification steps. The design lives under `tmtroot/design/`; read it before changing the package layout.
+
+## Package boundaries
+
+These rules keep the layers separable. Do not break them for convenience.
+
+- `@telaion/ui` must not import Tomet code. It is a generic UI kit.
+- `@telaion/editor` must not import Tomet code. Anything that depends on the Tomet grammar or AST belongs in `@telaion/tomet`.
+- `@telaion/tomet` is the only package that knows both Svelte and `@tomet/cms`.
+- Components know nothing about where a document is stored. They talk to a storage adapter that the application supplies.
+- Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token (a CSS custom property). When a new value is needed, ask instead of inventing one.
+
+## Changes in tomet or sibling repositories
+
+`@tomet/cms` is an npm dependency pinned by the lockfile. A change in a sibling checkout reaches this repository by being published there and taken with the package manager. Never point a dependency at a local checkout in a committed manifest or lockfile.
+
+## Environment & Tooling
+
+All commands, builds, and tests must run within the Nix development environment (via `direnv` or `nix develop`). Assume this environment is active and rely on the tools provided by the flake, rather than assuming or relying on global host toolchains.
+

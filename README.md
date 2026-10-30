@@ -1,0 +1,43 @@
+<!-- Generated from tmtroot/readme.tmt. Edit that, then `tomet export .`. -->
+
+# Telaion
+
+Themeless Svelte 5 components for editing Tomet documents. The frame that Tomet editors are built on.
+
+## Overview
+
+Telaion keeps the parts that every Tomet editor needs in one place, so that an editor is assembled instead of rewritten. Its name derives from *telaio*, the Italian word for a loom or a frame: it carries structure and behavior, and leaves the look to the application.
+
+## Packages
+
+- `@telaion/ui` -- Themeless primitives and design tokens. Knows nothing about Tomet.
+- `@telaion/editor` -- The editor frame: content in, content out, and a storage adapter for loading and saving. The language is a plug-in slot.
+- `@telaion/tomet` -- The glue between the Tomet parser (`@tomet/cms`) and the editor frame: highlighting, conflict blocks, Tomet-specific extensions.
+
+The design is written down in `tmtroot/design/`.
+
+## Development
+
+### Prerequisites
+
+- Nix with Flakes enabled (recommended)
+- Node.js & pnpm
+
+### Using Nix Flake
+
+```bash
+direnv allow
+# or
+nix develop
+```
+
+### Setup
+
+```bash
+just install
+```
+
+## License
+
+Licensed under either of MIT or Apache-2.0, at your option.
+

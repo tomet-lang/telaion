@@ -1,0 +1,29 @@
+// The files catasto manages in this workspace. Each key is a path here;
+// `source` is where its canonical content comes from.
+
+::upstreams{
+  commonfiles: { git: "https://github.com/tomet-lang/commonfiles.git", rev: main, root: base }
+  vocabularies: { git: "https://github.com/tomet-lang/vocabularies.git", rev: main, root: vocabularies }
+}
+
+"LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}
+".editorconfig": {
+  source: { upstream: commonfiles, path: ".editorconfig" }
+}
+".envrc": {
+  source: { upstream: commonfiles, path: ".envrc" }
+}
+".gitattributes": {
+  source: { upstream: commonfiles, path: ".gitattributes" }
+}
+"nix/formatter.nix": {
+  source: { upstream: commonfiles, path: "nix/formatter.nix" }
+}
+"tmtroot/schema/vocabularies/writ@1.0.0.vocabulary.tmt": {
+  source: { upstream: vocabularies, path: "writ/writ@1.0.0.vocabulary.tmt" }
+}

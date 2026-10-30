@@ -1,0 +1,102 @@
+::meta{
+  id: doc-design-architecture,
+  lang: en
+}
+
+=[ Telaion: architecture ]
+
+Status: draft. Written before the first component. Items marked "Open" are decisions that have not been made.
+
+==[ Purpose ]
+
+Two Tomet editors exist today and each was written on its own: the inline editor of `tomet-wiki` (a browser bundle embedded in a Rust crate) and `ordiola` (a Tauri desktop app). Both do the same job: load a `.tmt` source, let a person edit it, save it, and show conflicts. Rewriting that for every editor, and rewriting its look each time, is the cost this repository removes.
+
+Telaion is the shared frame. It carries structure and behavior. It carries no theme beyond a minimal default.
+
+==[ Name ]
+
+`telaio` is Italian for a loom or a frame. Telaion derives from it. Its first application is `ordiola`, named after the warp (`ordito`) that is strung first on a loom so that the weft can be passed through it.
+
+==[ Packages ]
+
+-| `@telaion/ui` -- Generic primitives (button, input, modal, tabs, tree, split) and the design tokens. No Tomet knowledge.
+-| `@telaion/editor` -- The editor frame. Takes a storage adapter and a language slot. No Tomet knowledge.
+-| `@telaion/tomet` -- Tomet-specific parts: highlighting, conflict blocks, AST-bound editor extensions. Depends on `@tomet/cms`.
+
+The split is by what a package must know, not by size. `@telaion/ui` can be extracted into its own repository later without touching the others.
+
+==[ Dependency direction ]
+
+```text
+@tomet/cms          knows nothing about Svelte
+    ^
+@telaion/tomet      the only package that knows both
+    ^
+@telaion/editor     knows nothing about Tomet
+    ^
+@telaion/ui         knows nothing about Tomet or the editor
+    ^
+tomet-wiki, ordiola
+```
+
+==[ Out of scope ]
+
+The following stay in the applications.
+-| The application shell: file tree, workspace and vault management, tabs, settings.
+-| Authentication and anything that talks to a host (Tauri `invoke`, the GitHub API).
+-| Rust code. Metadata handling that needs the Tomet AST belongs to the Tomet crates, not to Telaion.
+
+==[ The storage adapter ]
+
+Components never know where a document lives. The application passes an adapter; a desktop app backs it with local files, the wiki backs it with the GitHub API.
+
+This is a sketch of the shape, not a final API.
+
+```ts
+export interface DocumentAdapter {
+  load(path: string): Promise<{ content: string; rev?: string }>;
+  save(path: string, content: string, base?: string): Promise<SaveResult>;
+}
+
+export type SaveResult =
+  | { ok: true; rev?: string }
+  | { ok: false; conflict: { remote: string; rev?: string } };
+```
+
+==[ The editor frame ]
+
+The editor takes `content` as a bindable value and reports changes and save requests. The language is a slot: the frame itself does not know Tomet.
+
+```ts
+type EditorProps = {
+  content: string;       // $bindable
+  readOnly?: boolean;
+  onChange?: (content: string) => void;
+  onSave?: () => void;
+  language?: LanguageSupport; // supplied by @telaion/tomet
+};
+```
+
+==[ Theme ]
+
+The most expensive failure so far was look-and-feel that is regenerated with every rewrite, and hard to steer. The answer is a small fixed vocabulary, decided once by a person.
+
+-| Visual values are CSS custom properties. Components reference tokens only.
+-| The token set is small: background, text, border, and accent in two or three steps each, the fonts, and a spacing unit. No shadows, no gradients, no large radii.
+-| One minimal default value set ships with `@telaion/ui`. An application overrides token values; it does not restyle components.
+-| Plain CSS. No utility framework inside the shared packages, so that the same CSS can be embedded in the wiki's Rust assets unchanged.
+
+==[ Distribution ]
+
+-| The packages are Svelte source, not a compiled bundle. Each application builds them with its own bundler (Vite).
+-| An application pins a Telaion version by git tag or commit, through the package manager. A committed lockfile never contains a local path link.
+
+==[ Open ]
+
+-| The token names and values. Decided by hand, once, before the first component.
+-| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
+-| Highlighting source. It should come from the tokens of the Tomet parser (`@tomet/cms`), not from a second grammar written in JavaScript that can drift.
+-| Source editor engine. `tomet-wiki` embeds its bundle, so size matters: CodeMirror in `@telaion/editor` against a plain textarea, behind the same interface.
+-| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it.
+-| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.
+-| Publication: git dependency or an npm scope.
