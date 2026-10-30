@@ -13,7 +13,8 @@
       "svelte": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./icons": "./src/icons.generated.ts"
   },
   "files": [
     "src"

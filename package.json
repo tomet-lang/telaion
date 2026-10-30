@@ -3,5 +3,10 @@
   "private": true,
   "description": "Telaion - Svelte component set for editing Tomet documents",
   "license": "MIT OR Apache-2.0",
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.5.1",
+  "devDependencies": {
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "typescript": "^5.6.0"
+  }
 }

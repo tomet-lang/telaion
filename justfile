@@ -10,7 +10,18 @@ default:
 install:
     pnpm install
 
+#[ Icons ]
+
+# Regenerate packages/ui/src/icons.generated.ts from the pinned Lucide sprite.
+# To take a newer sprite first: catasto sync --update --only packages/ui/vendor/lucide/sprite.svg
+icons:
+    node packages/ui/scripts/gen-icons.mjs
+
 #[ Quality ]
+
+# Type-check every package (TypeScript and Svelte)
+check:
+    pnpm exec svelte-check --tsconfig ./tsconfig.json
 
 # Format every tracked file
 fmt:

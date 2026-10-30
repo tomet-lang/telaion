@@ -55,6 +55,24 @@
       },
       "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
     },
+    "packages/ui/vendor/lucide/LICENSE": {
+      "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+      "source": {
+        "git": "https://github.com/tomet-lang/tomet-shelf.git",
+        "rev": "main",
+        "path": "crates/tomet-shelf-icons/assets/icons/lucide/LICENSE"
+      },
+      "commit": "71272a82458299c28cc6563c0ed6fa1594282802"
+    },
+    "packages/ui/vendor/lucide/sprite.svg": {
+      "sha256": "5189bb80075c769b79754cac7bc2ee21cc7ffccbcad9a059e7b4bee51fa81c8e",
+      "source": {
+        "git": "https://github.com/tomet-lang/tomet-shelf.git",
+        "rev": "main",
+        "path": "crates/tomet-shelf-icons/assets/icons/lucide/sprite.svg"
+      },
+      "commit": "71272a82458299c28cc6563c0ed6fa1594282802"
+    },
     "tmtroot/schema/vocabularies/writ@1.0.0.vocabulary.tmt": {
       "sha256": "3fd2b5b89ae1beb0b0abf1e3fc269f933ca9385876cfb5d005aba730f67acef3",
       "source": {

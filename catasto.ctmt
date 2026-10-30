@@ -4,6 +4,7 @@
 ::upstreams{
   commonfiles: { git: "https://github.com/tomet-lang/commonfiles.git", rev: main, root: base }
   vocabularies: { git: "https://github.com/tomet-lang/vocabularies.git", rev: main, root: vocabularies }
+  tomet-shelf: { git: "https://github.com/tomet-lang/tomet-shelf.git", rev: main, root: crates/tomet-shelf-icons/assets/icons/lucide }
 }
 
 "LICENSE-MIT": {
@@ -26,4 +27,10 @@
 }
 "tmtroot/schema/vocabularies/writ@1.0.0.vocabulary.tmt": {
   source: { upstream: vocabularies, path: "writ/writ@1.0.0.vocabulary.tmt" }
+}
+"packages/ui/vendor/lucide/sprite.svg": {
+  source: { upstream: tomet-shelf, path: "sprite.svg" }
+}
+"packages/ui/vendor/lucide/LICENSE": {
+  source: { upstream: tomet-shelf, path: "LICENSE" }
 }
