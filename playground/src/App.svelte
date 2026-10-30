@@ -5,6 +5,7 @@
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
   import { MemoryAdapter } from "./memory-adapter.ts";
   import NewPageDialog from "./NewPageDialog.svelte";
+  import ConflictDemo from "./ConflictDemo.svelte";
   import TometHighlightDemo from "./TometHighlightDemo.svelte";
   import {
     Alert,
@@ -186,6 +187,11 @@
   <section>
     <h2>Tomet highlighting (through TometServices)</h2>
     <TometHighlightDemo />
+  </section>
+
+  <section>
+    <h2>Conflict resolver (through TometServices)</h2>
+    <ConflictDemo />
   </section>
 
   <section>

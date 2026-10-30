@@ -44,3 +44,29 @@ export function slowHighlight(source: string): Promise<HighlightSpan[]> {
 export function failingHighlight(): Promise<HighlightSpan[]> {
   return Promise.reject(new Error("the engine is not available"));
 }
+
+// ---- Conflicts -------------------------------------------------------------------------------
+// A test double again: the real @conflict has a richer syntax. This one is a single-line marker,
+//   @conflict(a: "one", b: "two")
+// which is enough to show how the resolver behaves.
+
+import type { Conflict } from "@telaion/tomet";
+
+const marker = /@conflict\(a: "([^"]*)", b: "([^"]*)"\)/g;
+
+export function stubConflicts(source: string): Conflict[] {
+  return [...source.matchAll(marker)].map((match, index) => ({
+    index,
+    kind: match.index === 0 || source[match.index - 1] === "\n" ? "block" : "inline",
+    from: match.index,
+    to: match.index + match[0].length,
+    a: match[1],
+    b: match[2],
+  }));
+}
+
+export function stubResolve(source: string, index: number, side: "a" | "b"): string {
+  const conflict = stubConflicts(source)[index];
+  if (!conflict) throw new Error(`no conflict at index ${index}`);
+  return source.slice(0, conflict.from) + conflict[side] + source.slice(conflict.to);
+}

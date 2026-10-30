@@ -5,8 +5,11 @@ const mark = (page: Page, tag: string) => page.locator(`.cm-content .tln-hl-${ta
 const pending = (page: Page) => page.getByLabel("pending answers");
 const errors = (page: Page) => page.getByLabel("highlight errors");
 
+const demo = (page: Page) =>
+  page.locator("section").filter({ has: page.getByRole("heading", { name: /Tomet highlighting/ }) });
+
 async function chooseEngine(page: Page, label: string) {
-  await page.getByLabel("Engine of the test double").selectOption({ label });
+  await demo(page).getByLabel("Engine of the test double").selectOption({ label });
 }
 
 test.beforeEach(async ({ page }) => {
