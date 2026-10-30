@@ -61,7 +61,7 @@ Then it shows a document with a session:
 ==[ What is in it ]
 
 -| `DocumentSession` -- one document being edited: its text, whether it is unsaved (`dirty`), the status, the last error, and a conflict when a save found a newer stored version. It has no view.
--| `CodeEditor` -- the text area, on CodeMirror 6. It is kept minimal: line numbers, history, line wrapping. The `language` prop takes a CodeMirror extension for syntax, and `extensions` takes any more an application wants, such as code folding, bracket matching or search.
+-| `CodeEditor` -- the text area, on CodeMirror 6. It is kept minimal: line numbers, history, line wrapping. The `language` prop takes a CodeMirror extension for syntax, and `extensions` takes any more an application wants, such as code folding, bracket matching or search. The search panel, bracket highlights, fold markers and tooltips of CodeMirror are drawn in the design tokens too, so they follow the light and dark switch.
 -| `Editor` -- a session and a `CodeEditor` with a path, a status badge, a Save button, and the alerts for errors and conflicts.
 
 ==[ Behavior ]

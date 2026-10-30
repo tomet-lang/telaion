@@ -1,6 +1,6 @@
 {
   "name": "@telaion/editor",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Telaion Editor - a CodeMirror 6 source editor frame with a document session and a storage adapter",
   "keywords": [
     "svelte",

@@ -47,6 +47,64 @@ const theme = EditorView.theme({
     color: "var(--tln-fg)",
     backgroundColor: "var(--tln-bg-sunken)",
   },
+
+  // The parts of CodeMirror that an application brings in with `extensions`: search, folding,
+  // bracket matching. CodeMirror draws them for a light or a dark page, not for tokens, so they
+  // are set here; otherwise a search panel stays light in a dark application.
+  ".cm-panels": {
+    color: "var(--tln-fg)",
+    backgroundColor: "var(--tln-bg-subtle)",
+  },
+  ".cm-panels-top": { borderBottom: "1px solid var(--tln-border)" },
+  ".cm-panels-bottom": { borderTop: "1px solid var(--tln-border)" },
+  ".cm-panel.cm-search label": {
+    color: "var(--tln-fg-muted)",
+    fontSize: "var(--tln-text-xs)",
+  },
+  ".cm-panel.cm-search [name=close]": { color: "var(--tln-fg-muted)" },
+  ".cm-textfield, .cm-button": {
+    font: "inherit",
+    fontSize: "var(--tln-text-sm)",
+    color: "var(--tln-fg)",
+    backgroundImage: "none",
+    border: "1px solid var(--tln-border-strong)",
+    borderRadius: "var(--tln-radius)",
+  },
+  ".cm-textfield": { backgroundColor: "var(--tln-bg)" },
+  ".cm-button": { backgroundColor: "var(--tln-bg-subtle)", cursor: "pointer" },
+  ".cm-button:hover": { backgroundColor: "var(--tln-bg-sunken)" },
+  ".cm-textfield:focus-visible, .cm-button:focus-visible": {
+    outline: "2px solid var(--tln-accent)",
+    outlineOffset: "1px",
+  },
+  ".cm-searchMatch": {
+    backgroundColor: "var(--tln-warn-soft)",
+    outline: "1px solid var(--tln-warn)",
+  },
+  ".cm-searchMatch.cm-searchMatch-selected": {
+    backgroundColor: "var(--tln-accent-soft)",
+    outline: "1px solid var(--tln-accent)",
+  },
+  ".cm-selectionMatch": { backgroundColor: "var(--tln-bg-sunken)" },
+  "&.cm-focused .cm-matchingBracket": {
+    backgroundColor: "var(--tln-accent-soft)",
+    outline: "1px solid var(--tln-accent)",
+  },
+  "&.cm-focused .cm-nonmatchingBracket": {
+    backgroundColor: "var(--tln-danger-soft)",
+    outline: "1px solid var(--tln-danger)",
+  },
+  ".cm-tooltip": {
+    color: "var(--tln-fg)",
+    backgroundColor: "var(--tln-bg-subtle)",
+    border: "1px solid var(--tln-border-strong)",
+    borderRadius: "var(--tln-radius)",
+  },
+  ".cm-foldPlaceholder": {
+    color: "var(--tln-fg-muted)",
+    backgroundColor: "var(--tln-bg-sunken)",
+    border: "1px solid var(--tln-border-strong)",
+  },
 });
 
 /** What the tags of a language are drawn as. Meaning goes by color; no weights, no sizes. */
