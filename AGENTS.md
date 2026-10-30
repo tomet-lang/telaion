@@ -50,7 +50,8 @@ These rules keep the layers separable. Do not break them for convenience.
 - `@telaion/editor` must not import Tomet code. Anything that depends on the Tomet grammar or AST belongs in `@telaion/tomet`.
 - `@telaion/tomet` is the only package that knows both Svelte and `@tomet/cms`.
 - Components know nothing about where a document is stored. They talk to a storage adapter that the application supplies.
-- Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token (a CSS custom property). When a new value is needed, ask instead of inventing one.
+- Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token: a `--tln-*` custom property defined in `packages/ui/src/tokens.css`. When a new value is needed, ask instead of inventing one.
+- Do not add shadows, gradients, or a second border radius. Do not add a utility CSS framework to a shared package.
 
 ## Changes in tomet or sibling repositories
 

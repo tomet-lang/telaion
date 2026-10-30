@@ -39,6 +39,21 @@ The split is by what a package must know, not by size. `@telaion/ui` can be extr
 tomet-wiki, ordiola
 ```
 
+==[ Why Svelte ]
+
+Asked before the first component, while a change was still free. The answer is to stay on Svelte 5. React is excluded on its own merits, not only on familiarity.
+
+-| The heart of an editor is not the framework. CodeMirror and ProseMirror manage their own DOM; the framework only draws the frame around them (modal, tabs, toolbar, conflict view). What matters is how cleanly an imperative DOM library can be embedded.
+-| Svelte compiles away. It has no virtual DOM, so `mount()` places a component into a node and does not fight an editor over that node's DOM. A virtual-DOM framework needs wrappers and portals for the same job.
+-| The wiki embeds an editing island into a statically generated page. Mounting a component into a given element on demand is what Svelte does best.
+-| Scoped component CSS plus the tokens of `@telaion/ui` is enough. No CSS-in-JS and no utility framework are needed, which is what the token rule requires.
+
+Considered and not chosen: Solid (equivalent weight and reactivity, no gain, a thinner ecosystem), Lit and Web Components (shadow DOM makes editor styling harder), Leptos and Dioxus (the editing core stays in JavaScript, so the JavaScript remains).
+
+===[ The public boundary stays framework-neutral ]
+
+The plug-in API of an application, and any other boundary that third parties write against, is expressed in DOM and TypeScript: register a command, hand a panel an element to fill. It does not take or return Svelte components. A plug-in author must not have to match a Svelte version. The application's own panels can still be Svelte, mounted into the same elements.
+
 ==[ Out of scope ]
 
 The following stay in the applications.
@@ -105,6 +120,6 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
 -| Highlighting source. It should come from the tokens of the Tomet parser (`@tomet/cms`), not from a second grammar written in JavaScript that can drift.
 -| Source editor engine. `tomet-wiki` embeds its bundle, so size matters: CodeMirror in `@telaion/editor` against a plain textarea, behind the same interface.
--| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it.
+-| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.
 -| Publication: git dependency or an npm scope.
