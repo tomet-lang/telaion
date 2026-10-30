@@ -91,3 +91,17 @@ test("the full size covers the whole viewport", async ({ page }) => {
   const viewport = page.viewportSize()!;
   expect(box).toMatchObject({ x: 0, y: 0, width: viewport.width, height: viewport.height });
 });
+
+test("it stays centered when a CSS reset removes every margin", async ({ page }) => {
+  // What Tailwind's preflight does to every element. The dialog's own margin: auto is lost with it.
+  await page.addStyleTag({
+    content: "*, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; border: 0 solid; }",
+  });
+  await page.getByRole("button", { name: "Open modal" }).click();
+  const dialog = page.getByRole("dialog", { name: "New page" });
+  await expect(dialog).toBeVisible();
+  const box = (await dialog.boundingBox())!;
+  const viewport = page.viewportSize()!;
+  expect(box.x + box.width / 2).toBeCloseTo(viewport.width / 2, 0);
+  expect(box.y + box.height / 2).toBeCloseTo(viewport.height / 2, 0);
+});

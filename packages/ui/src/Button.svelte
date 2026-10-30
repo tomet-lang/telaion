@@ -30,6 +30,8 @@
     line-height: var(--tln-leading);
     border: 1px solid transparent;
     border-radius: var(--tln-radius);
+    /* A label stays on one line; a row of buttons wraps between them instead. */
+    white-space: nowrap;
     cursor: pointer;
   }
 

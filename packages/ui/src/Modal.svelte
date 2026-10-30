@@ -105,6 +105,9 @@
 <style>
   .tln-modal {
     box-sizing: border-box;
+    /* A modal dialog is centered by the browser's margin: auto. A CSS reset (Tailwind's preflight
+       is one) sets every margin to 0 and would pin the dialog to a corner, so say it here. */
+    margin: auto;
     padding: 0;
     color: var(--tln-fg);
     background: var(--tln-bg);
@@ -125,7 +128,7 @@
   }
 
   .tln-modal[data-size="sm"] {
-    width: calc(var(--tln-space) * 80);
+    width: calc(var(--tln-space) * 96);
   }
   .tln-modal[data-size="md"] {
     width: calc(var(--tln-space) * 120);
@@ -155,12 +158,14 @@
 
   .tln-modal-body {
     padding: calc(var(--tln-space) * 4);
+    font-size: var(--tln-text-sm);
     overflow: auto;
     flex: 1;
   }
 
   .tln-modal-footer {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: calc(var(--tln-space) * 2);
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 4);

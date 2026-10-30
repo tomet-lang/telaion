@@ -82,3 +82,33 @@ test.describe("unsaved changes", () => {
     await expect(outcome(page)).toHaveText("close cancelled");
   });
 });
+
+test.describe("a narrow window and wide letter spacing, as in ordiola", () => {
+  test.use({ viewport: { width: 320, height: 640 } });
+
+  test.beforeEach(async ({ page }) => {
+    // ordiola spaces its letters widely, and Japanese may break between any two characters.
+    await page.addStyleTag({ content: "* { letter-spacing: 0.1em; }" });
+    await page.getByRole("button", { name: "Close an unsaved tab" }).click();
+  });
+
+  test("the answers stay inside the dialog, each on one line", async ({ page }) => {
+    const dialog = page.getByRole("dialog");
+    const frame = (await dialog.boundingBox())!;
+    for (const name of ["キャンセル", "保存しない", "保存する"]) {
+      const box = (await dialog.getByRole("button", { name }).boundingBox())!;
+      expect(box.x, name).toBeGreaterThanOrEqual(frame.x);
+      expect(box.x + box.width, name).toBeLessThanOrEqual(frame.x + frame.width);
+      // One line of text plus padding is about 36px; two lines would be about 58px.
+      expect(box.height, name).toBeLessThan(44);
+    }
+  });
+
+  test("a label is never allowed to wrap", async ({ page }) => {
+    const wrap = await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "保存しない" })
+      .evaluate((el) => getComputedStyle(el).whiteSpace);
+    expect(wrap).toBe("nowrap");
+  });
+});
