@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { Button, Icon } from "@telaion/ui";
+  import { Button, Field, Icon, Input } from "@telaion/ui";
   import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
 
   type Theme = "system" | "light" | "dark";
 
   let theme = $state<Theme>("system");
   let clicks = $state(0);
+
+  let path = $state("notes/idea.tmt");
+  let token = $state("");
+  // A path must end in .tmt; the error appears as soon as the value is wrong.
+  const pathError = $derived(path.endsWith(".tmt") ? undefined : "The path must end with .tmt");
 
   // data-theme on <html> overrides the operating system; removing it follows the system again.
   $effect(() => {
@@ -71,6 +76,23 @@
       <Button variant="danger" disabled>Delete</Button>
       <Button variant="quiet" disabled>New page</Button>
       <span class="muted">disabled</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Field and Input</h2>
+    <div class="form">
+      <Field label="Path" hint="Relative to the vault root." error={pathError}>
+        <Input bind:value={path} placeholder="notes/idea.tmt" />
+      </Field>
+      <Field label="Personal access token" hint="Needs repository content write permission.">
+        <Input type="password" bind:value={token} placeholder="ghp_..." />
+      </Field>
+      <Field label="Read-only">
+        <Input value="docs/readme.tmt" disabled />
+      </Field>
+      <Input type="search" placeholder="Input on its own, without a Field" aria-label="Search" />
+      <p class="muted">path = <code>{path}</code> · token length = {token.length}</p>
     </div>
   </section>
 
@@ -167,6 +189,16 @@
     align-items: center;
     gap: calc(var(--tln-space) * 3);
     margin-bottom: calc(var(--tln-space) * 3);
+  }
+
+  .form {
+    display: grid;
+    gap: calc(var(--tln-space) * 4);
+    max-width: 420px;
+  }
+
+  code {
+    font-family: var(--tln-font-mono);
   }
 
   .muted {
