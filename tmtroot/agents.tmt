@@ -57,6 +57,8 @@ These rules keep the layers separable. Do not break them for convenience.
 
 -| `just play` runs the playground: one Vite page that shows every component. Add a section to it for each new component and each state worth looking at.
 -| `just test` runs the browser tests (Playwright, Chromium) against the playground. Behavior that a type-check cannot see, such as focus, Escape, and the backdrop, needs a test here.
+-| Every test runs twice: on the plain page, and again in the conditions of a real application (the `chromium-tailwind` project): Tailwind's own reset, loaded inside `@layer base`, and wide letter spacing. The playground has two switches for the same, so a person can look at it too. Two bugs of the first release showed only there: a dialog pinned to a corner, and button labels broken across lines. A component is not done until it passes in both.
+-| A new test of a fix must be shown to fail without the fix. Remove the fix, run the test, and put the fix back.
 -| `just check` type-checks every package. Run it with the tests before calling a component done.
 -| The browsers come from Nix. `@playwright/test` in `package.json` must stay pinned to exactly the version of `pkgs.playwright-driver` in the flake; when the flake input is updated, update the pin with it.
 

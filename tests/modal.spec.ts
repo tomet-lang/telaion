@@ -105,3 +105,12 @@ test("it stays centered when a CSS reset removes every margin", async ({ page })
   expect(box.x + box.width / 2).toBeCloseTo(viewport.width / 2, 0);
   expect(box.y + box.height / 2).toBeCloseTo(viewport.height / 2, 0);
 });
+
+test("it opens in the middle of the window", async ({ page }) => {
+  // No CSS is injected here. Under the Tailwind project the page itself carries Tailwind's reset.
+  await page.getByRole("button", { name: "Open modal" }).click();
+  const box = (await page.getByRole("dialog", { name: "New page" }).boundingBox())!;
+  const viewport = page.viewportSize()!;
+  expect(box.x + box.width / 2).toBeCloseTo(viewport.width / 2, 0);
+  expect(box.y + box.height / 2).toBeCloseTo(viewport.height / 2, 0);
+});

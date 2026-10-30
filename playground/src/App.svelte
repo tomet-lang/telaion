@@ -7,6 +7,7 @@
   import NewPageDialog from "./NewPageDialog.svelte";
   import ConflictDemo from "./ConflictDemo.svelte";
   import TometHighlightDemo from "./TometHighlightDemo.svelte";
+  import preflight from "tailwindcss/preflight.css?inline";
   import {
     Alert,
     Badge,
@@ -25,6 +26,39 @@
   type Theme = "system" | "light" | "dark";
 
   let theme = $state<Theme>("system");
+
+  // Conditions of a real application, to see what changes: Tailwind's own reset, as it loads it
+  // (inside @layer base), and the wide letter spacing that ordiola uses. Remembered per browser so
+  // that the browser tests can run the whole page under them.
+  const remembered = (key: string) => {
+    try {
+      return localStorage.getItem(key) === "1";
+    } catch {
+      return false;
+    }
+  };
+  let reset = $state(remembered("playground-reset"));
+  let spaced = $state(remembered("playground-spaced"));
+
+  $effect(() => {
+    document.getElementById("playground-reset")?.remove();
+    if (reset) {
+      const style = document.createElement("style");
+      style.id = "playground-reset";
+      style.textContent = `@layer base {\n${preflight}\n}`;
+      document.head.append(style);
+    }
+    try {
+      localStorage.setItem("playground-reset", reset ? "1" : "0");
+    } catch {}
+  });
+
+  $effect(() => {
+    document.documentElement.toggleAttribute("data-spaced", spaced);
+    try {
+      localStorage.setItem("playground-spaced", spaced ? "1" : "0");
+    } catch {}
+  });
   let clicks = $state(0);
 
   let modalOpen = $state(false);
@@ -102,6 +136,10 @@
 
 <header class="bar">
   <h1>Telaion playground</h1>
+  <div class="conditions">
+    <label><input type="checkbox" bind:checked={reset} /> Tailwind reset</label>
+    <label><input type="checkbox" bind:checked={spaced} /> Wide letter spacing</label>
+  </div>
   <div class="themes" role="group" aria-label="Theme">
     {#each ["system", "light", "dark"] as const as t}
       <button type="button" aria-pressed={theme === t} onclick={() => (theme = t)}>{t}</button>
@@ -370,6 +408,20 @@
     gap: calc(var(--tln-space) * 8);
     padding: calc(var(--tln-space) * 6);
     max-width: 960px;
+  }
+
+  .conditions {
+    display: flex;
+    gap: calc(var(--tln-space) * 4);
+    margin-left: auto;
+    font-size: var(--tln-text-sm);
+  }
+
+  .conditions label {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--tln-space) * 2);
+    cursor: pointer;
   }
 
   .themes {

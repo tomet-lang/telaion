@@ -16,3 +16,8 @@ a {
 a:hover {
   color: var(--tln-accent-hover);
 }
+
+/* The wide letter spacing of ordiola, on request. */
+html[data-spaced] * {
+  letter-spacing: 0.1em;
+}
