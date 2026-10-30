@@ -1,5 +1,17 @@
 <script lang="ts">
-  import { Button, Field, Icon, IconButton, Input, Modal } from "@telaion/ui";
+  import {
+    Alert,
+    Badge,
+    Button,
+    Field,
+    Icon,
+    IconButton,
+    Input,
+    Modal,
+    Select,
+    Spinner,
+    Tabs,
+  } from "@telaion/ui";
   import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
 
   type Theme = "system" | "light" | "dark";
@@ -11,6 +23,26 @@
   let fullOpen = $state(false);
   let closedCount = $state(0);
   let newPath = $state("");
+
+  let alertVisible = $state(true);
+  let language = $state("en");
+  const languages = [
+    { value: "en", label: "English" },
+    { value: "ja", label: "日本語" },
+  ];
+
+  let tabItems = $state([
+    { id: "readme", label: "readme.tmt", closable: true, dirty: true },
+    { id: "idea", label: "idea.tmt", closable: true },
+    { id: "config", label: "config.tmt" },
+  ]);
+  let activeTab = $state("readme");
+  let closedTab = $state("none");
+  function closeTab(id: string) {
+    closedTab = id;
+    tabItems = tabItems.filter((item) => item.id !== id);
+    if (activeTab === id) activeTab = tabItems[0]?.id ?? "";
+  }
 
   let path = $state("notes/idea.tmt");
   let token = $state("");
@@ -93,11 +125,57 @@
       <Field label="Personal access token" hint="Needs repository content write permission.">
         <Input type="password" bind:value={token} placeholder="ghp_..." />
       </Field>
+      <Field label="Language">
+        <Select bind:value={language} options={languages} />
+      </Field>
       <Field label="Read-only">
         <Input value="docs/readme.tmt" disabled />
       </Field>
       <Input type="search" placeholder="Input on its own, without a Field" aria-label="Search" />
-      <p class="muted">path = <code>{path}</code> · token length = {token.length}</p>
+      <p class="muted">
+        path = <code>{path}</code> · token length = {token.length} · language = <code>{language}</code>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tabs</h2>
+    <Tabs items={tabItems} bind:value={activeTab} onclose={closeTab} />
+    <p class="muted">selected = <code>{activeTab}</code> · last closed = <code>{closedTab}</code></p>
+  </section>
+
+  <section>
+    <h2>Badge</h2>
+    <div class="row">
+      <Badge>neutral</Badge>
+      <Badge tone="accent">draft</Badge>
+      <Badge tone="ok">saved</Badge>
+      <Badge tone="warn">conflict</Badge>
+      <Badge tone="danger">failed</Badge>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alert</h2>
+    <div class="stack">
+      <Alert tone="info">Telaion is a frame; the look comes from the tokens.</Alert>
+      <Alert tone="ok">Saved to the repository.</Alert>
+      <Alert tone="warn">The remote changed since you started editing.</Alert>
+      {#if alertVisible}
+        <Alert tone="danger" onDismiss={() => (alertVisible = false)}>
+          Could not save: the token has no write permission.
+        </Alert>
+      {:else}
+        <Button onclick={() => (alertVisible = true)}>Show the dismissed alert again</Button>
+      {/if}
+    </div>
+  </section>
+
+  <section>
+    <h2>Spinner</h2>
+    <div class="row">
+      <Spinner />
+      <span class="muted">Loading document from GitHub...</span>
     </div>
   </section>
 
@@ -226,6 +304,12 @@
     align-items: center;
     gap: calc(var(--tln-space) * 3);
     margin-bottom: calc(var(--tln-space) * 3);
+  }
+
+  .stack {
+    display: grid;
+    gap: calc(var(--tln-space) * 3);
+    max-width: 560px;
   }
 
   .form {
