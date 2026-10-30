@@ -65,6 +65,10 @@
   let modalOpen = $state(false);
   let fullOpen = $state(false);
   let closedCount = $state(0);
+  // A modal that can refuse to close, as an editor with unsaved changes does.
+  let guardedOpen = $state(false);
+  let guarding = $state(true);
+  let refused = $state(0);
   let newPath = $state("");
 
   let alertVisible = $state(true);
@@ -303,6 +307,7 @@
     <div class="row">
       <Button variant="primary" onclick={() => (modalOpen = true)}>Open modal</Button>
       <Button onclick={() => (fullOpen = true)}>Open full-screen</Button>
+      <Button onclick={() => (guardedOpen = true)}>Open guarded modal</Button>
       <span class="muted">closed {closedCount} times</span>
     </div>
   </section>
@@ -378,6 +383,24 @@
   {#snippet footer()}
     <Button onclick={() => (modalOpen = false)}>Cancel</Button>
     <Button variant="primary" onclick={() => (modalOpen = false)}>Create</Button>
+  {/snippet}
+</Modal>
+
+<Modal
+  bind:open={guardedOpen}
+  title="Unsaved work"
+  size="sm"
+  onclose={() => closedCount++}
+  onrequestclose={() => {
+    if (!guarding) return;
+    refused++;
+    return false;
+  }}
+>
+  <p>Closing is refused while the guard is on. <span class="muted">refused <span aria-label="refused">{refused}</span> times</span></p>
+  {#snippet footer()}
+    <Button onclick={() => (guarding = !guarding)}>{guarding ? "Lift the guard" : "Put the guard back"}</Button>
+    <Button variant="primary" onclick={() => (guardedOpen = false)}>Close from the application</Button>
   {/snippet}
 </Modal>
 

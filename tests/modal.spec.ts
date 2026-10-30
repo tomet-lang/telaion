@@ -114,3 +114,57 @@ test("it opens in the middle of the window", async ({ page }) => {
   expect(box.x + box.width / 2).toBeCloseTo(viewport.width / 2, 0);
   expect(box.y + box.height / 2).toBeCloseTo(viewport.height / 2, 0);
 });
+
+test.describe("a modal that can refuse to close", () => {
+  const dialog = (page: import("@playwright/test").Page) => page.getByRole("dialog", { name: "Unsaved work" });
+  const refused = (page: import("@playwright/test").Page) => page.getByLabel("refused");
+
+  test.beforeEach(async ({ page }) => {
+    await page.getByRole("button", { name: "Open guarded modal" }).click();
+    await expect(dialog(page)).toBeVisible();
+  });
+
+  test("Escape, the close button and the backdrop are each refused and counted", async ({ page }) => {
+    await page.keyboard.press("Escape");
+    await expect(refused(page)).toHaveText("1");
+    await dialog(page).getByRole("button", { name: "Close", exact: true }).click();
+    await expect(refused(page)).toHaveText("2");
+    await page.mouse.click(4, 4);
+    await expect(refused(page)).toHaveText("3");
+    await expect(dialog(page)).toBeVisible();
+  });
+
+  test("pressing Escape again does not get around the refusal", async ({ page }) => {
+    // Chrome closes a dialog on a second Escape even when the first one was cancelled.
+    await page.keyboard.press("Escape");
+    await page.keyboard.press("Escape");
+    await page.keyboard.press("Escape");
+    await expect(refused(page)).toHaveText("3");
+    await expect(dialog(page)).toBeVisible();
+  });
+
+  test("a refused close does not report the modal as closed", async ({ page }) => {
+    await page.keyboard.press("Escape");
+    await expect(refused(page)).toHaveText("1");
+    await expect(page.getByText("closed 0 times")).toBeVisible();
+  });
+
+  test("the application can still close it itself, without being asked", async ({ page }) => {
+    await dialog(page).getByRole("button", { name: "Close from the application" }).click();
+    await expect(dialog(page)).toBeHidden();
+    await expect(page.getByText("closed 1 times")).toBeVisible();
+  });
+
+  test("with the guard lifted it closes as usual", async ({ page }) => {
+    await dialog(page).getByRole("button", { name: "Lift the guard" }).click();
+    await page.keyboard.press("Escape");
+    await expect(dialog(page)).toBeHidden();
+    await expect(page.getByText("closed 1 times")).toBeVisible();
+  });
+
+  test("a modal without a guard is unchanged: Escape still closes it and returns the focus", async ({ page }) => {
+    await dialog(page).getByRole("button", { name: "Lift the guard" }).click();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("button", { name: "Open guarded modal" })).toBeFocused();
+  });
+});

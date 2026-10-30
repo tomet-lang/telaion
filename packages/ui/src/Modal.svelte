@@ -8,6 +8,7 @@
     title,
     size = "md",
     onclose,
+    onrequestclose,
     children,
     footer,
   }: {
@@ -18,6 +19,12 @@
     size?: "sm" | "md" | "full";
     /** Called whenever the modal closes, however it was closed. */
     onclose?: () => void;
+    /**
+     * Called when the person asks to close the modal: Escape, the close button, or a click on the
+     * backdrop. Return `false` to refuse, for example to ask about unsaved changes first. Closing
+     * by setting `open` to false is the application's own decision and is not asked about.
+     */
+    onrequestclose?: () => boolean | void;
     /**
      * The body. To choose which control gets the focus first, put `autofocus` on it;
      * otherwise the browser focuses the first focusable element, which is the close button.
@@ -46,9 +53,15 @@
     onclose?.();
   }
 
+  // Everything the person does to close the modal goes through here, so the application can refuse.
+  function requestClose() {
+    if (onrequestclose?.() === false) return;
+    dialog.close();
+  }
+
   // The dialog has no padding, so a click whose target is the dialog itself landed on the backdrop.
   function handleClick(event: MouseEvent) {
-    if (event.target === dialog) dialog.close();
+    if (event.target === dialog) requestClose();
   }
 
   const focusable =
@@ -57,6 +70,13 @@
   // Left alone, Tab from the last control leaves the page for the browser's own interface.
   // Wrap around instead, as the WAI-ARIA dialog pattern asks.
   function handleKeydown(event: KeyboardEvent) {
+    // Escape is taken here, before the browser starts to close the dialog. Refusing it in the
+    // dialog's own cancel event is not enough: Chrome closes on a second Escape regardless.
+    if (event.key === "Escape" && !event.isComposing) {
+      event.preventDefault();
+      requestClose();
+      return;
+    }
     if (event.key !== "Tab") return;
     const items = [...dialog.querySelectorAll<HTMLElement>(focusable)].filter(
       (element) => element.getClientRects().length > 0,
@@ -87,10 +107,15 @@
   onclose={handleClose}
   onclick={handleClick}
   onkeydown={handleKeydown}
+  oncancel={(event) => {
+    // Other ways the browser asks to close it (the back gesture on a phone) come the same way.
+    event.preventDefault();
+    requestClose();
+  }}
 >
   <header class="tln-modal-header">
     <h2 class="tln-modal-title" id={titleId}>{title}</h2>
-    <IconButton icon={X} label="Close" onclick={() => dialog.close()} />
+    <IconButton icon={X} label="Close" onclick={requestClose} />
   </header>
   <div class="tln-modal-body">
     {@render children()}

@@ -35,6 +35,16 @@ Svelte 5 is a peer dependency.
 - `Modal`, `Tabs`, `Badge`, `Alert`, `Spinner`
 - `Icon`
 
+## Closing a Modal
+
+A `Modal` closes on Escape, on its close button, and on a click on the backdrop. To ask first, for example about unsaved changes, pass `onrequestclose` and return `false` to refuse. It is asked before every close the person starts, and not when the application closes the modal by setting `open` itself.
+
+```svelte
+<Modal bind:open title="Editor" onrequestclose={() => !dirty || confirm("Close without saving?")}>
+  ...
+</Modal>
+```
+
 ## Theming
 
 Every color, font and size is a CSS custom property with the prefix `--tln-`, defined in `tokens.css`. Light and dark follow the operating system; set `data-theme="light"` or `data-theme="dark"` on any element to override it for that subtree. An application changes the look by overriding token values, not by styling components: the components accept neither `class` nor `style`.
