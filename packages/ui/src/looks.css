@@ -17,9 +17,10 @@
   border: 1px solid transparent;
   border-radius: var(--tln-radius);
   cursor: pointer;
+  box-shadow: var(--tln-shadow-action);
   transition:
     background-color var(--tln-transition),
-    box-shadow var(--tln-transition);
+    box-shadow 0.05s ease-out;
 }
 
 .tln-action:focus-visible {
@@ -27,24 +28,25 @@
   outline-offset: 2px;
 }
 
+/* Hover: casts shadow further away from mouse light, with warm ambient glow */
+.tln-action:enabled:hover {
+  box-shadow: var(--tln-shadow-action-hover);
+}
+
 .tln-action[data-variant="secondary"] {
   background: var(--tln-action);
   color: var(--tln-fg);
-  box-shadow: var(--tln-shadow-action);
 }
 .tln-action[data-variant="secondary"]:enabled:hover {
   background: var(--tln-action-hover);
-  box-shadow: var(--tln-shadow-action-hover);
 }
 
 .tln-action[data-variant="primary"] {
   background: var(--tln-accent);
   color: var(--tln-accent-fg);
-  box-shadow: var(--tln-shadow-action);
 }
 .tln-action[data-variant="primary"]:enabled:hover {
   background: var(--tln-accent-hover);
-  box-shadow: var(--tln-shadow-action-hover);
 }
 
 /* Destructive, outlined. The outline is what tells it from a plain action. */
@@ -52,32 +54,30 @@
   background: var(--tln-action);
   border-color: var(--tln-danger);
   color: var(--tln-danger);
-  box-shadow: var(--tln-shadow-action);
 }
 .tln-action[data-variant="danger"]:enabled:hover {
   background: var(--tln-danger-soft);
-  box-shadow: var(--tln-shadow-action-hover);
 }
 
 .tln-action[data-variant="danger-fill"] {
   background: var(--tln-danger);
   color: var(--tln-danger-fg);
-  box-shadow: var(--tln-shadow-action);
 }
 .tln-action[data-variant="danger-fill"]:enabled:hover {
   /* Toward the foreground: darker in light mode, lighter in dark mode. */
   background: color-mix(in srgb, var(--tln-danger) 85%, var(--tln-fg));
-  box-shadow: var(--tln-shadow-action-hover);
 }
 
 /* No frame, no shadow: it stays on the content layer, as a link does. */
 .tln-action[data-variant="quiet"] {
   background: transparent;
   color: var(--tln-fg-muted);
+  box-shadow: none;
 }
 .tln-action[data-variant="quiet"]:enabled:hover {
   background: var(--tln-tint);
   color: var(--tln-fg);
+  box-shadow: none;
 }
 
 /* One disabled look for every variant: it steps back down onto the content layer. */
@@ -108,6 +108,7 @@
   border: 0;
   border-radius: var(--tln-radius);
   box-shadow: var(--tln-shadow-well);
+  transition: box-shadow 0.05s ease-out;
 }
 
 .tln-field-control::placeholder {

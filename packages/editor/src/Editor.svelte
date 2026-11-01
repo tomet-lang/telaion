@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Extension } from "@codemirror/state";
-  import { Alert, Badge, Button, Spinner } from "@telaion/ui";
+  import { Alert, Badge, Button, mouseLight, Spinner } from "@telaion/ui";
   import CodeEditor from "./CodeEditor.svelte";
   import type { DocumentSession } from "./session.svelte.js";
 
@@ -27,7 +27,7 @@
 </script>
 
 <div class="tln-editor">
-  <header class="tln-editor-bar">
+  <header class="tln-editor-bar" use:mouseLight>
     <span class="tln-editor-path" title={session.path}>{session.path}</span>
     <Badge tone={state.tone}>{state.text}</Badge>
     <span class="tln-editor-spacer"></span>
@@ -49,7 +49,7 @@
     </Alert>
   {/if}
 
-  <div class="tln-editor-body">
+  <div class="tln-editor-body" use:mouseLight>
     {#if session.status === "loading"}
       <div class="tln-editor-loading"><Spinner label="Loading document" /></div>
     {:else}
@@ -81,6 +81,7 @@
     background: var(--tln-content);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-content);
+    transition: box-shadow 0.05s ease-out;
   }
 
   .tln-editor-path {
@@ -102,6 +103,7 @@
     background: var(--tln-content);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-content);
+    transition: box-shadow 0.05s ease-out;
     overflow: hidden;
   }
 

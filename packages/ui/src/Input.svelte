@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { HTMLInputAttributes } from "svelte/elements";
   import { getFieldContext } from "./field-context.js";
+  import { mouseLight } from "./mouse-light.js";
   import "./looks.css";
 
   type Props = Omit<HTMLInputAttributes, "class" | "style" | "value" | "type" | "children"> & {
@@ -16,6 +17,7 @@
 </script>
 
 <input
+  use:mouseLight
   class="tln-input tln-field-control"
   {...rest}
   {type}

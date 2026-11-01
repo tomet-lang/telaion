@@ -21,6 +21,7 @@
     Select,
     Spinner,
     Tabs,
+    mouseLight,
   } from "@telaion/ui";
   import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
 
@@ -140,7 +141,7 @@
   ];
 </script>
 
-<header class="bar">
+<header class="bar" use:mouseLight>
   <h1>Telaion playground</h1>
   <div class="conditions">
     <label><input type="checkbox" bind:checked={reset} /> Tailwind reset</label>
@@ -148,7 +149,7 @@
   </div>
   <div class="themes" role="group" aria-label="Theme">
     {#each ["system", "light", "dark"] as const as t}
-      <button type="button" aria-pressed={theme === t} onclick={() => (theme = t)}>{t}</button>
+      <button type="button" use:mouseLight aria-pressed={theme === t} onclick={() => (theme = t)}>{t}</button>
     {/each}
   </div>
 </header>
@@ -156,9 +157,9 @@
 <main>
   <section>
     <h2>Layers</h2>
-    <div class="layer-content">
+    <div class="layer-content" use:mouseLight>
       <p>Canvas is the ground under this card. The card is content: what is read.</p>
-      <div class="layer-well">Well: what is typed into. Cut into the surface, the opposite of a button.</div>
+      <div class="layer-well" use:mouseLight>Well: what is typed into. Cut into the surface, the opposite of a button.</div>
       <div class="layer-row">
         <span>Action: what acts, one above the content it is on.</span>
         <Button variant="primary">Primary</Button>
@@ -240,7 +241,7 @@
       <span class="muted">stored <span aria-label="saves">{stored.saves}</span> times</span>
     </div>
     <div class="editor-frame"><Editor {session} readOnly={editorReadOnly} /></div>
-    <pre class="result" aria-label="stored text">{stored.last}</pre>
+    <pre class="result" use:mouseLight aria-label="stored text">{stored.last}</pre>
   </section>
 
   <section>
@@ -433,6 +434,7 @@
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 6);
     background: var(--tln-content);
     box-shadow: var(--tln-shadow-content);
+    transition: box-shadow 0.05s ease-out;
   }
 
   h1 {
@@ -483,6 +485,7 @@
     border: 1px solid transparent;
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-action);
+    transition: box-shadow 0.05s ease-out;
     cursor: pointer;
   }
 
@@ -537,6 +540,7 @@
     background: var(--tln-well);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-well);
+    transition: box-shadow 0.05s ease-out;
     white-space: pre-wrap;
   }
 
@@ -547,6 +551,7 @@
     background: var(--tln-content);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-content);
+    transition: box-shadow 0.05s ease-out;
   }
 
   .layer-content p {
@@ -560,6 +565,7 @@
     background: var(--tln-well);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-well);
+    transition: box-shadow 0.05s ease-out;
   }
 
   .layer-row {

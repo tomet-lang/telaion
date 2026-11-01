@@ -51,22 +51,35 @@
   --tln-action: light-dark(#ffffff, #242429);
   --tln-action-hover: light-dark(#ffffff, #2f2f37);
 
-  /* Layer shadows: two-light model + mouse-as-light (zero ambient offset) */
+  /* Layer shadows: two-light physical model (Sun + Hand-held Lamp)
+   *
+   * 1. Sun (parallel sunlight across viewport):
+   *    Parallel angle shifts with mouse relative to screen center (--tln-sun-shadow-x/y).
+   *    Casts crisp solid step shadows across all layers.
+   *
+   * 2. Lamp (radial 360-degree point light):
+   *    Hand-held lamp hovering with cursor (--tln-lamp-shadow-x/y).
+   *    Casts soft ambient diffusion shadows that flee outward from the cursor.
+   *
+   * 3. Top rim highlight:
+   *    Crisp horizontal sheen along the top edge in dark mode (amber sheen on hover/float).
+   */
+
   /* - Action & Content:
    *   1. Top rim highlight: horizontal sheen along the top edge in dark mode
    *   2. Sun: crisp 2px 2px edge, faintly tinted cyan
-   *   3. Ambient: soft, centered contact shadow (0 0 5px, quiet black in dark mode)
+   *   3. Ambient: soft contact shadow fleeing outward from hand-held mouse lamp
    */
   --tln-shadow-action:
     inset 0 1px 0 0 light-dark(transparent, rgb(255 255 255 / 0.12)),
-    2px 2px 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
-    0 0 5px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.65));
+    var(--tln-sun-shadow-x, 2px) var(--tln-sun-shadow-y, 2px) 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
+    var(--tln-lamp-shadow-x, 0px) var(--tln-lamp-shadow-y, 0px) 5px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.65));
   --tln-shadow-content: var(--tln-shadow-action);
 
   /* - Well: a button upside down (both sun and ambient cast inward) */
   --tln-shadow-well:
-    inset 2px 2px 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
-    inset 0 0 4px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.75));
+    inset var(--tln-sun-shadow-x, 2px) var(--tln-sun-shadow-y, 2px) 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
+    inset var(--tln-lamp-shadow-x, 0px) var(--tln-lamp-shadow-y, 0px) 4px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.75));
 
   /* - Action hover: the mouse casts warm yellow light as the object lifts.
    *   Top rim catches warm sheen (amber-100 / 0.28);
@@ -75,14 +88,42 @@
    */
   --tln-shadow-action-hover:
     inset 0 1px 0 0 light-dark(transparent, rgb(254 243 199 / 0.28)),
-    3px 3px 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
-    0 0 20px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.15));
+    calc(var(--tln-sun-shadow-x, 2px) * 1.5) calc(var(--tln-sun-shadow-y, 2px) * 1.5) 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
+    var(--tln-lamp-shadow-x, 0px) var(--tln-lamp-shadow-y, 0px) 20px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.15));
 
   /* - Float: high surface floating far above the page */
   --tln-shadow-float:
     inset 0 1px 0 0 light-dark(transparent, rgb(254 243 199 / 0.30)),
-    6px 8px 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
-    0 0 32px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.16));
+    calc(var(--tln-sun-shadow-x, 2px) * 2.5) calc(var(--tln-sun-shadow-y, 2px) * 2.5) 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
+    calc(var(--tln-lamp-shadow-x, 0px) * 1.5) calc(var(--tln-lamp-shadow-y, 0px) * 1.5) 32px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.16));
+}
+
+/*
+ * Shadow tokens declared on all elements so that element-level inline
+ * custom properties (--tln-lamp-shadow-x/y) resolve dynamically on each element.
+ */
+*,
+*::before,
+*::after {
+  --tln-shadow-action:
+    inset 0 1px 0 0 light-dark(transparent, rgb(255 255 255 / 0.12)),
+    var(--tln-sun-shadow-x, 2px) var(--tln-sun-shadow-y, 2px) 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
+    var(--tln-lamp-shadow-x, 0px) var(--tln-lamp-shadow-y, 0px) 5px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.65));
+  --tln-shadow-content: var(--tln-shadow-action);
+
+  --tln-shadow-well:
+    inset var(--tln-sun-shadow-x, 2px) var(--tln-sun-shadow-y, 2px) 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
+    inset var(--tln-lamp-shadow-x, 0px) var(--tln-lamp-shadow-y, 0px) 4px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.75));
+
+  --tln-shadow-action-hover:
+    inset 0 1px 0 0 light-dark(transparent, rgb(254 243 199 / 0.28)),
+    calc(var(--tln-sun-shadow-x, 2px) * 1.5) calc(var(--tln-sun-shadow-y, 2px) * 1.5) 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
+    var(--tln-lamp-shadow-x, 0px) var(--tln-lamp-shadow-y, 0px) 20px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.15));
+
+  --tln-shadow-float:
+    inset 0 1px 0 0 light-dark(transparent, rgb(254 243 199 / 0.30)),
+    calc(var(--tln-sun-shadow-x, 2px) * 2.5) calc(var(--tln-sun-shadow-y, 2px) * 2.5) 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
+    calc(var(--tln-lamp-shadow-x, 0px) * 1.5) calc(var(--tln-lamp-shadow-y, 0px) * 1.5) 32px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.16));
 
   /* Behind a float that blocks the page (a modal): the page is dimmed */
   --tln-scrim: light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.6));

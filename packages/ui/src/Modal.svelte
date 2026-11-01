@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import IconButton from "./IconButton.svelte";
+  import { mouseLight } from "./mouse-light.js";
   import { X } from "./icons.generated.js";
 
   let {
@@ -102,6 +103,7 @@
 <dialog
   bind:this={dialog}
   class="tln-modal"
+  use:mouseLight={{ maxOffset: 8 }}
   data-size={size}
   aria-labelledby={titleId}
   onclose={handleClose}
@@ -140,6 +142,7 @@
     border: 0;
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-float);
+    transition: box-shadow 0.05s ease-out;
     max-width: calc(100vw - var(--tln-space) * 8);
     max-height: calc(100vh - var(--tln-space) * 8);
   }
