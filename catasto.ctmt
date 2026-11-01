@@ -58,3 +58,9 @@
 "packages/shell/LICENSE-APACHE": {
   source: { upstream: commonfiles, path: "LICENSE-APACHE" }
 }
+"packages/views/LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"packages/views/LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}

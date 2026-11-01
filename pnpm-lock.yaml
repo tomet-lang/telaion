@@ -82,6 +82,15 @@ importers:
         specifier: ^6.36.0
         version: 6.43.15
 
+  packages/views:
+    dependencies:
+      '@telaion/primitives':
+        specifier: workspace:^
+        version: link:../primitives
+      svelte:
+        specifier: ^5.0.0
+        version: 5.57.3
+
   playground:
     dependencies:
       '@telaion/editor':
@@ -96,6 +105,9 @@ importers:
       '@telaion/tomet':
         specifier: workspace:*
         version: link:../packages/tomet
+      '@telaion/views':
+        specifier: workspace:*
+        version: link:../packages/views
     devDependencies:
       '@codemirror/autocomplete':
         specifier: ^6.18.0

@@ -145,6 +145,24 @@
       },
       "commit": "4d2293d73bc91a742ba57dad7cb4c652726af836"
     },
+    "packages/views/LICENSE-APACHE": {
+      "sha256": "a549c19a5c34ad57b10e336bdfad9cb6040c2fc311ed217f01c7a9c4ddee6015",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-APACHE"
+      },
+      "commit": "9fffe285e9fd89b3341fd15b51ba6b7152b58d2d"
+    },
+    "packages/views/LICENSE-MIT": {
+      "sha256": "24d88f36f2620d2b18d70bc2136e103b1f9910a63a4614d94404577b2a41f5a0",
+      "source": {
+        "git": "https://github.com/tomet-lang/commonfiles.git",
+        "rev": "main",
+        "path": "base/LICENSE-MIT"
+      },
+      "commit": "9fffe285e9fd89b3341fd15b51ba6b7152b58d2d"
+    },
     "tmtroot/schema/vocabularies/writ@1.0.0.vocabulary.tmt": {
       "sha256": "3fd2b5b89ae1beb0b0abf1e3fc269f933ca9385876cfb5d005aba730f67acef3",
       "source": {

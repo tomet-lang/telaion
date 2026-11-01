@@ -1,6 +1,7 @@
 <script lang="ts">
   import { DocumentSession, Editor } from "@telaion/editor";
   import { SplitPane } from "@telaion/shell";
+  import { Kanban, TreeExplorer, type KanbanColumnData, type TreeNode } from "@telaion/views";
   import { onMount } from "svelte";
   import ConfirmDelete from "./ConfirmDelete.svelte";
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
@@ -45,6 +46,65 @@
   let followMouse = $state(remembered("playground-mouse-light"));
   let splitRatio = $state(0.4);
   let verticalSplitRatio = $state(0.5);
+
+  let kanbanColumns = $state<KanbanColumnData[]>([
+    {
+      id: "todo",
+      title: "To Do",
+      items: [
+        { id: "task-1", title: "Refactor packages", description: "Split into primitives, shell, views", badge: "draft", badgeTone: "neutral" },
+        { id: "task-2", title: "Add Playwright tests", description: "Verify split pane and views", badge: "ready", badgeTone: "accent" },
+      ],
+    },
+    {
+      id: "in-progress",
+      title: "In Progress",
+      items: [
+        { id: "task-3", title: "Implement Kanban", description: "Drag and drop with keyboard support", badge: "wip", badgeTone: "warn" },
+      ],
+    },
+    {
+      id: "done",
+      title: "Done",
+      items: [
+        { id: "task-4", title: "Mouse light refactoring", badge: "done", badgeTone: "ok" },
+      ],
+    },
+  ]);
+  let lastMovedCard = $state<string>("none");
+
+  let treeNodes = $state<TreeNode[]>([
+    {
+      id: "src",
+      label: "src",
+      isFolder: true,
+      children: [
+        {
+          id: "components",
+          label: "components",
+          isFolder: true,
+          children: [
+            { id: "button-svelte", label: "Button.svelte" },
+            { id: "modal-svelte", label: "Modal.svelte" },
+          ],
+        },
+        { id: "index-ts", label: "index.ts" },
+        { id: "tokens-css", label: "tokens.css" },
+      ],
+    },
+    {
+      id: "docs",
+      label: "docs",
+      isFolder: true,
+      children: [
+        { id: "readme-tmt", label: "readme.tmt" },
+        { id: "agents-tmt", label: "agents.tmt" },
+      ],
+    },
+    { id: "package-json", label: "package.json" },
+  ]);
+  let selectedTreeNode = $state<string | null>("button-svelte");
+  let expandedTreeIds = $state<Set<string>>(new Set(["src", "components"]));
 
   $effect(() => {
     try {
@@ -388,6 +448,43 @@
           </div>
         {/snippet}
       </SplitPane>
+    </div>
+  </section>
+
+  <section data-testid="kanban-section">
+    <h2>Kanban</h2>
+    <p class="muted">Standalone card and column board with drag-and-drop and arrow key reordering.</p>
+    <div style="margin-bottom: calc(var(--tln-space) * 2);">
+      <span class="muted">last moved: <code data-testid="kanban-last-moved">{lastMovedCard}</code></span>
+    </div>
+    <Kanban
+      bind:columns={kanbanColumns}
+      oncardmove={(e) => {
+        lastMovedCard = `${e.cardId} to ${e.toColumnId} at ${e.toIndex}`;
+      }}
+      onaddcard={(colId) => {
+        const col = kanbanColumns.find((c) => c.id === colId);
+        if (col) {
+          const newId = `task-${Date.now()}`;
+          col.items.push({ id: newId, title: "New task", badge: "new", badgeTone: "accent" });
+          kanbanColumns = [...kanbanColumns];
+        }
+      }}
+    />
+  </section>
+
+  <section data-testid="tree-explorer-section">
+    <h2>Tree Explorer</h2>
+    <p class="muted">Hierarchical file tree navigation with expansion and selection.</p>
+    <div style="margin-bottom: calc(var(--tln-space) * 2);">
+      <span class="muted">selected: <code data-testid="tree-selected-id">{selectedTreeNode ?? "none"}</code></span>
+    </div>
+    <div style="max-width: 320px; background: var(--tln-content); border: 1px solid var(--tln-border); border-radius: var(--tln-radius); box-shadow: var(--tln-shadow-content); padding: var(--tln-space);">
+      <TreeExplorer
+        nodes={treeNodes}
+        bind:selectedId={selectedTreeNode}
+        bind:expandedIds={expandedTreeIds}
+      />
     </div>
   </section>
 </main>

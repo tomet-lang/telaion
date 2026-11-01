@@ -13,6 +13,7 @@
     "@telaion/primitives": "workspace:*",
     "@telaion/editor": "workspace:*",
     "@telaion/shell": "workspace:*",
+    "@telaion/views": "workspace:*",
     "@telaion/tomet": "workspace:*"
   },
   "devDependencies": {
