@@ -21,9 +21,9 @@
     Select,
     Spinner,
     Tabs,
-    mouseLight,
   } from "@telaion/ui";
   import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
+  import { mouseLight } from "./mouse-light.js";
 
   type Theme = "system" | "light" | "dark";
 
@@ -41,6 +41,13 @@
   };
   let reset = $state(remembered("playground-reset"));
   let spaced = $state(remembered("playground-spaced"));
+  let followMouse = $state(remembered("playground-mouse-light"));
+
+  $effect(() => {
+    try {
+      localStorage.setItem("playground-mouse-light", followMouse ? "1" : "0");
+    } catch {}
+  });
 
   $effect(() => {
     document.getElementById("playground-reset")?.remove();
@@ -141,25 +148,26 @@
   ];
 </script>
 
-<header class="bar" use:mouseLight>
+<header class="bar" use:mouseLight={{ enabled: followMouse }}>
   <h1>Telaion playground</h1>
   <div class="conditions">
     <label><input type="checkbox" bind:checked={reset} /> Tailwind reset</label>
     <label><input type="checkbox" bind:checked={spaced} /> Wide letter spacing</label>
+    <label><input type="checkbox" bind:checked={followMouse} /> Mouse shadow</label>
   </div>
   <div class="themes" role="group" aria-label="Theme">
     {#each ["system", "light", "dark"] as const as t}
-      <button type="button" use:mouseLight aria-pressed={theme === t} onclick={() => (theme = t)}>{t}</button>
+      <button type="button" aria-pressed={theme === t} onclick={() => (theme = t)}>{t}</button>
     {/each}
   </div>
 </header>
 
-<main>
+<main use:mouseLight={{ enabled: followMouse }}>
   <section>
     <h2>Layers</h2>
-    <div class="layer-content" use:mouseLight>
+    <div class="layer-content">
       <p>Canvas is the ground under this card. The card is content: what is read.</p>
-      <div class="layer-well" use:mouseLight>Well: what is typed into. Cut into the surface, the opposite of a button.</div>
+      <div class="layer-well">Well: what is typed into. Cut into the surface, the opposite of a button.</div>
       <div class="layer-row">
         <span>Action: what acts, one above the content it is on.</span>
         <Button variant="primary">Primary</Button>
@@ -241,7 +249,7 @@
       <span class="muted">stored <span aria-label="saves">{stored.saves}</span> times</span>
     </div>
     <div class="editor-frame"><Editor {session} readOnly={editorReadOnly} /></div>
-    <pre class="result" use:mouseLight aria-label="stored text">{stored.last}</pre>
+    <pre class="result" aria-label="stored text">{stored.last}</pre>
   </section>
 
   <section>

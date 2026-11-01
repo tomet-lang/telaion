@@ -29,6 +29,7 @@ for (const scheme of ["light", "dark"] as const) {
   test.describe(`${scheme} theme`, () => {
     test.beforeEach(async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
+      await page.waitForTimeout(200);
     });
 
     test("primary text is readable on its fill", async ({ page }) => {

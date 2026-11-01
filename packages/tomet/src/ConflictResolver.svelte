@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Alert, Badge, Button, mouseLight, Spinner } from "@telaion/ui";
+  import { Alert, Badge, Button, Spinner } from "@telaion/ui";
   import type { Conflict, TometServices } from "./services.js";
 
   let {
@@ -76,7 +76,7 @@
 
     <ol class="tln-conflict-list">
       {#each conflicts as conflict, position (conflict.index)}
-        <li class="tln-conflict" use:mouseLight>
+        <li class="tln-conflict">
           <div class="tln-conflict-header">
             <Badge tone="warn">Conflict {position + 1} · {conflict.kind}</Badge>
           </div>
@@ -93,7 +93,7 @@
                     Accept {version.side.toUpperCase()}
                   </Button>
                 </div>
-                <pre class="tln-conflict-text" use:mouseLight>{version.text}</pre>
+                <pre class="tln-conflict-text">{version.text}</pre>
               </div>
             {/each}
           </div>

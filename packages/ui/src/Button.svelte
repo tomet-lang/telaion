@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
-  import { mouseLight } from "./mouse-light.js";
   import "./looks.css";
 
   type Props = Omit<HTMLButtonAttributes, "class" | "style" | "children"> & {
@@ -16,7 +15,7 @@
   let { variant = "secondary", type = "button", children, ...rest }: Props = $props();
 </script>
 
-<button use:mouseLight class="tln-btn tln-action" data-variant={variant} {type} {...rest}>
+<button class="tln-btn tln-action" data-variant={variant} {type} {...rest}>
   {@render children()}
 </button>
 

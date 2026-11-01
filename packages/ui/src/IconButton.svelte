@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { HTMLButtonAttributes } from "svelte/elements";
   import Icon from "./Icon.svelte";
-  import { mouseLight } from "./mouse-light.js";
   import "./looks.css";
   import type { IconData } from "./icon-data.js";
 
@@ -15,7 +14,7 @@
   let { icon, label, variant = "quiet", type = "button", ...rest }: Props = $props();
 </script>
 
-<button use:mouseLight class="tln-icon-btn tln-action" data-variant={variant} {type} aria-label={label} title={label} {...rest}>
+<button class="tln-icon-btn tln-action" data-variant={variant} {type} aria-label={label} title={label} {...rest}>
   <Icon {icon} />
 </button>
 

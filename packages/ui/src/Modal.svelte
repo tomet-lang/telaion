@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import IconButton from "./IconButton.svelte";
-  import { mouseLight } from "./mouse-light.js";
   import { X } from "./icons.generated.js";
 
   let {
@@ -103,7 +102,6 @@
 <dialog
   bind:this={dialog}
   class="tln-modal"
-  use:mouseLight={{ maxOffset: 8 }}
   data-size={size}
   aria-labelledby={titleId}
   onclose={handleClose}

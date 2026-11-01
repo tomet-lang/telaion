@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("two-light physical model: sun and lamp shadows react to mouse across all layers", async ({
+test("playground mouse shadow toggle: reacts to mouse when enabled and clears styles when disabled", async ({
   page,
 }) => {
   await page.goto("/");
@@ -28,7 +28,24 @@ test("two-light physical model: sun and lamp shadows react to mouse across all l
       };
     }, selector);
 
-  // 1. Move mouse to top-left of viewport (100, 100)
+  const shadowToggle = page.getByLabel("Mouse shadow");
+  await expect(shadowToggle).toBeVisible();
+
+  // 1. Initial state (disabled): dynamic properties should be empty/unset
+  await page.mouse.move(100, 100);
+  await page.waitForTimeout(50);
+  const initialSun = await getSun();
+  expect(initialSun.x).toBe("");
+  expect(initialSun.y).toBe("");
+
+  const initialBtnLamp = await getLamp(".tln-btn");
+  expect(initialBtnLamp?.x).toBe("");
+
+  // 2. Enable mouse shadow
+  await shadowToggle.check();
+  await expect(shadowToggle).toBeChecked();
+
+  // 3. Move mouse to top-left of viewport (100, 100)
   await page.mouse.move(100, 100);
   await page.waitForTimeout(100);
 
@@ -44,7 +61,7 @@ test("two-light physical model: sun and lamp shadows react to mouse across all l
   expect(btnTopLeft).not.toBeNull();
   expect(btnTopLeft?.x).toBeTruthy();
 
-  // 2. Move mouse to bottom-right of viewport (1000, 600 - within 1280x720)
+  // 4. Move mouse to bottom-right of viewport (1000, 600 - within 1280x720)
   await page.mouse.move(1000, 600);
   await page.waitForTimeout(100);
 
@@ -53,7 +70,7 @@ test("two-light physical model: sun and lamp shadows react to mouse across all l
   expect(parseFloat(sunBottomRight.x)).toBeGreaterThan(0);
   expect(parseFloat(sunBottomRight.y)).toBeGreaterThan(0);
 
-  // 3. Check multiple layers: content (editor-bar, layer-content), well (input), float (modal)
+  // 5. Check multiple layers: content (editor-bar, layer-content), well (input), float (modal)
   const editorBar = await getLamp(".tln-editor-bar");
   expect(editorBar).not.toBeNull();
   expect(editorBar?.x).toBeTruthy();
@@ -68,12 +85,12 @@ test("two-light physical model: sun and lamp shadows react to mouse across all l
   expect(inputControl?.x).toBeTruthy();
   expect(inputControl?.shadow).toContain("inset");
 
-  // 4. Check float layer (Modal)
+  // Check float layer (Modal)
   await page.getByRole("button", { name: "Open modal" }).click();
   const modal = page.locator(".tln-modal[open]");
   await expect(modal).toBeVisible();
 
-  // Move mouse again to trigger light update on open modal
+  // Move mouse to trigger light update on open modal
   await page.mouse.move(500, 300);
   await page.waitForTimeout(100);
 
@@ -81,4 +98,23 @@ test("two-light physical model: sun and lamp shadows react to mouse across all l
   expect(modalLamp).not.toBeNull();
   expect(modalLamp?.x).toBeTruthy();
   expect(modalLamp?.shadow).not.toBe("none");
+
+  // Close modal
+  await modal.getByRole("button", { name: "Close" }).click();
+  await expect(modal).not.toBeVisible();
+
+  // 6. Disable mouse shadow: all dynamic inline properties must be cleared
+  await shadowToggle.uncheck();
+  await expect(shadowToggle).not.toBeChecked();
+
+  await page.mouse.move(200, 200);
+  await page.waitForTimeout(50);
+
+  const clearedSun = await getSun();
+  expect(clearedSun.x).toBe("");
+  expect(clearedSun.y).toBe("");
+
+  const clearedBtnLamp = await getLamp(".tln-btn");
+  expect(clearedBtnLamp?.x).toBe("");
+  expect(clearedBtnLamp?.y).toBe("");
 });

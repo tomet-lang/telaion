@@ -2,7 +2,6 @@
   import type { HTMLSelectAttributes } from "svelte/elements";
   import { getFieldContext } from "./field-context.js";
   import Icon from "./Icon.svelte";
-  import { mouseLight } from "./mouse-light.js";
   import "./looks.css";
   import { ChevronDown } from "./icons.generated.js";
 
@@ -20,7 +19,6 @@
 
 <span class="tln-select">
   <select
-    use:mouseLight
     class="tln-select-control tln-action"
     data-variant="secondary"
     {...rest}
