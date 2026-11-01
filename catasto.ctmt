@@ -28,16 +28,16 @@
 "tmtroot/schema/vocabularies/writ@1.0.0.vocabulary.tmt": {
   source: { upstream: vocabularies, path: "writ/writ@1.0.0.vocabulary.tmt" }
 }
-"packages/ui/vendor/lucide/sprite.svg": {
+"packages/primitives/vendor/lucide/sprite.svg": {
   source: { upstream: tomet-shelf, path: "sprite.svg" }
 }
-"packages/ui/vendor/lucide/LICENSE": {
+"packages/primitives/vendor/lucide/LICENSE": {
   source: { upstream: tomet-shelf, path: "LICENSE" }
 }
-"packages/ui/LICENSE-MIT": {
+"packages/primitives/LICENSE-MIT": {
   source: { upstream: commonfiles, path: "LICENSE-MIT" }
 }
-"packages/ui/LICENSE-APACHE": {
+"packages/primitives/LICENSE-APACHE": {
   source: { upstream: commonfiles, path: "LICENSE-APACHE" }
 }
 "packages/editor/LICENSE-MIT": {

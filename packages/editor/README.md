@@ -10,7 +10,7 @@ A source editor for Svelte 5, built on CodeMirror 6, with a document session and
 pnpm add @telaion/editor
 ```
 
-Svelte 5 is a peer dependency. Also import the design tokens of `@telaion/ui` once, for example `import "@telaion/ui/tokens.css"`.
+Svelte 5 is a peer dependency. Also import the design tokens of `@telaion/primitives` once, for example `import "@telaion/primitives/tokens.css"`.
 
 ## Use
 

@@ -10,7 +10,7 @@ The Tomet-specific parts of a Telaion editor: syntax highlighting and conflict r
 pnpm add @telaion/tomet
 ```
 
-Svelte 5, `@codemirror/state` and `@codemirror/view` are peer dependencies. It uses `@telaion/ui` and `@telaion/editor`.
+Svelte 5, `@codemirror/state` and `@codemirror/view` are peer dependencies. It uses `@telaion/primitives` and `@telaion/editor`.
 
 ## The engine comes from the application
 
@@ -42,7 +42,7 @@ Every method may answer at once or later (return a promise). Offsets count UTF-1
 <CodeEditor bind:content {language} />
 ```
 
-The extension asks again after every edit. An answer for text that has since changed is dropped. If the engine fails, the last good colors stay and `onError` is told. The colors are the design tokens of `@telaion/ui`.
+The extension asks again after every edit. An answer for text that has since changed is dropped. If the engine fails, the last good colors stay and `onError` is told. The colors are the design tokens of `@telaion/primitives`.
 
 ## Conflicts
 

@@ -4,7 +4,7 @@
   import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
   import { keymap } from "@codemirror/view";
   import { CodeEditor } from "@telaion/editor";
-  import { Field, Select } from "@telaion/ui";
+  import { Field, Select } from "@telaion/primitives";
 
   const choices = [
     { value: "none", label: "No extensions" },

@@ -3,7 +3,7 @@ import { Decoration, type DecorationSet, EditorView, ViewPlugin } from "@codemir
 import type { HighlightSpan, TometServices } from "./services.js";
 
 /**
- * Colors for the tags of the Tomet highlighter, in the design tokens of @telaion/ui.
+ * Colors for the tags of the Tomet highlighter, in the design tokens of @telaion/primitives.
  * Meaning goes by color only. A tag that is not listed here is left in the ordinary text color.
  */
 const theme = EditorView.baseTheme({

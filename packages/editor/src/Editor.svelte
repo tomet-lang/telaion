@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Extension } from "@codemirror/state";
-  import { Alert, Badge, Button, Spinner } from "@telaion/ui";
+  import { Alert, Badge, Button, Spinner } from "@telaion/primitives";
   import CodeEditor from "./CodeEditor.svelte";
   import type { DocumentSession } from "./session.svelte.js";
 

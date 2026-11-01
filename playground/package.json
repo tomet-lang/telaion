@@ -10,7 +10,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@telaion/ui": "workspace:*",
+    "@telaion/primitives": "workspace:*",
     "@telaion/editor": "workspace:*",
     "@telaion/tomet": "workspace:*"
   },

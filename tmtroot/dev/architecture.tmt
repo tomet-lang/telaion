@@ -19,11 +19,13 @@ Telaion is the shared frame. It carries structure and behavior. It carries no th
 
 ==[ Packages ]
 
--| `@telaion/ui` -- Generic primitives (button, input, modal, tabs, tree, split) and the design tokens. No Tomet knowledge.
+-| `@telaion/primitives` -- Generic primitives (button, input, modal, tabs, badge, alert) and the design tokens. No Tomet knowledge.
+-| `@telaion/views` -- Self-contained composite views: Kanban, Explorer (tree). No Tomet knowledge.
+-| `@telaion/shell` -- Workspace frame and split-pane layout system.
 -| `@telaion/editor` -- The editor frame. Takes a storage adapter and a language slot. No Tomet knowledge.
 -| `@telaion/tomet` -- Tomet-specific parts: syntax highlighting, conflict blocks and their resolution. It knows the shapes of Tomet data, not the engine that computes them.
 
-The split is by what a package must know, not by size. `@telaion/ui` can be extracted into its own repository later without touching the others.
+The split is by what a package must know and by abstraction layer. `@telaion/primitives` can be extracted into its own repository later without touching the others.
 
 ==[ Dependency direction ]
 
@@ -33,9 +35,11 @@ tomet-wiki, ordiola     each builds its own Tomet engine from the Tomet crates
     v
 @telaion/tomet          knows the shapes of Tomet data; no engine
     ^
-@telaion/editor         knows nothing about Tomet
+@telaion/shell          workspace layout & panes
     ^
-@telaion/ui             knows nothing about Tomet or the editor
+@telaion/views, @telaion/editor  views placed in panes
+    ^
+@telaion/primitives     knows nothing about Tomet, editor or shell
 ```
 
 Telaion points up at nothing: it imports no Tomet package. The arrows into it are the interfaces an application fills in.
@@ -75,7 +79,7 @@ Asked before the first component, while a change was still free. The answer is t
 -| The heart of an editor is not the framework. CodeMirror and ProseMirror manage their own DOM; the framework only draws the frame around them (modal, tabs, toolbar, conflict view). What matters is how cleanly an imperative DOM library can be embedded.
 -| Svelte compiles away. It has no virtual DOM, so `mount()` places a component into a node and does not fight an editor over that node's DOM. A virtual-DOM framework needs wrappers and portals for the same job.
 -| The wiki embeds an editing island into a statically generated page. Mounting a component into a given element on demand is what Svelte does best.
--| Scoped component CSS plus the tokens of `@telaion/ui` is enough. No CSS-in-JS and no utility framework are needed, which is what the token rule requires.
+-| Scoped component CSS plus the tokens of `@telaion/primitives` is enough. No CSS-in-JS and no utility framework are needed, which is what the token rule requires.
 
 Considered and not chosen: Solid (equivalent weight and reactivity, no gain, a thinner ecosystem), Lit and Web Components (shadow DOM makes editor styling harder), Leptos and Dioxus (the editing core stays in JavaScript, so the JavaScript remains).
 
@@ -129,7 +133,7 @@ type CodeEditorProps = {
 ===[ Decided ]
 
 -| The engine is CodeMirror 6 and nothing else: one way to edit, one entry point. A minimal CodeMirror adds about 92 KB gzipped (97 KB with a language hook) to the roughly 322 KB of the wiki's editing bundle. This is accepted for syntax highlighting and a proper undo history.
--| The theme of the editor is written in the tokens of `@telaion/ui` only, so it follows the light and dark switch.
+-| The theme of the editor is written in the tokens of `@telaion/primitives` only, so it follows the light and dark switch.
 -| Tab leaves the editor for the next control; it does not insert indentation. A keyboard user must not be trapped. Indent with Mod-] and Mod-[.
 -| A save writes the text as it was when it started. Text typed while the save runs stays unsaved.
 -| A conflict never overwrites. The edit is kept, the session reports the conflict, and resolving it is the job of the application or of `@telaion/tomet`.
@@ -149,7 +153,7 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 
 -| Visual values are CSS custom properties with the prefix `--tln-`. Components reference tokens only.
 -| The token set is small and fixed. Three layers, one way of casting shadows, no gradients, one radius. What the look is for is written in `spec/ui/design.tmt`; this section is how it is built.
--| One default value set ships with `@telaion/ui` as `tokens.css`. An application overrides token values; it does not restyle components.
+-| One default value set ships with `@telaion/primitives` as `tokens.css`. An application overrides token values; it does not restyle components.
 -| Plain CSS. No utility framework inside the shared packages, so that the same CSS can be embedded in the wiki's Rust assets unchanged.
 
 ===[ Decided ]
@@ -166,7 +170,7 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 
 ==[ Distribution ]
 
--| The packages are published to npm under the `@telaion` scope. This is a requirement, not a preference: `@telaion/editor` depends on `@telaion/ui`, and a workspace dependency cannot be resolved when one package is installed from a subdirectory of a git repository. The wiki also builds with Deno through `npm:` specifiers, which have no way to take a git subdirectory.
+-| The packages are published to npm under the `@telaion` scope. This is a requirement, not a preference: `@telaion/editor` depends on `@telaion/primitives`, and a workspace dependency cannot be resolved when one package is installed from a subdirectory of a git repository. The wiki also builds with Deno through `npm:` specifiers, which have no way to take a git subdirectory.
 -| They are Svelte library packages, built with `svelte-package` into `dist/` (TypeScript removed, declarations added). Each application bundles them with its own bundler (Vite).
 -| Publication came before the first migration of an application. The wiki has since moved its editor island (New Page dialog, conflict resolver, raw editor, editor modal) onto the published packages. The playground shows every component for development.
 -| Versions stay at 0.x while the API settles. An application depends on a caret range of one minor version and takes new ones deliberately.
@@ -187,5 +191,5 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
 -| Colors for the tags the colors above do not name. `tomet-highlight` also returns `emphasis`, `strong`, `strikethrough` and `link`, which stay in the plain text color here; giving them one needs a decision, since the tokens have no italic or underline.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
--| The quick open palette of `ordiola` needs a Modal without a header and aligned to the top, and a listbox driven by `aria-activedescendant`. Both wait for a second consumer before they enter `@telaion/ui`.
+-| The quick open palette of `ordiola` needs a Modal without a header and aligned to the top, and a listbox driven by `aria-activedescendant`. Both wait for a second consumer before they enter `@telaion/primitives`.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.

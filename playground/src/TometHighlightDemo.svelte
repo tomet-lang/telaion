@@ -1,7 +1,7 @@
 <script lang="ts">
   import { CodeEditor } from "@telaion/editor";
   import { tometHighlighting, type HighlightSpan } from "@telaion/tomet";
-  import { Button, Field, Select } from "@telaion/ui";
+  import { Button, Field, Select } from "@telaion/primitives";
   import {
     bytesHighlight,
     failingHighlight,

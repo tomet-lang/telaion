@@ -41,9 +41,15 @@ importers:
       '@lezer/highlight':
         specifier: ^1.2.0
         version: 1.2.5
-      '@telaion/ui':
+      '@telaion/primitives':
         specifier: workspace:^
-        version: link:../ui
+        version: link:../primitives
+      svelte:
+        specifier: ^5.0.0
+        version: 5.57.3
+
+  packages/primitives:
+    dependencies:
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
@@ -53,9 +59,9 @@ importers:
       '@telaion/editor':
         specifier: workspace:^
         version: link:../editor
-      '@telaion/ui':
+      '@telaion/primitives':
         specifier: workspace:^
-        version: link:../ui
+        version: link:../primitives
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
@@ -67,23 +73,17 @@ importers:
         specifier: ^6.36.0
         version: 6.43.15
 
-  packages/ui:
-    dependencies:
-      svelte:
-        specifier: ^5.0.0
-        version: 5.57.3
-
   playground:
     dependencies:
       '@telaion/editor':
         specifier: workspace:*
         version: link:../packages/editor
+      '@telaion/primitives':
+        specifier: workspace:*
+        version: link:../packages/primitives
       '@telaion/tomet':
         specifier: workspace:*
         version: link:../packages/tomet
-      '@telaion/ui':
-        specifier: workspace:*
-        version: link:../packages/ui
     devDependencies:
       '@codemirror/autocomplete':
         specifier: ^6.18.0

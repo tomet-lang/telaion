@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Alert, Badge, Button, Spinner } from "@telaion/ui";
+  import { Alert, Badge, Button, Spinner } from "@telaion/primitives";
   import type { Conflict, TometServices } from "./services.js";
 
   let {

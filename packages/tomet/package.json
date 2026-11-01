@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@telaion/editor": "workspace:^",
-    "@telaion/ui": "workspace:^"
+    "@telaion/primitives": "workspace:^"
   },
   "peerDependencies": {
     "svelte": "^5.0.0",

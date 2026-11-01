@@ -21,8 +21,8 @@
     Select,
     Spinner,
     Tabs,
-  } from "@telaion/ui";
-  import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/ui/icons";
+  } from "@telaion/primitives";
+  import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/primitives/icons";
   import { mouseLight } from "./mouse-light.js";
 
   type Theme = "system" | "light" | "dark";

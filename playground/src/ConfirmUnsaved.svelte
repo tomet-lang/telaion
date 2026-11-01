@@ -1,7 +1,7 @@
 <script lang="ts">
-  // A trial: the "unsaved changes on tab close" dialog of ordiola, rebuilt on @telaion/ui only.
-  import { Button, Icon, Modal } from "@telaion/ui";
-  import { TriangleAlert } from "@telaion/ui/icons";
+  // A trial: the "unsaved changes on tab close" dialog of ordiola, rebuilt on @telaion/primitives only.
+  import { Button, Icon, Modal } from "@telaion/primitives";
+  import { TriangleAlert } from "@telaion/primitives/icons";
 
   let {
     title,

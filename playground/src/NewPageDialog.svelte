@@ -1,7 +1,7 @@
 <script lang="ts">
-  // A trial: the "Create New Page" dialog of tomet-wiki, rebuilt on @telaion/ui only.
+  // A trial: the "Create New Page" dialog of tomet-wiki, rebuilt on @telaion/primitives only.
   // The behavior is the same as tomet-wiki-assets/ui/NewPageModal.svelte; the markup is not.
-  import { Button, Field, Input, Modal, Select } from "@telaion/ui";
+  import { Button, Field, Input, Modal, Select } from "@telaion/primitives";
 
   let {
     onCreate,

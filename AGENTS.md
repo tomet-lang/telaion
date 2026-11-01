@@ -46,14 +46,14 @@ Read `CONTRIBUTING.md` for the contribution workflow, commit conventions, and ve
 
 These rules keep the layers separable. Do not break them for convenience.
 
-- `@telaion/ui` must not import Tomet code. It is a generic UI kit.
+- `@telaion/primitives` must not import Tomet code. It is a set of generic UI primitives and design tokens.
 - `@telaion/editor` must not import Tomet code. Anything that depends on the Tomet grammar or AST belongs in `@telaion/tomet`.
 - No Telaion package bundles or imports a Tomet engine (`@tomet/cms`, `@tomet/wasm`, or the like). An application already has one, as WebAssembly or as Rust, and a second copy would double its size. What Telaion needs from Tomet is written as a `TometServices` interface; the application passes an implementation backed by its own engine.
 - `@telaion/tomet` knows the shapes of Tomet data (highlight spans, conflicts) and how to show them. It does not know how to compute them.
 - Components know nothing about where a document is stored. They talk to a storage adapter that the application supplies.
-- Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token: a `--tln-*` custom property defined in `packages/ui/src/tokens.css`. When a new value is needed, ask instead of inventing one.
+- Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token: a `--tln-*` custom property defined in `packages/primitives/src/tokens.css`. When a new value is needed, ask instead of inventing one.
 - The look follows `tmtroot/spec/ui/design.tmt`: five layers ordered by depth (`well`, `canvas`, `content`, `action`, `float`; the rules are at the top of `tokens.css`), an action one layer above what holds it, and one way of casting shadows. A shadow comes from a `--tln-shadow-*` token, never written out in a component. A surface that only holds controls is content; the controls on it are action; the fields on it are wells. Do not add a sixth layer, a gradient, a second border radius, or a border to make something stand out. Do not add a utility CSS framework to a shared package.
-- A look that more than one component repeats (how an action, a text field or a tone looks) is written once in `packages/ui/src/looks.css`; layout and anything a single component owns stays in that component.
+- A look that more than one component repeats (how an action, a text field or a tone looks) is written once in `packages/primitives/src/looks.css`; layout and anything a single component owns stays in that component.
 
 ## Looking at and testing components
 

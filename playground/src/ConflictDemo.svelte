@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ConflictResolver, type TometServices } from "@telaion/tomet";
-  import { Button, Field, Select } from "@telaion/ui";
+  import { Button, Field, Select } from "@telaion/primitives";
   import { stubConflicts, stubResolve } from "./stub-tomet.js";
 
   const original =

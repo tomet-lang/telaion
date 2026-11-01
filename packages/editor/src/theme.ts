@@ -4,7 +4,7 @@ import { EditorView } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
 
 /**
- * The look of the editor, written in the design tokens of @telaion/ui and nothing else.
+ * The look of the editor, written in the design tokens of @telaion/primitives and nothing else.
  * CodeMirror writes these rules into a stylesheet, where var() resolves like anywhere else,
  * so the theme follows the light and dark switch with no extra work.
  */
@@ -70,13 +70,13 @@ const theme = EditorView.theme({
     backgroundImage: "none",
     borderRadius: "var(--tln-radius)",
   },
-  // A field is a well, a button is the action layer: the same looks as in @telaion/ui.
+  // A field is a well, a button is the action layer: the same looks as in @telaion/primitives.
   ".cm-textfield": {
     backgroundColor: "var(--tln-well)",
     border: "none",
     boxShadow: "var(--tln-shadow-well)",
   },
-  // The same look as a Button of @telaion/ui: no frame, a shadow that grows on hover.
+  // The same look as a Button of @telaion/primitives: no frame, a shadow that grows on hover.
   ".cm-button": {
     backgroundColor: "var(--tln-action)",
     border: "1px solid transparent",

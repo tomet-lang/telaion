@@ -1,7 +1,7 @@
 <script lang="ts">
-  // A trial: the delete confirmation of ordiola, rebuilt on @telaion/ui only.
-  import { Alert, Button, Icon, Modal } from "@telaion/ui";
-  import { TriangleAlert } from "@telaion/ui/icons";
+  // A trial: the delete confirmation of ordiola, rebuilt on @telaion/primitives only.
+  import { Alert, Button, Icon, Modal } from "@telaion/primitives";
+  import { TriangleAlert } from "@telaion/primitives/icons";
 
   let {
     entry,
