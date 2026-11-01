@@ -2,7 +2,7 @@
 
 body {
   margin: 0;
-  background: var(--tln-bg);
+  background: var(--tln-canvas);
   color: var(--tln-fg);
   font-family: var(--tln-font-sans);
   font-size: var(--tln-text-md);

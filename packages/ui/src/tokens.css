@@ -5,46 +5,113 @@
  * custom properties and nothing else: no literal colors, fonts, or sizes.
  * An application re-themes by overriding values, never by restyling components.
  *
+ * Telaion UI separates reading from acting (tmtroot/spec/ui/design.tmt).
+ * Depth is the one idea behind every surface color and every shadow.
+ *
+ * LAYERS. Five, ordered by how near they are to the person looking. A layer is
+ * told from its neighbours by a tone and a shadow, never by a frame.
+ *
+ *   layer    for                                    tone       shadow
+ *   -------  -------------------------------------  ---------  --------------------
+ *   well     what is typed into: text inputs, code  well       inward  (well)
+ *   canvas   the ground everything stands on        canvas     none
+ *   content  what is read                           content    outward (content)
+ *   action   what acts: a button, a select, a tab,  action     outward (action)
+ *            a menu item; one layer above whatever holds it
+ *   float    what floats over the page: a modal,    content    outward (float), and
+ *            a popover, a tooltip                              the scrim behind it
+ *
+ * RULES.
+ *   1. Raised layers cast a shadow outward; the well casts it inward. The well
+ *      is the action shadow turned inside out: a button upside down.
+ *   2. A surface that merely holds controls (a bar, a card, a modal) is content.
+ *      The controls on it are action; the fields on it are wells.
+ *   3. A float is content lifted in front of the page. It is not a sixth tone.
+ *      If something seems to need a sixth layer, the design is wrong, not the scale.
+ *   4. Ink (fg, fg-muted) meets AA (4.5:1) on every layer, in both themes.
+ *   5. tint is not a layer. It is a passing state on a layer: hover, selection,
+ *      a disabled control. Accent and state colors are for meaning, never for depth.
+ *   6. Borders are dividers only. Nothing is outlined to make it stand out;
+ *      the one exception is state: a danger outline, a focus ring.
+ *
  * Light and dark share one declaration through light-dark(). The default
  * follows the operating system; set data-theme="light" or data-theme="dark"
  * on any element to override it for that subtree.
  *
- * Palette: Stone neutrals, Sky accent.
+ * Palette and the outward shadows come from tomet-shelf, so that both look alike.
  */
 
 :root {
   color-scheme: light dark;
 
-  /* Surface */
-  --tln-bg: light-dark(#ffffff, #0c0a09);
-  --tln-bg-subtle: light-dark(#fafaf9, #1c1917); /* panels, headers */
-  --tln-bg-sunken: light-dark(#f5f5f4, #292524); /* code, inset areas */
+  /* Layer tones */
+  --tln-well: light-dark(#eef0f3, #0e0e11);
+  --tln-canvas: light-dark(#f4f4f6, #09090b);
+  --tln-content: light-dark(#ffffff, #17171a);
+  --tln-action: light-dark(#ffffff, #242429);
+  --tln-action-hover: light-dark(#ffffff, #2f2f37);
 
-  /* Text */
-  --tln-fg: light-dark(#1c1917, #f5f5f4);
-  --tln-fg-muted: light-dark(#57534e, #a8a29e);
+  /* Layer shadows: two-light model + mouse-as-light (zero ambient offset) */
+  /* - Action & Content:
+   *   1. Top rim highlight: horizontal sheen along the top edge in dark mode
+   *   2. Sun: crisp 2px 2px edge, faintly tinted cyan
+   *   3. Ambient: soft, centered contact shadow (0 0 5px, quiet black in dark mode)
+   */
+  --tln-shadow-action:
+    inset 0 1px 0 0 light-dark(transparent, rgb(255 255 255 / 0.12)),
+    2px 2px 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
+    0 0 5px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.65));
+  --tln-shadow-content: var(--tln-shadow-action);
 
-  /* Lines */
-  --tln-border: light-dark(#e7e5e4, #292524); /* dividers: decoration only */
-  --tln-border-strong: #78716c; /* controls: meets 3:1 on both themes */
+  /* - Well: a button upside down (both sun and ambient cast inward) */
+  --tln-shadow-well:
+    inset 2px 2px 0 0 light-dark(rgb(10 60 95 / 0.18), rgb(2 15 30 / 0.85)),
+    inset 0 0 4px 0 light-dark(rgb(15 23 42 / 0.18), rgb(0 0 0 / 0.75));
+
+  /* - Action hover: the mouse casts warm yellow light as the object lifts.
+   *   Top rim catches warm sheen (amber-100 / 0.28);
+   *   Sun shadow shifts out strongly (crisp 3px 3px 0);
+   *   Mouse light diffuses centered (0 0 20px, warm amber glow in dark mode).
+   */
+  --tln-shadow-action-hover:
+    inset 0 1px 0 0 light-dark(transparent, rgb(254 243 199 / 0.28)),
+    3px 3px 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
+    0 0 20px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.15));
+
+  /* - Float: high surface floating far above the page */
+  --tln-shadow-float:
+    inset 0 1px 0 0 light-dark(transparent, rgb(254 243 199 / 0.30)),
+    6px 8px 0 0 light-dark(rgb(10 60 95 / 0.26), rgb(2 15 30 / 0.95)),
+    0 0 32px 0 light-dark(rgb(15 23 42 / 0.14), rgb(251 191 36 / 0.16));
+
+  /* Behind a float that blocks the page (a modal): the page is dimmed */
+  --tln-scrim: light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.6));
+
+  /* A passing state, one step toward the ink: hover, selection, disabled. Not a layer. */
+  --tln-tint: color-mix(in srgb, var(--tln-fg) 7%, var(--tln-content));
+
+  /* Ink */
+  --tln-fg: light-dark(#090d16, #fafafa);
+  --tln-fg-muted: light-dark(#475569, #a8a8b2);
+
+  /* Dividers: decoration only */
+  --tln-border: light-dark(#e2e6eb, #26262c);
 
   /* Accent */
-  --tln-accent: light-dark(#0369a1, #38bdf8);
-  --tln-accent-hover: light-dark(#075985, #7dd3fc);
-  --tln-accent-fg: light-dark(#ffffff, #0c0a09); /* text on an accent fill */
-  --tln-accent-soft: color-mix(in srgb, var(--tln-accent) 12%, var(--tln-bg));
+  --tln-accent: light-dark(#2563eb, #3b82f6);
+  --tln-accent-hover: light-dark(#1d4ed8, #60a5fa);
+  --tln-accent-fg: light-dark(#ffffff, #09090b); /* ink on an accent fill */
+  --tln-accent-soft: color-mix(in srgb, var(--tln-accent) 12%, var(--tln-content));
+  --tln-focus-ring: 2px solid var(--tln-accent); /* every focus outline */
 
   /* State */
   --tln-ok: light-dark(#15803d, #4ade80);
   --tln-warn: light-dark(#b45309, #fbbf24); /* also marks conflicts */
   --tln-danger: light-dark(#b91c1c, #f87171);
-  --tln-danger-fg: light-dark(#ffffff, #0c0a09); /* text on a danger fill */
-  --tln-ok-soft: color-mix(in srgb, var(--tln-ok) 12%, var(--tln-bg));
-  --tln-warn-soft: color-mix(in srgb, var(--tln-warn) 12%, var(--tln-bg));
-  --tln-danger-soft: color-mix(in srgb, var(--tln-danger) 12%, var(--tln-bg));
-
-  /* Overlay: separates a modal without a shadow */
-  --tln-scrim: light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.6));
+  --tln-danger-fg: light-dark(#ffffff, #09090b); /* ink on a danger fill */
+  --tln-ok-soft: color-mix(in srgb, var(--tln-ok) 12%, var(--tln-content));
+  --tln-warn-soft: color-mix(in srgb, var(--tln-warn) 12%, var(--tln-content));
+  --tln-danger-soft: color-mix(in srgb, var(--tln-danger) 12%, var(--tln-content));
 
   /* Type */
   --tln-font-sans:
@@ -61,6 +128,7 @@
   /* Shape and rhythm */
   --tln-space: 4px; /* every gap is a multiple: calc(var(--tln-space) * 3) */
   --tln-radius: 6px;
+  --tln-transition: 0.15s ease;
 }
 
 [data-theme="light"] {

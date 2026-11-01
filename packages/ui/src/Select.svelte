@@ -2,6 +2,7 @@
   import type { HTMLSelectAttributes } from "svelte/elements";
   import { getFieldContext } from "./field-context.js";
   import Icon from "./Icon.svelte";
+  import "./looks.css";
   import { ChevronDown } from "./icons.generated.js";
 
   type Props = Omit<HTMLSelectAttributes, "class" | "style" | "value" | "children"> & {
@@ -18,7 +19,8 @@
 
 <span class="tln-select">
   <select
-    class="tln-select-control"
+    class="tln-select-control tln-action"
+    data-variant="secondary"
     {...rest}
     id={field?.id ?? rest.id}
     aria-describedby={field?.describedby ?? rest["aria-describedby"]}
@@ -38,6 +40,7 @@
     display: block;
   }
 
+  /* An action like a button: padding with room on the right for the chevron, appearance: none */
   .tln-select-control {
     box-sizing: border-box;
     width: 100%;
@@ -47,29 +50,12 @@
     font: inherit;
     font-size: var(--tln-text-sm);
     line-height: var(--tln-leading);
-    color: var(--tln-fg);
-    background: var(--tln-bg);
-    border: 1px solid var(--tln-border-strong);
-    border-radius: var(--tln-radius);
     appearance: none;
-    cursor: pointer;
-  }
-
-  .tln-select-control:focus-visible {
-    outline: 2px solid var(--tln-accent);
-    outline-offset: 0;
-    border-color: var(--tln-accent);
+    text-align: left;
   }
 
   .tln-select-control[aria-invalid="true"] {
     border-color: var(--tln-danger);
-  }
-
-  .tln-select-control:disabled {
-    background: var(--tln-bg-sunken);
-    border-color: var(--tln-border);
-    color: var(--tln-fg-muted);
-    cursor: not-allowed;
   }
 
   /* The arrow is drawn by us so it follows the theme; clicks pass through to the select. */

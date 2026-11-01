@@ -122,7 +122,7 @@
     overflow-y: auto;
     box-sizing: border-box;
     color: var(--tln-fg);
-    background: var(--tln-bg);
+    background: var(--tln-canvas);
   }
 
   .tln-conflicts-loading {
@@ -150,9 +150,10 @@
     display: grid;
     gap: calc(var(--tln-space) * 3);
     padding: calc(var(--tln-space) * 3);
-    background: var(--tln-bg-subtle);
-    border: 1px solid var(--tln-border);
+    /* A card only holds the buttons of its sides; the buttons are the action layer. */
+    background: var(--tln-content);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
   }
 
   .tln-conflict-sides {
@@ -186,9 +187,9 @@
     font-family: var(--tln-font-mono);
     font-size: var(--tln-text-sm);
     line-height: var(--tln-leading);
-    background: var(--tln-bg-sunken);
-    border: 1px solid var(--tln-border);
+    background: var(--tln-well);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-well);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }

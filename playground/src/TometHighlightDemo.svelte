@@ -76,8 +76,9 @@
 
   .frame {
     height: calc(var(--tln-space) * 48);
-    border: 1px solid var(--tln-border-strong);
+    background: var(--tln-content);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
     overflow: hidden;
   }
 

@@ -52,7 +52,8 @@ These rules keep the layers separable. Do not break them for convenience.
 - `@telaion/tomet` knows the shapes of Tomet data (highlight spans, conflicts) and how to show them. It does not know how to compute them.
 - Components know nothing about where a document is stored. They talk to a storage adapter that the application supplies.
 - Components never hard-code colors, fonts, or sizes. Every visual value comes from a design token: a `--tln-*` custom property defined in `packages/ui/src/tokens.css`. When a new value is needed, ask instead of inventing one.
-- Do not add shadows, gradients, or a second border radius. Do not add a utility CSS framework to a shared package.
+- The look follows `tmtroot/spec/ui/design.tmt`: five layers ordered by depth (`well`, `canvas`, `content`, `action`, `float`; the rules are at the top of `tokens.css`), an action one layer above what holds it, and one way of casting shadows. A shadow comes from a `--tln-shadow-*` token, never written out in a component. A surface that only holds controls is content; the controls on it are action; the fields on it are wells. Do not add a sixth layer, a gradient, a second border radius, or a border to make something stand out. Do not add a utility CSS framework to a shared package.
+- A look that more than one component repeats (how an action, a text field or a tone looks) is written once in `packages/ui/src/looks.css`; layout and anything a single component owns stays in that component.
 
 ## Looking at and testing components
 

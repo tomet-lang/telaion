@@ -12,7 +12,7 @@ const theme = EditorView.baseTheme({
   ".tln-hl-lineComment, .tln-hl-blockComment, .tln-hl-processingInstruction, .tln-hl-punctuation, .tln-hl-contentSeparator":
     { color: "var(--tln-fg-muted)" },
   ".tln-hl-propertyName": { color: "var(--tln-fg)" },
-  ".tln-hl-monospace": { backgroundColor: "var(--tln-bg-sunken)" },
+  ".tln-hl-monospace": { backgroundColor: "var(--tln-tint)" },
 });
 
 const setHighlights = StateEffect.define<DecorationSet>();

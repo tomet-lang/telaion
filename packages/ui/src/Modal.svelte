@@ -135,9 +135,11 @@
     margin: auto;
     padding: 0;
     color: var(--tln-fg);
-    background: var(--tln-bg);
-    border: 1px solid var(--tln-border-strong);
+    /* A float: content lifted in front of the page. Its buttons are the action layer on it. */
+    background: var(--tln-content);
+    border: 0;
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-float);
     max-width: calc(100vw - var(--tln-space) * 8);
     max-height: calc(100vh - var(--tln-space) * 8);
   }
@@ -163,8 +165,8 @@
     height: 100vh;
     max-width: none;
     max-height: none;
-    border: 0;
     border-radius: 0;
+    box-shadow: none;
   }
 
   .tln-modal-header {
@@ -195,6 +197,6 @@
     gap: calc(var(--tln-space) * 2);
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 4);
     border-top: 1px solid var(--tln-border);
-    background: var(--tln-bg-subtle);
+    background: var(--tln-tint);
   }
 </style>

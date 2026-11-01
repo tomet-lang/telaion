@@ -70,10 +70,10 @@ for (const scheme of ["light", "dark"] as const) {
         .evaluate((el, prop) => getComputedStyle(el).getPropertyValue(prop), property);
 
     test("the panel and its fields use the tokens, not the light colors CodeMirror brings", async ({ page }) => {
-      expect(await style(page, ".cm-panels", "background-color")).toBe(await token(page, "--tln-bg-subtle"));
-      expect(await style(page, ".cm-search .cm-textfield", "background-color")).toBe(await token(page, "--tln-bg"));
+      expect(await style(page, ".cm-panels", "background-color")).toBe(await token(page, "--tln-content"));
+      expect(await style(page, ".cm-search .cm-textfield", "background-color")).toBe(await token(page, "--tln-well"));
       expect(await style(page, ".cm-search .cm-textfield", "color")).toBe(await token(page, "--tln-fg"));
-      expect(await style(page, ".cm-search .cm-button", "background-color")).toBe(await token(page, "--tln-bg-subtle"));
+      expect(await style(page, ".cm-search .cm-button", "background-color")).toBe(await token(page, "--tln-action"));
     });
 
     test("the buttons carry no gradient", async ({ page }) => {

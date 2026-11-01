@@ -113,7 +113,7 @@
 
   .tln-tab-button:hover {
     color: var(--tln-fg);
-    background: var(--tln-bg-subtle);
+    background: var(--tln-tint);
   }
 
   .tln-tab[data-selected="true"] .tln-tab-button {
@@ -122,7 +122,7 @@
 
   .tln-tab-button:focus-visible,
   .tln-tab-close:focus-visible {
-    outline: 2px solid var(--tln-accent);
+    outline: var(--tln-focus-ring);
     outline-offset: -2px;
   }
 
@@ -147,6 +147,6 @@
 
   .tln-tab-close:hover {
     color: var(--tln-fg);
-    background: var(--tln-bg-sunken);
+    background: var(--tln-tint);
   }
 </style>

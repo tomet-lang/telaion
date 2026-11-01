@@ -124,13 +124,14 @@
   });
 
   const swatches = [
-    "bg",
-    "bg-subtle",
-    "bg-sunken",
+    "well",
+    "canvas",
+    "content",
+    "action",
+    "tint",
     "fg",
     "fg-muted",
     "border",
-    "border-strong",
     "accent",
     "accent-soft",
     "ok",
@@ -153,6 +154,21 @@
 </header>
 
 <main>
+  <section>
+    <h2>Layers</h2>
+    <div class="layer-content">
+      <p>Canvas is the ground under this card. The card is content: what is read.</p>
+      <div class="layer-well">Well: what is typed into. Cut into the surface, the opposite of a button.</div>
+      <div class="layer-row">
+        <span>Action: what acts, one above the content it is on.</span>
+        <Button variant="primary">Primary</Button>
+        <Button>Secondary</Button>
+        <Button variant="quiet">Quiet</Button>
+      </div>
+      <p>Float, the fifth layer, is the Modal below: content lifted in front of the page.</p>
+    </div>
+  </section>
+
   <section>
     <h2>Tokens</h2>
     <div class="swatches">
@@ -415,8 +431,8 @@
     justify-content: space-between;
     gap: calc(var(--tln-space) * 4);
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 6);
-    background: var(--tln-bg-subtle);
-    border-bottom: 1px solid var(--tln-border);
+    background: var(--tln-content);
+    box-shadow: var(--tln-shadow-content);
   }
 
   h1 {
@@ -462,10 +478,11 @@
     font: inherit;
     font-size: var(--tln-text-sm);
     padding: var(--tln-space) calc(var(--tln-space) * 3);
-    background: var(--tln-bg);
+    background: var(--tln-action);
     color: var(--tln-fg);
-    border: 1px solid var(--tln-border-strong);
+    border: 1px solid transparent;
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-action);
     cursor: pointer;
   }
 
@@ -517,10 +534,39 @@
     padding: calc(var(--tln-space) * 3);
     font-family: var(--tln-font-mono);
     font-size: var(--tln-text-sm);
-    background: var(--tln-bg-sunken);
-    border: 1px solid var(--tln-border);
+    background: var(--tln-well);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-well);
     white-space: pre-wrap;
+  }
+
+  .layer-content {
+    display: grid;
+    gap: calc(var(--tln-space) * 4);
+    padding: calc(var(--tln-space) * 5);
+    background: var(--tln-content);
+    border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
+  }
+
+  .layer-content p {
+    margin: 0;
+  }
+
+  .layer-well {
+    padding: calc(var(--tln-space) * 3);
+    font-size: var(--tln-text-sm);
+    color: var(--tln-fg-muted);
+    background: var(--tln-well);
+    border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-well);
+  }
+
+  .layer-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--tln-space) * 3);
   }
 
   .stack {

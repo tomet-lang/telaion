@@ -12,11 +12,11 @@ const theme = EditorView.theme({
   "&": {
     height: "100%",
     color: "var(--tln-fg)",
-    backgroundColor: "var(--tln-bg)",
+    backgroundColor: "var(--tln-content)",
     fontSize: "var(--tln-text-sm)",
   },
   "&.cm-focused": {
-    outline: "2px solid var(--tln-accent)",
+    outline: "var(--tln-focus-ring)",
     outlineOffset: "-2px",
   },
   ".cm-scroller": {
@@ -35,25 +35,26 @@ const theme = EditorView.theme({
       backgroundColor: "var(--tln-accent-soft)",
     },
   ".cm-activeLine": {
-    backgroundColor: "var(--tln-bg-subtle)",
+    backgroundColor: "var(--tln-tint)",
   },
   ".cm-gutters": {
     color: "var(--tln-fg-muted)",
-    backgroundColor: "var(--tln-bg-subtle)",
+    backgroundColor: "transparent",
     border: "none",
     borderRight: "1px solid var(--tln-border)",
   },
   ".cm-activeLineGutter": {
     color: "var(--tln-fg)",
-    backgroundColor: "var(--tln-bg-sunken)",
+    backgroundColor: "var(--tln-tint)",
   },
 
   // The parts of CodeMirror that an application brings in with `extensions`: search, folding,
   // bracket matching. CodeMirror draws them for a light or a dark page, not for tokens, so they
   // are set here; otherwise a search panel stays light in a dark application.
+  // A panel only holds fields and buttons: it is content, set off from the text by a divider.
   ".cm-panels": {
     color: "var(--tln-fg)",
-    backgroundColor: "var(--tln-bg-subtle)",
+    backgroundColor: "var(--tln-content)",
   },
   ".cm-panels-top": { borderBottom: "1px solid var(--tln-border)" },
   ".cm-panels-bottom": { borderTop: "1px solid var(--tln-border)" },
@@ -67,14 +68,24 @@ const theme = EditorView.theme({
     fontSize: "var(--tln-text-sm)",
     color: "var(--tln-fg)",
     backgroundImage: "none",
-    border: "1px solid var(--tln-border-strong)",
     borderRadius: "var(--tln-radius)",
   },
-  ".cm-textfield": { backgroundColor: "var(--tln-bg)" },
-  ".cm-button": { backgroundColor: "var(--tln-bg-subtle)", cursor: "pointer" },
-  ".cm-button:hover": { backgroundColor: "var(--tln-bg-sunken)" },
+  // A field is a well, a button is the action layer: the same looks as in @telaion/ui.
+  ".cm-textfield": {
+    backgroundColor: "var(--tln-well)",
+    border: "none",
+    boxShadow: "var(--tln-shadow-well)",
+  },
+  // The same look as a Button of @telaion/ui: no frame, a shadow that grows on hover.
+  ".cm-button": {
+    backgroundColor: "var(--tln-action)",
+    border: "1px solid transparent",
+    boxShadow: "var(--tln-shadow-action)",
+    cursor: "pointer",
+  },
+  ".cm-button:hover": { boxShadow: "var(--tln-shadow-action-hover)" },
   ".cm-textfield:focus-visible, .cm-button:focus-visible": {
-    outline: "2px solid var(--tln-accent)",
+    outline: "var(--tln-focus-ring)",
     outlineOffset: "1px",
   },
   ".cm-searchMatch": {
@@ -85,7 +96,7 @@ const theme = EditorView.theme({
     backgroundColor: "var(--tln-accent-soft)",
     outline: "1px solid var(--tln-accent)",
   },
-  ".cm-selectionMatch": { backgroundColor: "var(--tln-bg-sunken)" },
+  ".cm-selectionMatch": { backgroundColor: "var(--tln-tint)" },
   "&.cm-focused .cm-matchingBracket": {
     backgroundColor: "var(--tln-accent-soft)",
     outline: "1px solid var(--tln-accent)",
@@ -94,16 +105,18 @@ const theme = EditorView.theme({
     backgroundColor: "var(--tln-danger-soft)",
     outline: "1px solid var(--tln-danger)",
   },
+  // A tooltip floats over the editor.
   ".cm-tooltip": {
     color: "var(--tln-fg)",
-    backgroundColor: "var(--tln-bg-subtle)",
-    border: "1px solid var(--tln-border-strong)",
+    backgroundColor: "var(--tln-content)",
+    border: "none",
     borderRadius: "var(--tln-radius)",
+    boxShadow: "var(--tln-shadow-float)",
   },
   ".cm-foldPlaceholder": {
     color: "var(--tln-fg-muted)",
-    backgroundColor: "var(--tln-bg-sunken)",
-    border: "1px solid var(--tln-border-strong)",
+    backgroundColor: "var(--tln-tint)",
+    border: "none",
   },
 });
 

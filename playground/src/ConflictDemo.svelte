@@ -65,8 +65,9 @@
 
   .frame {
     max-height: calc(var(--tln-space) * 110);
-    border: 1px solid var(--tln-border-strong);
+    background: var(--tln-content);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
     overflow: auto;
   }
 
@@ -75,9 +76,9 @@
     padding: calc(var(--tln-space) * 3);
     font-family: var(--tln-font-mono);
     font-size: var(--tln-text-sm);
-    background: var(--tln-bg-sunken);
-    border: 1px solid var(--tln-border);
+    background: var(--tln-well);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-well);
     white-space: pre-wrap;
   }
 

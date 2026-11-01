@@ -77,9 +77,10 @@
     align-items: center;
     gap: calc(var(--tln-space) * 3);
     padding: calc(var(--tln-space) * 2) calc(var(--tln-space) * 3);
-    background: var(--tln-bg-subtle);
-    border: 1px solid var(--tln-border);
+    /* The bar only holds the buttons; the buttons are the action layer. */
+    background: var(--tln-content);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
   }
 
   .tln-editor-path {
@@ -98,8 +99,9 @@
   .tln-editor-body {
     flex: 1;
     min-height: 0;
-    border: 1px solid var(--tln-border-strong);
+    background: var(--tln-content);
     border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
     overflow: hidden;
   }
 

@@ -114,7 +114,7 @@ for (const scheme of ["light", "dark"] as const) {
       page.locator(".tln-editor .cm-editor").evaluate((el) => getComputedStyle(el).backgroundColor),
       page.evaluate(() => {
         const probe = document.createElement("i");
-        probe.style.color = "var(--tln-bg)";
+        probe.style.color = "var(--tln-content)";
         document.body.append(probe);
         const color = getComputedStyle(probe).color;
         probe.remove();

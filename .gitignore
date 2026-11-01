@@ -16,6 +16,7 @@ playwright-report/
 
 #== git worktrees
 .worktrees/
+.agents/
 
 # -----------------------------------------------------------------------
 # Shared ignore rules

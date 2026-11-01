@@ -1,0 +1,170 @@
+/*
+ * Looks that more than one component shares.
+ *
+ * Only what a second component would otherwise copy lives here: how an action
+ * looks (Button, IconButton), how a text field looks (Input, Select), and how a
+ * tone looks (Alert, Badge). Layout and anything a single component owns stays
+ * in that component. Like the components, this file reads tokens and nothing else.
+ *
+ * It is not in a cascade layer, as the component styles were not: a CSS reset
+ * such as Tailwind's preflight lives in a layer and has to lose to it.
+ * Properties set here are not set again by a component, except where a comment says so.
+ */
+
+/* ---- Action: stands on the action layer, one above content -------------------------------- */
+
+.tln-action {
+  border: 1px solid transparent;
+  border-radius: var(--tln-radius);
+  cursor: pointer;
+  transition:
+    background-color var(--tln-transition),
+    box-shadow var(--tln-transition);
+}
+
+.tln-action:focus-visible {
+  outline: var(--tln-focus-ring);
+  outline-offset: 2px;
+}
+
+.tln-action[data-variant="secondary"] {
+  background: var(--tln-action);
+  color: var(--tln-fg);
+  box-shadow: var(--tln-shadow-action);
+}
+.tln-action[data-variant="secondary"]:enabled:hover {
+  background: var(--tln-action-hover);
+  box-shadow: var(--tln-shadow-action-hover);
+}
+
+.tln-action[data-variant="primary"] {
+  background: var(--tln-accent);
+  color: var(--tln-accent-fg);
+  box-shadow: var(--tln-shadow-action);
+}
+.tln-action[data-variant="primary"]:enabled:hover {
+  background: var(--tln-accent-hover);
+  box-shadow: var(--tln-shadow-action-hover);
+}
+
+/* Destructive, outlined. The outline is what tells it from a plain action. */
+.tln-action[data-variant="danger"] {
+  background: var(--tln-action);
+  border-color: var(--tln-danger);
+  color: var(--tln-danger);
+  box-shadow: var(--tln-shadow-action);
+}
+.tln-action[data-variant="danger"]:enabled:hover {
+  background: var(--tln-danger-soft);
+  box-shadow: var(--tln-shadow-action-hover);
+}
+
+.tln-action[data-variant="danger-fill"] {
+  background: var(--tln-danger);
+  color: var(--tln-danger-fg);
+  box-shadow: var(--tln-shadow-action);
+}
+.tln-action[data-variant="danger-fill"]:enabled:hover {
+  /* Toward the foreground: darker in light mode, lighter in dark mode. */
+  background: color-mix(in srgb, var(--tln-danger) 85%, var(--tln-fg));
+  box-shadow: var(--tln-shadow-action-hover);
+}
+
+/* No frame, no shadow: it stays on the content layer, as a link does. */
+.tln-action[data-variant="quiet"] {
+  background: transparent;
+  color: var(--tln-fg-muted);
+}
+.tln-action[data-variant="quiet"]:enabled:hover {
+  background: var(--tln-tint);
+  color: var(--tln-fg);
+}
+
+/* One disabled look for every variant: it steps back down onto the content layer. */
+.tln-action:disabled {
+  background: var(--tln-tint);
+  border-color: transparent;
+  color: var(--tln-fg-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.tln-action[data-variant="quiet"]:disabled {
+  background: transparent;
+}
+
+/* ---- Field control: a well, cut into the surface it is on, the opposite of a button ------- */
+
+.tln-field-control {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  /* One pixel more than a button's padding: a button has a 1px border, a well has none. */
+  padding: calc(var(--tln-space) * 1.5 + 1px) calc(var(--tln-space) * 3 + 1px);
+  font: inherit;
+  font-size: var(--tln-text-sm);
+  line-height: var(--tln-leading);
+  color: var(--tln-fg);
+  background: var(--tln-well);
+  border: 0;
+  border-radius: var(--tln-radius);
+  box-shadow: var(--tln-shadow-well);
+}
+
+.tln-field-control::placeholder {
+  color: var(--tln-fg-muted);
+}
+
+.tln-field-control:focus-visible {
+  outline: var(--tln-focus-ring);
+  outline-offset: 0;
+}
+
+/* A wrong value is a state, so it may be outlined: the ring sits inside the well. */
+.tln-field-control[aria-invalid="true"] {
+  box-shadow:
+    var(--tln-shadow-well),
+    inset 0 0 0 2px var(--tln-danger);
+}
+.tln-field-control[aria-invalid="true"]:focus-visible {
+  outline-color: var(--tln-danger);
+}
+
+/* Disabled: the well fills in flat, with nothing to type into. */
+.tln-field-control:disabled {
+  color: var(--tln-fg-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ---- Tone: which color a status carries --------------------------------------------------- */
+
+/*
+ * A component that has a tone reads --tln-tone (the line) and --tln-tone-soft (the fill).
+ * No data-tone, or "info" and "accent", is the accent.
+ */
+.tln-tone {
+  --tln-tone: var(--tln-accent);
+  --tln-tone-soft: var(--tln-accent-soft);
+}
+.tln-tone[data-tone="ok"] {
+  --tln-tone: var(--tln-ok);
+  --tln-tone-soft: var(--tln-ok-soft);
+}
+.tln-tone[data-tone="warn"] {
+  --tln-tone: var(--tln-warn);
+  --tln-tone-soft: var(--tln-warn-soft);
+}
+.tln-tone[data-tone="danger"] {
+  --tln-tone: var(--tln-danger);
+  --tln-tone-soft: var(--tln-danger-soft);
+}
+.tln-tone[data-tone="neutral"] {
+  --tln-tone: var(--tln-border);
+  --tln-tone-soft: var(--tln-tint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tln-action {
+    transition: none;
+  }
+}
