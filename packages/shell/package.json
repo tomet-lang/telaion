@@ -1,0 +1,60 @@
+{
+  "name": "@telaion/shell",
+  "version": "0.1.4",
+  "description": "Telaion Shell - workspace layout and pane split system for Tomet editors",
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "workspace",
+    "layout",
+    "pane",
+    "split",
+    "tomet"
+  ],
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/tomet-lang/telaion#readme",
+  "bugs": {
+    "url": "https://github.com/tomet-lang/telaion/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomet-lang/telaion.git",
+    "directory": "packages/shell"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "svelte": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && svelte-package -i src -o dist --tsconfig ../../tsconfig.json",
+    "prepack": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "svelte": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "dependencies": {
+    "@telaion/primitives": "workspace:^"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
+}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { DocumentSession, Editor } from "@telaion/editor";
+  import { SplitPane } from "@telaion/shell";
   import { onMount } from "svelte";
   import ConfirmDelete from "./ConfirmDelete.svelte";
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
@@ -42,6 +43,8 @@
   let reset = $state(remembered("playground-reset"));
   let spaced = $state(remembered("playground-spaced"));
   let followMouse = $state(remembered("playground-mouse-light"));
+  let splitRatio = $state(0.4);
+  let verticalSplitRatio = $state(0.5);
 
   $effect(() => {
     try {
@@ -352,6 +355,39 @@
       <span class="sample"><Icon icon={X} label="Close" /> decorative off, labelled</span>
       <span class="sample"><Icon icon={Check} /> decorative</span>
       <span class="sample" style:color="var(--tln-warn)"><Icon icon={TriangleAlert} /> follows the text color</span>
+    </div>
+  </section>
+
+  <section data-testid="split-pane-section">
+    <h2>Split Pane</h2>
+    <div style="height: 180px; margin-bottom: calc(var(--tln-space) * 4); border-radius: var(--tln-radius); overflow: hidden; border: 1px solid var(--tln-border);">
+      <SplitPane direction="horizontal" bind:ratio={splitRatio} min={0.15} max={0.85}>
+        {#snippet primary()}
+          <div class="layer-well" style="height: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+            <span data-testid="split-horizontal-primary">Left ({Math.round(splitRatio * 100)}%)</span>
+          </div>
+        {/snippet}
+        {#snippet secondary()}
+          <div class="layer-content" style="height: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+            <span data-testid="split-horizontal-secondary">Right ({Math.round((1 - splitRatio) * 100)}%)</span>
+          </div>
+        {/snippet}
+      </SplitPane>
+    </div>
+
+    <div style="height: 220px; border-radius: var(--tln-radius); overflow: hidden; border: 1px solid var(--tln-border);">
+      <SplitPane direction="vertical" bind:ratio={verticalSplitRatio} min={0.2} max={0.8}>
+        {#snippet primary()}
+          <div class="layer-content" style="height: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+            <span data-testid="split-vertical-primary">Top ({Math.round(verticalSplitRatio * 100)}%)</span>
+          </div>
+        {/snippet}
+        {#snippet secondary()}
+          <div class="layer-well" style="height: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+            <span data-testid="split-vertical-secondary">Bottom ({Math.round((1 - verticalSplitRatio) * 100)}%)</span>
+          </div>
+        {/snippet}
+      </SplitPane>
     </div>
   </section>
 </main>

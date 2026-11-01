@@ -52,3 +52,9 @@
 "packages/tomet/LICENSE-APACHE": {
   source: { upstream: commonfiles, path: "LICENSE-APACHE" }
 }
+"packages/shell/LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"packages/shell/LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}

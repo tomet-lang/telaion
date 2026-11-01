@@ -12,10 +12,10 @@ install:
 
 #[ Icons ]
 
-# Regenerate packages/ui/src/icons.generated.ts from the pinned Lucide sprite.
-# To take a newer sprite first: catasto sync --update --only packages/ui/vendor/lucide/sprite.svg
+# Regenerate packages/primitives/src/icons.generated.ts from the pinned Lucide sprite.
+# To take a newer sprite first: catasto sync --update --only packages/primitives/vendor/lucide/sprite.svg
 icons:
-    node packages/ui/scripts/gen-icons.mjs
+    node packages/primitives/scripts/gen-icons.mjs
 
 #[ Quality ]
 

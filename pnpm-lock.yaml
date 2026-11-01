@@ -54,6 +54,15 @@ importers:
         specifier: ^5.0.0
         version: 5.57.3
 
+  packages/shell:
+    dependencies:
+      '@telaion/primitives':
+        specifier: workspace:^
+        version: link:../primitives
+      svelte:
+        specifier: ^5.0.0
+        version: 5.57.3
+
   packages/tomet:
     dependencies:
       '@telaion/editor':
@@ -81,6 +90,9 @@ importers:
       '@telaion/primitives':
         specifier: workspace:*
         version: link:../packages/primitives
+      '@telaion/shell':
+        specifier: workspace:*
+        version: link:../packages/shell
       '@telaion/tomet':
         specifier: workspace:*
         version: link:../packages/tomet
