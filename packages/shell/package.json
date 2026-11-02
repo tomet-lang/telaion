@@ -1,6 +1,6 @@
 {
   "name": "@telaion/shell",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Telaion Shell - workspace layout and pane split system for Tomet editors",
   "keywords": [
     "svelte",

@@ -1,6 +1,6 @@
 {
   "name": "@telaion/theme",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Telaion Theme - design tokens, five-layer physical model, and Tailwind preset for Tomet",
   "keywords": [
     "theme",

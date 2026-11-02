@@ -1,6 +1,6 @@
 {
   "name": "@telaion/primitives",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Telaion primitives - themeless Svelte 5 primitives and design tokens for Tomet editors",
   "keywords": [
     "svelte",
