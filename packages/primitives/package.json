@@ -28,7 +28,6 @@
       "svelte": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./tokens.css": "./src/tokens.css",
     "./icons": "./src/icons.generated.ts"
   },
   "files": [
@@ -52,12 +51,14 @@
         "svelte": "./dist/index.js",
         "default": "./dist/index.js"
       },
-      "./tokens.css": "./dist/tokens.css",
       "./icons": {
         "types": "./dist/icons.generated.d.ts",
         "default": "./dist/icons.generated.js"
       }
     }
+  },
+  "dependencies": {
+    "@telaion/theme": "workspace:^"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

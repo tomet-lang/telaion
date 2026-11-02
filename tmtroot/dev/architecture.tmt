@@ -19,13 +19,14 @@ Telaion is the shared frame. It carries structure and behavior. It carries no th
 
 ==[ Packages ]
 
--| `@telaion/primitives` -- Generic primitives (button, input, modal, tabs, badge, alert) and the design tokens. No Tomet knowledge.
+-| `@telaion/theme` -- Design tokens, five-layer physical depth model, and Tailwind theme extension.
+-| `@telaion/primitives` -- Generic primitives (button, input, modal, tabs, badge, alert). No Tomet knowledge.
 -| `@telaion/views` -- Self-contained composite views: Kanban, Explorer (tree). No Tomet knowledge.
 -| `@telaion/shell` -- Workspace frame and split-pane layout system.
 -| `@telaion/editor` -- The editor frame. Takes a storage adapter and a language slot. No Tomet knowledge.
 -| `@telaion/tomet` -- Tomet-specific parts: syntax highlighting, conflict blocks and their resolution. It knows the shapes of Tomet data, not the engine that computes them.
 
-The split is by what a package must know and by abstraction layer. `@telaion/primitives` can be extracted into its own repository later without touching the others.
+The split is by what a package must know and by abstraction layer. `@telaion/primitives` and `@telaion/theme` can be extracted into their own repository later without touching the others.
 
 ==[ Dependency direction ]
 
@@ -39,7 +40,9 @@ tomet-wiki, ordiola     each builds its own Tomet engine from the Tomet crates
     ^
 @telaion/views, @telaion/editor  views placed in panes
     ^
-@telaion/primitives     knows nothing about Tomet, editor or shell
+@telaion/primitives     primitives (button, modal...)
+    ^
+@telaion/theme          tokens, layers, physical shadows, tailwind preset
 ```
 
 Telaion points up at nothing: it imports no Tomet package. The arrows into it are the interfaces an application fills in.
@@ -153,7 +156,7 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 
 -| Visual values are CSS custom properties with the prefix `--tln-`. Components reference tokens only.
 -| The token set is small and fixed. Three layers, one way of casting shadows, no gradients, one radius. What the look is for is written in `spec/ui/design.tmt`; this section is how it is built.
--| One default value set ships with `@telaion/primitives` as `tokens.css`. An application overrides token values; it does not restyle components.
+-| One default value set ships with `@telaion/theme` as `tokens.css` and `tailwind.css`. An application overrides token values; it does not restyle components.
 -| Plain CSS. No utility framework inside the shared packages, so that the same CSS can be embedded in the wiki's Rust assets unchanged.
 
 ===[ Decided ]
@@ -165,7 +168,7 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Light and dark live in one declaration through `light-dark()`. The default follows the operating system; `data-theme="light"` or `data-theme="dark"` on any element overrides it for that subtree.
 -| Ink (`fg`, `fg-muted`) meets WCAG AA (4.5:1) on every layer and the focus ring meets 3:1 on every layer, in both themes. `--tln-border` is for dividers only. A field has no border, so its edge is its tone and its inward shadow; that is a weaker edge than a frame gives, and it is accepted.
 -| The tokens: layer tones (`well`, `canvas`, `content`, `action`; `float` uses `content`), shadows (`shadow-well`, `shadow-content`, `shadow-action`, `shadow-action-hover`, `shadow-float`), `tint` (a passing state such as hover or disabled; not a layer), ink (`fg`, `fg-muted`), `border` (dividers), accent (`accent`, `accent-hover`, `accent-fg`, `accent-soft`) and `focus-ring`, state (`ok`, `warn`, `danger` and their `-soft` tints, and `danger-fg` for text on a danger fill), `scrim`, fonts (`font-sans`, `font-mono`), text sizes (`text-xs`, `text-sm`, `text-md`), `leading`, `space`, `radius`, `transition`.
--| Shared looks: what an action, a text field and a tone look like is plain CSS in `packages/ui/src/looks.css`, which reads tokens only. Svelte components add its classes (`tln-action`, `tln-field-control`, `tln-tone`) and keep only their layout in their own `<style>`. The file is not in a cascade layer, so that Tailwind's preflight, which is, loses to it. Because it is plain CSS, an application without Svelte can take it as it is.
+-| Shared looks: what an action, a text field and a tone look like is plain CSS in `packages/primitives/src/looks.css`, which reads tokens only. Svelte components add its classes (`tln-action`, `tln-field-control`, `tln-tone`) and keep only their layout in their own `<style>`. The file is not in a cascade layer, so that Tailwind's preflight, which is, loses to it. Because it is plain CSS, an application without Svelte can take it as it is.
 -| `light-dark()` and `color-mix()` require a 2024-or-later browser engine. This is accepted.
 
 ==[ Distribution ]

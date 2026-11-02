@@ -64,3 +64,9 @@
 "packages/views/LICENSE-APACHE": {
   source: { upstream: commonfiles, path: "LICENSE-APACHE" }
 }
+"packages/theme/LICENSE-MIT": {
+  source: { upstream: commonfiles, path: "LICENSE-MIT" }
+}
+"packages/theme/LICENSE-APACHE": {
+  source: { upstream: commonfiles, path: "LICENSE-APACHE" }
+}

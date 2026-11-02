@@ -52,7 +52,8 @@
     }
   },
   "dependencies": {
-    "@telaion/primitives": "workspace:^"
+    "@telaion/primitives": "workspace:^",
+    "@telaion/theme": "workspace:^"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

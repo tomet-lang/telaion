@@ -1,0 +1,41 @@
+/*
+ * Telaion theme extensions for Tailwind CSS (v4).
+ *
+ * Import this file in your CSS after `@import "tailwindcss";` and `@import "@telaion/theme/tokens.css";`:
+ *
+ *   @import "tailwindcss";
+ *   @import "@telaion/theme/tokens.css";
+ *   @import "@telaion/theme/tailwind.css";
+ */
+
+@theme {
+  --color-tln-well: var(--tln-well);
+  --color-tln-canvas: var(--tln-canvas);
+  --color-tln-content: var(--tln-content);
+  --color-tln-action: var(--tln-action);
+  --color-tln-action-hover: var(--tln-action-hover);
+
+  --color-tln-border: var(--tln-border);
+  --color-tln-tint: var(--tln-tint);
+  --color-tln-fg: var(--tln-fg);
+  --color-tln-fg-muted: var(--tln-fg-muted);
+
+  --color-tln-accent: var(--tln-accent);
+  --color-tln-accent-soft: var(--tln-accent-soft);
+  --color-tln-ok: var(--tln-ok);
+  --color-tln-ok-soft: var(--tln-ok-soft);
+  --color-tln-warn: var(--tln-warn);
+  --color-tln-warn-soft: var(--tln-warn-soft);
+  --color-tln-danger: var(--tln-danger);
+  --color-tln-danger-soft: var(--tln-danger-soft);
+
+  --shadow-tln-well: var(--tln-shadow-well);
+  --shadow-tln-canvas: var(--tln-shadow-canvas);
+  --shadow-tln-content: var(--tln-shadow-content);
+  --shadow-tln-action: var(--tln-shadow-action);
+  --shadow-tln-float: var(--tln-shadow-float);
+
+  --radius-tln: var(--tln-radius);
+  --font-tln: var(--tln-font);
+  --font-tln-mono: var(--tln-font-mono);
+}

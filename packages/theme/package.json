@@ -1,0 +1,55 @@
+{
+  "name": "@telaion/theme",
+  "version": "0.1.4",
+  "description": "Telaion Theme - design tokens, five-layer physical model, and Tailwind preset for Tomet",
+  "keywords": [
+    "theme",
+    "tokens",
+    "design-system",
+    "tailwind",
+    "tomet",
+    "telaion"
+  ],
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/tomet-lang/telaion#readme",
+  "bugs": {
+    "url": "https://github.com/tomet-lang/telaion/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomet-lang/telaion.git",
+    "directory": "packages/theme"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./tokens.css": "./src/tokens.css",
+    "./tailwind.css": "./src/tailwind.css"
+  },
+  "files": [
+    "dist",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && svelte-package -i src -o dist --tsconfig ../../tsconfig.json",
+    "prepack": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./tokens.css": "./dist/tokens.css",
+      "./tailwind.css": "./dist/tailwind.css"
+    }
+  }
+}

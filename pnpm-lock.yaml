@@ -44,12 +44,18 @@ importers:
       '@telaion/primitives':
         specifier: workspace:^
         version: link:../primitives
+      '@telaion/theme':
+        specifier: workspace:^
+        version: link:../theme
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
 
   packages/primitives:
     dependencies:
+      '@telaion/theme':
+        specifier: workspace:^
+        version: link:../theme
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
@@ -59,9 +65,14 @@ importers:
       '@telaion/primitives':
         specifier: workspace:^
         version: link:../primitives
+      '@telaion/theme':
+        specifier: workspace:^
+        version: link:../theme
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
+
+  packages/theme: {}
 
   packages/tomet:
     dependencies:
@@ -87,6 +98,9 @@ importers:
       '@telaion/primitives':
         specifier: workspace:^
         version: link:../primitives
+      '@telaion/theme':
+        specifier: workspace:^
+        version: link:../theme
       svelte:
         specifier: ^5.0.0
         version: 5.57.3
@@ -102,6 +116,9 @@ importers:
       '@telaion/shell':
         specifier: workspace:*
         version: link:../packages/shell
+      '@telaion/theme':
+        specifier: workspace:*
+        version: link:../packages/theme
       '@telaion/tomet':
         specifier: workspace:*
         version: link:../packages/tomet
