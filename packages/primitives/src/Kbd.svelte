@@ -27,7 +27,13 @@
 <style>
   /*
    * A hint to read, not a control, so it is not an action: no shadow, no raised look.
-   * It is told from the text around it by the tint, the way a code span is.
+   * It is told from the text around it by a tint, the way a code span is.
+   *
+   * The tint is a veil of ink over whatever the cap is on, not the tint token: that is an opaque
+   * tone, and a footer, a hovered row or a selection is already tinted, so a cap of the same tone
+   * would vanish there. A veil is one step toward the ink on any ground (content, canvas, tint,
+   * action, well), in both themes. Its strength is the step the tint token takes (7%), which
+   * keeps the label AA on every ground; a stronger veil falls under AA on a tint.
    */
   .tln-kbd {
     display: inline-block;
@@ -37,7 +43,7 @@
     font-size: var(--tln-text-xs);
     line-height: var(--tln-leading);
     color: var(--tln-fg-muted);
-    background: var(--tln-tint);
+    background: color-mix(in srgb, var(--tln-fg) 7%, transparent);
     border-radius: var(--tln-radius);
     white-space: nowrap;
   }
