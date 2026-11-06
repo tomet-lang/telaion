@@ -3,8 +3,6 @@
   import { SplitPane } from "@telaion/shell";
   import { Kanban, type KanbanColumnData } from "@telaion/views";
   import { onMount } from "svelte";
-  import ConfirmDelete from "./ConfirmDelete.svelte";
-  import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
   import { MemoryAdapter } from "./memory-adapter.js";
   import ButtonDemo from "./ButtonDemo.svelte";
   import EditorEmbedDemo from "./EditorEmbedDemo.svelte";
@@ -146,10 +144,6 @@
   onMount(() => {
     session.load();
   });
-
-  let deleting = $state<{ name: string; is_dir: boolean } | null>(null);
-  let closingTab = $state<string | null>(null);
-  let outcome = $state("nothing yet");
 
   let newPageOpen = $state(false);
   let created = $state("");
@@ -365,16 +359,6 @@
   </section>
 
   <section>
-    <h2>Trial: the ordiola confirmations, rebuilt on Telaion</h2>
-    <div class="row">
-      <Button onclick={() => (deleting = { name: "idea.tmt", is_dir: false })}>Delete a file</Button>
-      <Button onclick={() => (deleting = { name: "drafts", is_dir: true })}>Delete a folder</Button>
-      <Button onclick={() => (closingTab = "readme.tmt")}>Close an unsaved tab</Button>
-    </div>
-    <p class="muted">outcome: <span aria-label="outcome">{outcome}</span></p>
-  </section>
-
-  <section>
     <h2>Modal</h2>
     <div class="row">
       <Button variant="primary" onclick={() => (modalOpen = true)}>Open modal</Button>
@@ -468,38 +452,6 @@
     <TreeDemo />
   </section>
 </main>
-
-{#if deleting}
-  <ConfirmDelete
-    entry={deleting}
-    onConfirm={() => {
-      outcome = "deleted " + deleting!.name;
-      deleting = null;
-    }}
-    onCancel={() => {
-      outcome = "delete cancelled";
-      deleting = null;
-    }}
-  />
-{/if}
-
-{#if closingTab}
-  <ConfirmUnsaved
-    title={closingTab}
-    onSave={() => {
-      outcome = "saved and closed " + closingTab;
-      closingTab = null;
-    }}
-    onDiscard={() => {
-      outcome = "discarded " + closingTab;
-      closingTab = null;
-    }}
-    onCancel={() => {
-      outcome = "close cancelled";
-      closingTab = null;
-    }}
-  />
-{/if}
 
 {#if newPageOpen}
   <NewPageDialog

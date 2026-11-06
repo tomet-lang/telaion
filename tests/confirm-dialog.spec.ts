@@ -171,4 +171,23 @@ test.describe("a narrow window and a name with no place to break", () => {
     const overflow = await d.evaluate((el) => el.scrollWidth > el.clientWidth);
     expect(overflow).toBe(false);
   });
+
+  test("with wide letter spacing, as in ordiola, every answer stays inside and on one line", async ({ page }) => {
+    await page.addStyleTag({ content: "* { letter-spacing: 0.1em; }" });
+    await open(page, "Confirm: three answers");
+    const d = dialog(page, "Unsaved changes");
+    const frame = (await d.boundingBox())!;
+    const heights = new Set<number>();
+    for (const name of ["Cancel", "Don't save", "Save"]) {
+      const button = d.getByRole("button", { name });
+      const box = (await button.boundingBox())!;
+      expect(box.x, name).toBeGreaterThanOrEqual(frame.x);
+      expect(box.x + box.width, name).toBeLessThanOrEqual(frame.x + frame.width);
+      // A label is never allowed to wrap: it would make the button taller than its neighbours.
+      expect(await button.evaluate((el) => getComputedStyle(el).whiteSpace), name).toBe("nowrap");
+      heights.add(Math.round(box.height));
+    }
+    expect(heights.size).toBe(1);
+    expect(await d.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(false);
+  });
 });
