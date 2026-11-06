@@ -1,41 +1,139 @@
 /*
- * Telaion theme extensions for Tailwind CSS (v4).
+ * Telaion design tokens as Tailwind CSS (v4) utilities.
  *
- * Import this file in your CSS after `@import "tailwindcss";` and `@import "@telaion/theme/tokens.css";`:
+ * Import this file after Tailwind and the tokens:
  *
  *   @import "tailwindcss";
  *   @import "@telaion/theme/tokens.css";
  *   @import "@telaion/theme/tailwind.css";
+ *
+ * It does two things. It makes the tokens utilities (`bg-tln-content`, `text-tln-fg-muted`,
+ * `shadow-tln-float`, `text-tln-sm`, `rounded-tln`, ...), and it takes away Tailwind's own
+ * values for what the design decides, so that the tokens are the only colours, the only
+ * shadows, the only radius and the only fonts that exist. A class from Tailwind's palette
+ * (`bg-stone-800`, `text-sky-400`, `shadow-lg`, `rounded-md`, `font-mono`) is not a class
+ * here, and Tailwind emits nothing for it. What stays is what the design has no opinion on:
+ * layout, sizes of boxes, weights, tracking, z-index, blur, animation, arbitrary values.
+ *
+ * NAMES. Every token is a utility named after it, with the `tln-` prefix and without the
+ * `--tln-` of the token: `--tln-fg-muted` is `text-tln-fg-muted`, `bg-tln-fg-muted`,
+ * `border-tln-fg-muted`, and so on. Opacity works as always (`bg-tln-canvas/50`).
+ *
+ * INLINE. Every value is `inline`: the utility reads the token itself (`var(--tln-action)`),
+ * not a copy of it that Tailwind would declare once on :root. That is what lets the tokens
+ * keep working where they are changed or where they differ per element: a subtree that sets
+ * `data-theme`, or overrides `--tln-canvas`; the sun and the lamp of a shadow, which are set
+ * per element.
+ *
+ * Not here, because they are not for utilities: the depth scale (--tln-layer-*, --tln-depth-*)
+ * and the parts a shadow is made of (--tln-light*, --tln-shade*, --tln-rim-*, --tln-cut-*).
+ * Layers are reached through their tone (`bg-tln-well`) and their shadow (`shadow-tln-well`).
  */
 
+/* ---- Take away what the tokens replace ---------------------------------------------------- */
+
 @theme {
+  /* Every colour is a token. `transparent`, `current` and `inherit` are not in the palette. */
+  --color-*: initial;
+
+  /* One way of casting a shadow: the --tln-shadow-* tokens. */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+
+  /* One radius. */
+  --radius-*: initial;
+
+  /* Two families: the text face and the code face. */
+  --font-*: initial;
+}
+
+/* ---- The tokens --------------------------------------------------------------------------- */
+
+@theme inline {
+  /* Layers: bg-tln-well, bg-tln-canvas, bg-tln-content, bg-tln-action (hover: action-hover).
+   * `float` is content (bg-tln-content). */
   --color-tln-well: var(--tln-well);
   --color-tln-canvas: var(--tln-canvas);
   --color-tln-content: var(--tln-content);
   --color-tln-action: var(--tln-action);
   --color-tln-action-hover: var(--tln-action-hover);
 
-  --color-tln-border: var(--tln-border);
-  --color-tln-tint: var(--tln-tint);
+  /* Ink, divider, passing state */
   --color-tln-fg: var(--tln-fg);
   --color-tln-fg-muted: var(--tln-fg-muted);
+  --color-tln-border: var(--tln-border);
+  --color-tln-tint: var(--tln-tint);
 
+  /* Accent, with the ink that sits on it */
   --color-tln-accent: var(--tln-accent);
+  --color-tln-accent-hover: var(--tln-accent-hover);
+  --color-tln-accent-fg: var(--tln-accent-fg);
   --color-tln-accent-soft: var(--tln-accent-soft);
+
+  /* State, each with its soft ground; the danger fill has ink of its own */
   --color-tln-ok: var(--tln-ok);
   --color-tln-ok-soft: var(--tln-ok-soft);
   --color-tln-warn: var(--tln-warn);
   --color-tln-warn-soft: var(--tln-warn-soft);
   --color-tln-danger: var(--tln-danger);
+  --color-tln-danger-fg: var(--tln-danger-fg);
   --color-tln-danger-soft: var(--tln-danger-soft);
 
+  /* Behind a float that blocks the page: bg-tln-scrim */
+  --color-tln-scrim: var(--tln-scrim);
+
+  /* Shadows. The canvas has none (it is the ground). hover: and active: states of an action. */
   --shadow-tln-well: var(--tln-shadow-well);
-  --shadow-tln-canvas: var(--tln-shadow-canvas);
   --shadow-tln-content: var(--tln-shadow-content);
   --shadow-tln-action: var(--tln-shadow-action);
+  --shadow-tln-action-hover: var(--tln-shadow-action-hover);
+  --shadow-tln-action-active: var(--tln-shadow-action-active);
   --shadow-tln-float: var(--tln-shadow-float);
 
+  /* Shape: rounded-tln */
   --radius-tln: var(--tln-radius);
-  --font-tln: var(--tln-font);
+
+  /* Type: font-tln-sans, font-tln-mono; text-tln-xs, text-tln-sm, text-tln-md, which bring the
+   * line height of the design with them; leading-tln for the same line height alone. */
+  --font-tln-sans: var(--tln-font-sans);
   --font-tln-mono: var(--tln-font-mono);
+  --default-font-family: var(--tln-font-sans);
+  --default-mono-font-family: var(--tln-font-mono);
+  --text-tln-xs: var(--tln-text-xs);
+  --text-tln-xs--line-height: var(--tln-leading);
+  --text-tln-sm: var(--tln-text-sm);
+  --text-tln-sm--line-height: var(--tln-leading);
+  --text-tln-md: var(--tln-text-md);
+  --text-tln-md--line-height: var(--tln-leading);
+  --leading-tln: var(--tln-leading);
+
+  /* Rhythm: every size and gap of Tailwind's spacing scale is a multiple of --tln-space, as in
+   * the components (`p-3` is `calc(var(--tln-space) * 3)`). */
+  --spacing: var(--tln-space);
+}
+
+/* ---- What a token is more than a value ---------------------------------------------------- */
+
+/* The focus outline of every control (a 2px accent line). Set its distance with outline-offset-*:
+ * 2 on an action, 0 inside a well. Use it as `focus-visible:outline-tln-focus`. */
+@utility outline-tln-focus {
+  outline: var(--tln-focus-ring);
+}
+
+/* The transition of the design (--tln-transition) on what changes with a state: colour, ground,
+ * line, opacity, shadow. None for a person who asks for less motion. */
+@utility transition-tln {
+  transition:
+    color var(--tln-transition),
+    background-color var(--tln-transition),
+    border-color var(--tln-transition),
+    outline-color var(--tln-transition),
+    opacity var(--tln-transition),
+    box-shadow var(--tln-transition);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
