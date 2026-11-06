@@ -32,7 +32,10 @@ Svelte 5 is a peer dependency.
 ## Components
 
 - `Button`, `IconButton`, `Input`, `Select`, `Field`
-- `Modal`, `Tabs`, `Badge`, `Alert`, `Spinner`
+- `Modal`, `ConfirmDialog`, `CommandPalette`
+- `Popover`, `Menu`, `ContextMenu`, `Tooltip`
+- `Tabs`, `SegmentedControl`, `Toolbar`
+- `Badge`, `Alert`, `Spinner`, `Kbd`, `EmptyState`
 - `Icon`
 
 ## Closing a Modal
@@ -43,6 +46,38 @@ A `Modal` closes on Escape, on its close button, and on a click on the backdrop.
 <Modal bind:open title="Editor" onrequestclose={() => !dirty || confirm("Close without saving?")}>
   ...
 </Modal>
+```
+
+## Confirming
+
+`ConfirmDialog` asks one question. Every way out that is not the answer (Cancel, Escape, the backdrop) is a cancel, reported once through `oncancel`. A `destructive` one puts the focus on Cancel, so that a hasty Enter does the safe thing.
+
+```svelte
+<ConfirmDialog
+  bind:open
+  title="Delete file"
+  destructive
+  message="Delete idea.tmt? This cannot be undone."
+  confirm="Delete"
+  onconfirm={remove}
+/>
+```
+
+## Menus and popovers
+
+`Popover`, `Menu`, `ContextMenu` and `Tooltip` float in the browser's top layer, so no ancestor can clip them, and keep themselves in view. Spread what the `trigger` snippet gives on the one element that opens a popover.
+
+```svelte
+<Popover bind:open label="Actions" role="menu">
+  {#snippet trigger(props)}
+    <Button {...props} iconEnd={ChevronDown}>Actions</Button>
+  {/snippet}
+  <Menu items={[
+    { label: "Rename", icon: Pencil, shortcut: "F2", onselect: rename },
+    { type: "separator" },
+    { label: "Delete", icon: Trash, danger: true, onselect: remove },
+  ]} />
+</Popover>
 ```
 
 ## Theming

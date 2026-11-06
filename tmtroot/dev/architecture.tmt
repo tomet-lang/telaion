@@ -20,8 +20,8 @@ Telaion is the shared frame. It carries structure and behavior. It carries no th
 ==[ Packages ]
 
 -| `@telaion/theme` -- Design tokens, five-layer physical depth model, and Tailwind theme extension.
--| `@telaion/primitives` -- Generic primitives (button, input, modal, tabs, badge, alert). No Tomet knowledge.
--| `@telaion/views` -- Self-contained composite views: Kanban, Explorer (tree). No Tomet knowledge.
+-| `@telaion/primitives` -- Generic primitives: actions, fields, dialogs, floating layers (popover, menu, tooltip), tabs and other controls. No Tomet knowledge.
+-| `@telaion/views` -- Self-contained composite views: Kanban and the tree explorer. No Tomet knowledge.
 -| `@telaion/shell` -- Workspace frame and split-pane layout system.
 -| `@telaion/editor` -- The editor frame. Takes a storage adapter and a language slot. No Tomet knowledge.
 -| `@telaion/tomet` -- Tomet-specific parts: syntax highlighting, conflict blocks and their resolution. It knows the shapes of Tomet data, not the engine that computes them.
@@ -93,7 +93,7 @@ The plug-in API of an application, and any other boundary that third parties wri
 ==[ Out of scope ]
 
 The following stay in the applications.
--| The application shell: file tree, workspace and vault management, tabs, settings.
+-| The application shell: which files are open, workspace and vault management, settings. The tree and the tabs it shows are Telaion components; what they list and what a click does is the application's.
 -| Authentication and anything that talks to a host (Tauri `invoke`, the GitHub API).
 -| Rust code. Metadata handling that needs the Tomet AST belongs to the Tomet crates, not to Telaion.
 
@@ -119,7 +119,7 @@ export type SaveResult =
 `@telaion/editor` has three layers, each usable alone.
 
 -| `DocumentSession` -- one document being edited: what was loaded, what it is now (`dirty`), the status, the last error, and a conflict when a save found a newer stored version. It has no view. It is written with Svelte runes (`.svelte.ts`).
--| `CodeEditor` -- the text area, on CodeMirror 6. It takes `content` as a bindable value and reports edits and save requests. The language is a slot (a CodeMirror extension): the editor itself does not know Tomet.
+-| `CodeEditor` -- the text area, on CodeMirror 6. It takes `content` as a bindable value and reports edits and save requests. The language is a slot (a CodeMirror extension): the editor itself does not know Tomet. It is a text field or a bare pane (see below).
 -| `Editor` -- a session and a `CodeEditor` with a path, a status badge, a Save button and the alerts for errors and conflicts.
 
 ```ts
@@ -128,6 +128,8 @@ type CodeEditorProps = {
   readOnly?: boolean;
   label?: string; // accessible name of the text area
   language?: Extension; // supplied by @telaion/tomet
+  extensions?: Extension; // anything more an application wants: folding, search, ...
+  variant?: "field" | "bare"; // a well among other controls, or the pane itself
   onChange?: (content: string) => void; // edits by a person, not replacements from outside
   onSave?: () => void; // Ctrl or Cmd + S
 };
@@ -136,10 +138,19 @@ type CodeEditorProps = {
 ===[ Decided ]
 
 -| The engine is CodeMirror 6 and nothing else: one way to edit, one entry point. A minimal CodeMirror adds about 92 KB gzipped (97 KB with a language hook) to the roughly 322 KB of the wiki's editing bundle. This is accepted for syntax highlighting and a proper undo history.
--| The theme of the editor is written in the tokens of `@telaion/primitives` only, so it follows the light and dark switch.
+-| The theme of the editor is written in the tokens of `@telaion/theme` only, so it follows the light and dark switch.
 -| Tab leaves the editor for the next control; it does not insert indentation. A keyboard user must not be trapped. Indent with Mod-] and Mod-[.
 -| A save writes the text as it was when it started. Text typed while the save runs stays unsaved.
 -| A conflict never overwrites. The edit is kept, the session reports the conflict, and resolving it is the job of the application or of `@telaion/tomet`.
+
+===[ Field or pane ]
+
+`CodeEditor` takes a `variant`. Either way it fills the height of its parent, which therefore needs a height of its own, and the editor scrolls itself.
+
+-| `field` (the default) -- a text field: a well, cut into the surface it is on, with a focus ring while it is in use. For an editor that is one control among others.
+-| `bare` -- the editor is the pane. It draws no surface, radius, shadow or ring: it is text on whatever its parent paints. Focus shows in the caret, the selection (a soft accent while the editor is in use, a tint otherwise) and the line number of the active line.
+-| There is no band over the active line, in either variant: a band would hide the selection on that line, which CodeMirror draws behind the text.
+-| The editor is kept minimal. `sourceEditingExtensions`, a preset exported by `@telaion/editor`, is what a person editing source text expects beyond it: a fold gutter, matching and closing brackets, indentation that follows what was typed, search (Mod-f) and a highlight for other matches of the selection. It is passed as `extensions`, and is not part of `CodeEditor` because a small field (a commit message) is better without it. What it draws is styled by the editor's theme, in tokens.
 
 ==[ Two kinds of conflict ]
 
@@ -150,12 +161,60 @@ The word means two things, and Telaion keeps them apart.
 
 `ConflictResolver` takes the document text and the services, and gives the text back through `onResolve`. The list may arrive late and is shown with a spinner the first time; an answer for text that has since changed is dropped; while the engine resolves one conflict, the buttons wait.
 
+==[ Primitives ]
+
+What `@telaion/primitives` holds, and the decisions behind the parts that are not obvious. No component takes `class` or `style`: an application changes the look through tokens. Every control is keyboard operable and has an accessible name; where a name is not shown, it is a required prop.
+
+===[ Actions and fields ]
+
+-| `Button` and `IconButton` are actions. `size` is `md` or `sm` (toolbars, dense panels). `Button` takes `icon` before the label and `iconEnd` after it (a chevron on a menu button); it spaces them, so an `Icon` is not put among the children. `IconButton` has no visible text, so its `label` is required: it is the accessible name and the tooltip.
+-| Variants of `Button`: `primary`, `secondary`, `danger` (destructive, outlined), `danger-fill` (destructive when the destructive answer is the main action, as in a confirmation), `quiet` (no frame) and `soft`. `IconButton` has `secondary`, `quiet` (the default) and `soft`. `soft` is an action that carries a meaning: its fill is the soft color of its `tone` (`accent`, `ok`, `warn`, `danger`; accent when absent), the same tones as `Badge` and `Alert`, so a row of them tells a note from a warning without a color written in a component. The label stays in ink; the icon takes the tone. `tone` is accepted only with `variant="soft"`; the type refuses it elsewhere.
+-| `Input` takes `mono` (monospace, for what is read character by character: a path, a token) and `size` (`md` or `sm`, one step of padding and type smaller). Its type is `text`, `password` or `search`. Inside a `Field` it takes the field's id, description and invalid state.
+
+===[ Dialogs ]
+
+-| `Modal` wraps the native `<dialog>`: it makes the page behind it inert, closes on Escape and returns the focus to the opener. Tab wraps inside it. It closes on Escape, on its close button and on the backdrop; `onrequestclose` is asked first and returns `false` to refuse, and `onclose` is told of every close. Closing by setting `open` is the application's own decision and is not asked about.
+-| `title` is required: it is the dialog's accessible name. `hideTitle` drops the header and the close button and keeps the title as the name (a command palette is plain about what it is). `size` is `sm`, `md`, `lg` or `full`; `full` covers the viewport, with no radius and no shadow. `placement` is `center` or `top` (near the top edge, where a palette is looked for). `flush` takes the padding off the body, for content that brings its own, such as a list. `role` is `dialog` or `alertdialog` (a dialog that interrupts to ask for an answer); `describedby` names the element that describes it. The `footer` is a tinted strip for buttons, and `autofocus` on a control of the body chooses where the focus starts.
+-| `ConfirmDialog` is a `Modal` (`sm`, `alertdialog`) for asking one question, with its message as the description. `message` is a string, or a snippet for anything richer. `tone` is `ok`, `warn`, `danger` or `info`; it defaults to `danger` when the dialog is `destructive` and to `info` otherwise. `confirm`, `cancel` and an optional `alternative` (with `alternativeVariant`: `secondary`, or `danger` for the "Don't save" of an unsaved document) are the labels of the answers, ordered cancel, alternative, confirm.
+-| Everything that is not the confirm action or the alternative is a cancel: the Cancel button, Escape, the backdrop. `oncancel` is told once, and not when the application closes the dialog itself. When `destructive`, the confirm action is a `danger-fill` button and the focus starts on Cancel, so that pressing Enter at once does the safe thing; otherwise it starts on the confirm action.
+-| `CommandPalette` is a `Modal` with no title shown, at the top, `lg` and flush, with a text field and a list. It does not filter: `query` is bindable and the application puts into `items` what it wants shown, in the order it wants, so the matching is its own. An item is a `PaletteItem` (`id`, `label`, `detail`, `hint`, `icon`, `disabled`), extended with the application's own fields, which `onselect` hands back. The focus stays in the text field (a combobox over a listbox, `aria-activedescendant`); the arrow keys step over disabled rows and wrap, Enter chooses, and a key that belongs to an input method's composition is left alone. The query is cleared on close, and nothing is built while it is closed. A `footer` snippet is for key hints and a count; `Kbd` is made for it.
+
+===[ Floating layers ]
+
+-| `Popover`, `Menu` in a popover, `ContextMenu` and `Tooltip` share one internal surface, `Floating`: a panel in the browser's top layer (`popover="manual"`), so no ancestor's `overflow: hidden` or transform can clip or move it. It is a float and wears the float look. It knows nothing about when to open or close; its users decide that. `manual` because the browser's own light dismiss cannot tell a click on the trigger from one elsewhere.
+-| Where it goes is one small pure function, `place`, so that the four components place themselves alike and no positioning library is needed. A `Placement` is a side (`top`, `bottom`, `left`, `right`) and where along it (`-start`, `-end`; centered without). It flips to the opposite side when it does not fit and the other has more room; along the side it tries the other end, and is then pushed back in. Nothing comes nearer to the viewport than the margin, and the gap to the anchor and that margin are token sizes written in CSS and read back. When it fits on neither side it takes the one with more room and scrolls within it. A point (a context menu's) is an anchor with no size and no gap. It is placed again when it or its anchor changes size, when the window resizes, and when any ancestor scrolls.
+-| Layer stack: the open floating layers are kept in a stack, innermost last, with one Escape listener on the document in the capture phase. Escape closes the innermost layer only: a menu inside a popover closes before the popover does, and neither takes the Escape that a modal underneath is waiting for.
+-| `Popover` has `open` (bindable), a required `label`, `role` (`dialog` for any content, a form or a panel; `menu` when it holds a `Menu`, which only tells the trigger what it opens), `placement` (`bottom-start` by default), `anchor` (an element or a point, when it is not to float next to its trigger), `matchWidth` (a dropdown at least as wide as its button), `closeOnScroll` and `onclose`. The `trigger` snippet is given the props to spread on the one element that opens it: `aria-haspopup`, `aria-expanded`, `aria-controls`, the click that toggles it and, for a menu, the arrow keys that open it. The content is rendered only while it is open.
+-| A popover closes on Escape, on a click outside it (a click on the trigger is the trigger's: it toggles) and when the focus Tabs out of it. The focus goes into it on open (to an `autofocus` element, else the first control, else the panel) and returns to the trigger when the person closed it from inside (Escape, a chosen item); not when they clicked or tabbed away, because the focus is then going where they put it.
+-| `Menu` takes `items`: an action (`label`, `icon`, `shortcut`, `danger`, `disabled`, `checked`, `keepOpen`, `onselect`, and an `id` for the application's own use), a `separator` or a `heading` that names the rows after it. `shortcut` is a hint; the menu does not listen for it. `checked` makes the row a `menuitemcheckbox`; the menu does not flip it, the application does, in `onselect`. A row can be drawn with the `item` snippet. The focus roves: one row is in the Tab order, the arrow keys wrap, Home and End jump, and letters typed in a row find the next row that begins with them. Alone it is a menu on the page; in a `Popover` it closes the popover when a row is chosen (unless `keepOpen` or `closeOnSelect={false}`) and takes its label.
+-| `ContextMenu` takes `items` as rows, or as a function that is asked with the element that was clicked at the moment of opening, so that one `ContextMenu` around a whole tree offers a different menu for each row. A function that returns no rows opens nothing, and the browser's own menu shows. With `children`, that area opens it on a right click and, from the keyboard, on the Menu key or Shift+F10 under the focused element; without `children`, the application opens it with `open`, `x` and `y`. It closes when the page scrolls and when the window loses the focus.
+-| `Tooltip` takes `text` (text only: a tooltip is a hint and cannot be reached to click in it), `placement` (`top` by default), `delay` (500 ms of hovering or keyboard focus; waived for 300 ms after another tooltip was shown) and the element it describes, to which it hands `aria-describedby` through its snippet. Only keyboard focus shows it, not the focus a click gives, and touch does not show it. The pointer may move from the element onto the tooltip without losing it. Its text is in the page while it is hidden, so that the reference always resolves.
+
+===[ Tabs, choices, bars and hints ]
+
+-| `Tabs` takes `items` (`id`, `label`, `icon`, `title`, `dirty`, `closable`), `value` (bindable), `size` (`md` or `sm`, a compact strip as in the chrome of an editor) and `label`. `icon` is decorative, the label names the tab; `title` is the tooltip for a name that the label shortens, such as a full path. `onselect` is called when the person picks a tab; `value` is two-way, but setting it from the application does not call `onselect`.
+-| A closable tab is closed by its button, by the Delete key on the tab, and by a middle click, as in a browser; each calls `onclose`, and the application removes the item. A `dirty` tab shows a dot in the slot at the end of the tab, and the close button lies over it under the pointer and the focus. Only the selected tab (and its close button) is in the Tab order; the arrow keys, Home and End move between tabs. After a close, the focus goes to the tab that is now in the Tab order, not to the top of the page.
+-| `SegmentedControl` is a radio group drawn as a well with the chosen item raised in it (the well is where a choice is cut in, the chosen item is the one action that stands out of it; one look for "chosen", whatever the choice means): `items` (`value`, `label`, `icon`, `title`, `disabled`), `value` (bindable), a required `label` that names what is being chosen, `size`, `disabled` and `onchange`, which is called when the person chooses and not when the application sets `value`. `iconOnly` shows only the icons; the label is then the tooltip and the accessible name. The arrow keys move the choice, and the group is one stop in the Tab order.
+-| `Toolbar` (`label` required, `orientation`) is one stop in the Tab order, and the arrow keys (and Home and End) move between the controls in it. The controls are the application's own buttons, links and checkboxes, which the bar finds and gives their `tabindex` itself, and which keep their own look. What uses the arrow keys itself keeps them and stays a stop of its own: text fields, selects, and `SegmentedControl`, `Tabs` and the like. The bar follows controls that come, go and become disabled.
+-| `Kbd` shows a key (`keys`, one entry per key, or the key as children). A combination is a `kbd` of `kbd`s, as HTML defines it; the plus is for the eye only. It is a hint to read, not a control, so it is not an action: no shadow, no raised look. Its cap is a veil of ink over whatever it is on, not the `tint` token. `tint` is an opaque tone, and a modal footer, a hovered row or a selection is already tinted, where a cap of that tone vanishes. The veil is one step toward the ink on content, canvas, tint, action and well, in both themes, and its strength is the step `tint` takes (7%), which keeps the label AA on every ground; a stronger veil falls under AA on a tint.
+-| `EmptyState` stands in the place of what is not there: `icon`, `title`, `description`, an `action` snippet (usually a `Button`) and the heading `level` of the title (2 to 6), so that it fits the outline of the page it is in.
+
+==[ The tree explorer ]
+
+`TreeExplorer` in `@telaion/views` shows a tree of `TreeNode`s (`id`, `label`, `isFolder`, `children`, `icon`, `openIcon`, `loading`, `data`). The application owns the nodes: the tree reports what the person did and never changes `nodes` itself.
+
+-| It is flat in the DOM. A `ul` with `role="tree"` holds one `li` with `role="treeitem"` per visible row, and says the depth with `aria-level`, `aria-posinset` and `aria-setsize`, instead of nesting lists. One row is in the Tab order (the one focused last, else the selected, else the first). The arrow keys move, Right opens a branch and then steps into it, Left closes it and then steps out, Home and End jump, Enter and Space select and toggle.
+-| A node is a branch when `isFolder` says so, or else when `children` is set, even if empty; a branch whose children are not loaded yet leaves `children` unset, and `loading` shows a spinner in place of its chevron. `selectedId` and `expandedIds` are bindable; `onselect` and `ontoggle` report. `icon` (a snippet, which replaces the icon of every node), `trailing` (a badge, a mark at the end of every row) and `empty` (an empty tree or an empty expanded branch) are snippets.
+-| Editing in place. `editing` is bindable: set it to a `rename` (`id`) or a `create` (`parentId`, `null` for the root; the new row stands at the top of that branch, which is opened) and the tree shows a field in the row, with `value`, `selection`, `label`, `placeholder` and, for a create, an `icon`. It sets `editing` back to `null` when the edit ends, committed or not. `validate` is asked while typing and before a commit; `oncommit` is given the trimmed name, never empty and, for a rename, never the old one. For both, a message refuses it and is shown under the field, and nothing accepts it. `oncommit` may return a promise of a message, so a refusal can come from the application's storage; the field stays open meanwhile. `onrename` is told that F2 was pressed on a node; the tree renames nothing by itself, the application sets `editing`.
+-| Moving. Giving `onmove` makes the nodes draggable. A node dropped onto a branch, or onto the empty area (the root, `targetId: null`), is reported, and the application moves it and passes the new `nodes`. `candrop` refuses a drop that the shape of the tree allows. What a drag carries has a type of its own, so that only a drag started in a tree is taken for a move, and a closed branch that a drag stays over opens by itself after a moment (700 ms), so that a drop can reach what is inside.
+-| `oncontextmenu` is told when the pointer or the keyboard (the Menu key, Shift+F10) asks for a menu, with the node (`null` on the empty area), the place to open it in viewport coordinates (below the focused row for the keyboard), and its `source`. Giving it replaces the browser's own menu. The tree draws no menu: the application opens a `ContextMenu` or a `Popover` at that point, and `contextId` marks the row it is for, like a hovered one, until the application clears it.
+
 ==[ Theme ]
 
 The most expensive failure so far was look-and-feel that is regenerated with every rewrite, and hard to steer. The answer is a small fixed vocabulary, decided once by a person.
 
 -| Visual values are CSS custom properties with the prefix `--tln-`. Components reference tokens only.
--| The token set is small and fixed. Three layers, one way of casting shadows, no gradients, one radius. What the look is for is written in `spec/ui/design.tmt`; this section is how it is built.
+-| The token set is small and fixed. Five layers, one way of casting shadows, no gradients, one radius. What the look is for is written in `spec/ui/design.tmt`; this section is how it is built.
 -| One default value set ships with `@telaion/theme` as `tokens.css` and `tailwind.css`. An application overrides token values; it does not restyle components.
 -| Plain CSS. No utility framework inside the shared packages, so that the same CSS can be embedded in the wiki's Rust assets unchanged.
 
@@ -168,8 +227,18 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Light and dark live in one declaration through `light-dark()`. The default follows the operating system; `data-theme="light"` or `data-theme="dark"` on any element overrides it for that subtree.
 -| Ink (`fg`, `fg-muted`) meets WCAG AA (4.5:1) on every layer and the focus ring meets 3:1 on every layer, in both themes. `--tln-border` is for dividers only. A field has no border, so its edge is its tone and its inward shadow; that is a weaker edge than a frame gives, and it is accepted.
 -| The tokens: layer tones (`well`, `canvas`, `content`, `action`; `float` uses `content`), shadows (`shadow-well`, `shadow-content`, `shadow-action`, `shadow-action-hover`, `shadow-action-active`, `shadow-float`), `tint` (a passing state such as hover or disabled; not a layer), ink (`fg`, `fg-muted`), `border` (dividers), accent (`accent`, `accent-hover`, `accent-fg`, `accent-soft`) and `focus-ring`, state (`ok`, `warn`, `danger` and their `-soft` tints, and `danger-fg` for text on a danger fill), `scrim`, fonts (`font-sans`, `font-mono`), text sizes (`text-xs`, `text-sm`, `text-md`), `leading`, `space`, `radius`, `transition`.
--| Shared looks: what an action, a text field and a tone look like is plain CSS in `packages/primitives/src/looks.css`, which reads tokens only. Svelte components add its classes (`tln-action`, `tln-field-control`, `tln-tone`) and keep only their layout in their own `<style>`. The file is not in a cascade layer, so that Tailwind's preflight, which is, loses to it. Because it is plain CSS, an application without Svelte can take it as it is.
+-| Shared looks: what an action, a text field, a float and a tone look like is plain CSS in `packages/primitives/src/looks.css`, which reads tokens only. Svelte components add its classes (`tln-action`, `tln-field-control`, `tln-float`, `tln-tone`) and keep only their layout in their own `<style>`. A float is the content tone, the radius and the float shadow; `Modal` and the surface of the floating layers wear it, and a modal in full screen, which covers the page and casts nothing, takes the radius and the shadow off again. The file is not in a cascade layer, so that Tailwind's preflight, which is, loses to it. Because it is plain CSS, an application without Svelte can take it as it is.
 -| `light-dark()` and `color-mix()` require a 2024-or-later browser engine. This is accepted.
+
+===[ The Tailwind bridge ]
+
+`@telaion/theme` ships `tailwind.css` for an application that uses Tailwind CSS v4. It is imported after Tailwind and `tokens.css`. The shared packages themselves use no utility framework; this is for the application's own markup.
+
+-| Every token is a utility, named after the token with the `tln-` prefix and without the `--tln-`: `--tln-fg-muted` is `text-tln-fg-muted`, `bg-tln-fg-muted` and `border-tln-fg-muted`; the shadows are `shadow-tln-well` to `shadow-tln-float`, the radius `rounded-tln`, the fonts `font-tln-sans` and `font-tln-mono`, the sizes `text-tln-xs`, `text-tln-sm` and `text-tln-md` (which bring the line height of the design with them) and `leading-tln`. Opacity works as always (`bg-tln-canvas/50`). The spacing scale is a multiple of `--tln-space`, as in the components (`p-3` is three spaces).
+-| Tailwind's own values for what the design decides are taken away: its color palette, its shadows (box, inset, drop and text), its radii and its font families are emptied. A class from Tailwind's palette (`bg-stone-800`, `text-sky-400`, `shadow-lg`, `rounded-md`, `font-mono`) is not a class, and Tailwind emits nothing for it, so the tokens are the only colors, the only shadows, the only radius and the only fonts that exist. What stays is what the design has no opinion on: layout, the sizes of boxes, weights, tracking, z-index, blur, animation and arbitrary values.
+-| The utilities are `inline`: they read the token itself (`var(--tln-action)`), not a copy that Tailwind would declare once on `:root`. So a token that is changed or that differs per element keeps working: a subtree with `data-theme`, an overridden `--tln-canvas`, the sun and the lamp of a shadow.
+-| Not utilities, because they are not for utilities: the depth scale (`--tln-layer-*`, `--tln-depth-*`) and the parts a shadow is made of. A layer is reached through its tone (`bg-tln-well`) and its shadow (`shadow-tln-well`).
+-| Two utilities are more than a value. `outline-tln-focus` is the focus outline of every control (the focus ring token); give it `outline-offset-2` on an action and `outline-offset-0` inside a well, and use it as `focus-visible:outline-tln-focus`. `transition-tln` is the transition of the design on what changes with a state (color, ground, line, opacity, shadow), and none for a person who asks for less motion.
 
 ==[ Distribution ]
 
@@ -194,5 +263,4 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 -| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
 -| Colors for the tags the colors above do not name. `tomet-highlight` also returns `emphasis`, `strong`, `strikethrough` and `link`, which stay in the plain text color here; giving them one needs a decision, since the tokens have no italic or underline.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
--| The quick open palette of `ordiola` needs a Modal without a header and aligned to the top, and a listbox driven by `aria-activedescendant`. Both wait for a second consumer before they enter `@telaion/primitives`.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.

@@ -30,6 +30,8 @@ If using Tailwind CSS v4, also import `tailwind.css` to enable `@theme` mappings
 @import "@telaion/theme/tailwind.css";
 ```
 
+Every token is a utility, named after it with the `tln-` prefix (`--tln-fg-muted` is `text-tln-fg-muted`; the shadows are `shadow-tln-*`, the radius `rounded-tln`, the fonts `font-tln-sans` and `font-tln-mono`, the sizes `text-tln-xs`, `text-tln-sm` and `text-tln-md`). The utilities read the token itself, so a subtree with `data-theme` or an overridden token keeps working. Tailwind's own color palette, shadows, radii and font families are emptied, so a class such as `bg-stone-800`, `shadow-lg` or `rounded-md` does not exist: the tokens are the only ones. Layout, box sizes, weights and arbitrary values are untouched. Two utilities are more than a value: `outline-tln-focus`, the focus outline of every control, and `transition-tln`, the transition of the design, off for a person who asks for less motion.
+
 ### TypeScript utilities
 
 ```ts

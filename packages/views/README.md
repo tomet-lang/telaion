@@ -38,7 +38,7 @@ Svelte 5 is a peer dependency. Also import the design tokens of `@telaion/theme`
 ## Components
 
 - `Kanban` -- Card and column board with drag-and-drop reordering, keyboard accessibility, and custom card templates
-- `TreeExplorer` -- Hierarchical file and folder tree navigation with expansion, selection, and keyboard navigation
+- `TreeExplorer` -- Hierarchical file and folder tree with expansion, selection, keyboard navigation, renaming and creating in place, moving by drag and drop, and an event for a context menu. It is flat in the DOM (`role="tree"`, depth in `aria-level`), and it only reports: the application owns the nodes
 
 ## License
 
