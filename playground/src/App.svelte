@@ -1,15 +1,21 @@
 <script lang="ts">
   import { DocumentSession, Editor } from "@telaion/editor";
   import { SplitPane } from "@telaion/shell";
-  import { Kanban, TreeExplorer, type KanbanColumnData, type TreeNode } from "@telaion/views";
+  import { Kanban, type KanbanColumnData } from "@telaion/views";
   import { onMount } from "svelte";
   import ConfirmDelete from "./ConfirmDelete.svelte";
   import ConfirmUnsaved from "./ConfirmUnsaved.svelte";
   import { MemoryAdapter } from "./memory-adapter.js";
+  import ButtonDemo from "./ButtonDemo.svelte";
+  import EditorEmbedDemo from "./EditorEmbedDemo.svelte";
   import ExtensionsDemo from "./ExtensionsDemo.svelte";
   import NewPageDialog from "./NewPageDialog.svelte";
   import ConflictDemo from "./ConflictDemo.svelte";
+  import ControlsDemo from "./ControlsDemo.svelte";
+  import DialogDemo from "./DialogDemo.svelte";
+  import MenuDemo from "./MenuDemo.svelte";
   import TometHighlightDemo from "./TometHighlightDemo.svelte";
+  import TreeDemo from "./TreeDemo.svelte";
   import preflight from "tailwindcss/preflight.css?inline";
   import {
     Alert,
@@ -72,39 +78,6 @@
     },
   ]);
   let lastMovedCard = $state<string>("none");
-
-  let treeNodes = $state<TreeNode[]>([
-    {
-      id: "src",
-      label: "src",
-      isFolder: true,
-      children: [
-        {
-          id: "components",
-          label: "components",
-          isFolder: true,
-          children: [
-            { id: "button-svelte", label: "Button.svelte" },
-            { id: "modal-svelte", label: "Modal.svelte" },
-          ],
-        },
-        { id: "index-ts", label: "index.ts" },
-        { id: "tokens-css", label: "tokens.css" },
-      ],
-    },
-    {
-      id: "docs",
-      label: "docs",
-      isFolder: true,
-      children: [
-        { id: "readme-tmt", label: "readme.tmt" },
-        { id: "agents-tmt", label: "agents.tmt" },
-      ],
-    },
-    { id: "package-json", label: "package.json" },
-  ]);
-  let selectedTreeNode = $state<string | null>("button-svelte");
-  let expandedTreeIds = $state<Set<string>>(new Set(["src", "components"]));
 
   $effect(() => {
     try {
@@ -275,6 +248,7 @@
       <Button variant="quiet" disabled>New page</Button>
       <span class="muted">disabled</span>
     </div>
+    <ButtonDemo />
   </section>
 
   <section>
@@ -321,6 +295,11 @@
   </section>
 
   <section>
+    <h2>CodeEditor: field and pane</h2>
+    <EditorEmbedDemo />
+  </section>
+
+  <section>
     <h2>Tomet highlighting (through TometServices)</h2>
     <TometHighlightDemo />
   </section>
@@ -334,6 +313,11 @@
     <h2>Tabs</h2>
     <Tabs items={tabItems} bind:value={activeTab} onclose={closeTab} />
     <p class="muted">selected = <code>{activeTab}</code> · last closed = <code>{closedTab}</code></p>
+  </section>
+
+  <section>
+    <h2>Tabs, SegmentedControl, Toolbar, Kbd, EmptyState, Input</h2>
+    <ControlsDemo />
   </section>
 
   <section>
@@ -398,6 +382,12 @@
       <Button onclick={() => (guardedOpen = true)}>Open guarded modal</Button>
       <span class="muted">closed {closedCount} times</span>
     </div>
+    <DialogDemo />
+  </section>
+
+  <section>
+    <h2>Popover, Menu, ContextMenu and Tooltip</h2>
+    <MenuDemo />
   </section>
 
   <section>
@@ -475,17 +465,7 @@
 
   <section data-testid="tree-explorer-section">
     <h2>Tree Explorer</h2>
-    <p class="muted">Hierarchical file tree navigation with expansion and selection.</p>
-    <div style="margin-bottom: calc(var(--tln-space) * 2);">
-      <span class="muted">selected: <code data-testid="tree-selected-id">{selectedTreeNode ?? "none"}</code></span>
-    </div>
-    <div style="max-width: 320px; background: var(--tln-content); border: 1px solid var(--tln-border); border-radius: var(--tln-radius); box-shadow: var(--tln-shadow-content); padding: var(--tln-space);">
-      <TreeExplorer
-        nodes={treeNodes}
-        bind:selectedId={selectedTreeNode}
-        bind:expandedIds={expandedTreeIds}
-      />
-    </div>
+    <TreeDemo />
   </section>
 </main>
 
