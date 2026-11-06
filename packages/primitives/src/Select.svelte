@@ -57,17 +57,17 @@
   /* A wrong value is a state, so it may be outlined. The ring stays through hover and press. */
   .tln-select-control[aria-invalid="true"]:enabled {
     box-shadow:
-      inset 0 0 0 1px var(--tln-danger),
+      inset 0 0 0 var(--tln-hairline) var(--tln-danger),
       var(--tln-shadow-action);
   }
   .tln-select-control[aria-invalid="true"]:enabled:hover {
     box-shadow:
-      inset 0 0 0 1px var(--tln-danger),
+      inset 0 0 0 var(--tln-hairline) var(--tln-danger),
       var(--tln-shadow-action-hover);
   }
   .tln-select-control[aria-invalid="true"]:enabled:active {
     box-shadow:
-      inset 0 0 0 1px var(--tln-danger),
+      inset 0 0 0 var(--tln-hairline) var(--tln-danger),
       var(--tln-shadow-action-active);
   }
 

@@ -179,7 +179,7 @@
     list-style: none;
     max-height: calc(var(--tln-space) * 96);
     overflow-y: auto;
-    border-top: 1px solid var(--tln-border);
+    border-top: var(--tln-hairline) solid var(--tln-border);
   }
 
   .tln-palette-option {
@@ -241,7 +241,7 @@
   .tln-palette-empty {
     margin: 0;
     padding: calc(var(--tln-space) * 6) calc(var(--tln-space) * 3);
-    border-top: 1px solid var(--tln-border);
+    border-top: var(--tln-hairline) solid var(--tln-border);
     text-align: center;
     font-size: var(--tln-text-sm);
     color: var(--tln-fg-muted);

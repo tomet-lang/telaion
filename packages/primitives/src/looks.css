@@ -64,18 +64,18 @@
   background: var(--tln-action);
   color: var(--tln-danger);
   box-shadow:
-    inset 0 0 0 1px var(--tln-danger),
+    inset 0 0 0 var(--tln-hairline) var(--tln-danger),
     var(--tln-shadow-action);
 }
 .tln-action[data-variant="danger"]:enabled:hover {
   background: var(--tln-danger-soft);
   box-shadow:
-    inset 0 0 0 1px var(--tln-danger),
+    inset 0 0 0 var(--tln-hairline) var(--tln-danger),
     var(--tln-shadow-action-hover);
 }
 .tln-action[data-variant="danger"]:enabled:active {
   box-shadow:
-    inset 0 0 0 1px var(--tln-danger),
+    inset 0 0 0 var(--tln-hairline) var(--tln-danger),
     var(--tln-shadow-action-active);
 }
 

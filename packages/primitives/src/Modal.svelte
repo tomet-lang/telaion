@@ -216,7 +216,7 @@
     justify-content: space-between;
     gap: calc(var(--tln-space) * 3);
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 4);
-    border-bottom: 1px solid var(--tln-border);
+    border-bottom: var(--tln-hairline) solid var(--tln-border);
   }
 
   .tln-modal-title {
@@ -241,7 +241,7 @@
     justify-content: flex-end;
     gap: calc(var(--tln-space) * 2);
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 4);
-    border-top: 1px solid var(--tln-border);
+    border-top: var(--tln-hairline) solid var(--tln-border);
     background: var(--tln-tint);
   }
 </style>

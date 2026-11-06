@@ -43,7 +43,7 @@ const theme = EditorView.theme({
     color: "var(--tln-fg-muted)",
     backgroundColor: "transparent",
     border: "none",
-    borderRight: "1px solid var(--tln-border)",
+    borderRight: "var(--tln-hairline) solid var(--tln-border)",
   },
   ".cm-activeLineGutter": { backgroundColor: "transparent" },
   "&.cm-focused .cm-activeLineGutter": {
@@ -60,8 +60,8 @@ const theme = EditorView.theme({
     color: "var(--tln-fg)",
     backgroundColor: "var(--tln-content)",
   },
-  ".cm-panels-top": { borderBottom: "1px solid var(--tln-border)" },
-  ".cm-panels-bottom": { borderTop: "1px solid var(--tln-border)" },
+  ".cm-panels-top": { borderBottom: "var(--tln-hairline) solid var(--tln-border)" },
+  ".cm-panels-bottom": { borderTop: "var(--tln-hairline) solid var(--tln-border)" },
   ".cm-panel.cm-search label": {
     color: "var(--tln-fg-muted)",
     fontSize: "var(--tln-text-xs)",
@@ -83,7 +83,7 @@ const theme = EditorView.theme({
   // The same look as a Button of @telaion/primitives: no frame, a shadow that grows on hover.
   ".cm-button": {
     backgroundColor: "var(--tln-action)",
-    border: "1px solid transparent",
+    border: "var(--tln-hairline) solid transparent",
     boxShadow: "var(--tln-shadow-action)",
     cursor: "pointer",
   },
@@ -95,20 +95,20 @@ const theme = EditorView.theme({
   },
   ".cm-searchMatch": {
     backgroundColor: "var(--tln-warn-soft)",
-    outline: "1px solid var(--tln-warn)",
+    outline: "var(--tln-hairline) solid var(--tln-warn)",
   },
   ".cm-searchMatch.cm-searchMatch-selected": {
     backgroundColor: "var(--tln-accent-soft)",
-    outline: "1px solid var(--tln-accent)",
+    outline: "var(--tln-hairline) solid var(--tln-accent)",
   },
   ".cm-selectionMatch": { backgroundColor: "var(--tln-tint)" },
   "&.cm-focused .cm-matchingBracket": {
     backgroundColor: "var(--tln-accent-soft)",
-    outline: "1px solid var(--tln-accent)",
+    outline: "var(--tln-hairline) solid var(--tln-accent)",
   },
   "&.cm-focused .cm-nonmatchingBracket": {
     backgroundColor: "var(--tln-danger-soft)",
-    outline: "1px solid var(--tln-danger)",
+    outline: "var(--tln-hairline) solid var(--tln-danger)",
   },
   // A tooltip floats over the editor: content lifted in front of the page, with no frame and no arrow.
   ".cm-tooltip": {
@@ -133,7 +133,7 @@ const theme = EditorView.theme({
   },
   ".cm-tooltip.cm-tooltip-autocomplete > ul > completion-section": {
     color: "var(--tln-fg-muted)",
-    borderBottom: "1px solid var(--tln-border)",
+    borderBottom: "var(--tln-hairline) solid var(--tln-border)",
     opacity: "1",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected]": {

@@ -281,13 +281,13 @@
   .tln-menu-separator {
     height: 0;
     margin: var(--tln-space) calc(var(--tln-space) * 2);
-    border-top: 1px solid var(--tln-border);
+    border-top: var(--tln-hairline) solid var(--tln-border);
   }
 
   .tln-menu-heading {
     padding: calc(var(--tln-space) * 1.5) calc(var(--tln-space) * 2) var(--tln-space);
     font-size: var(--tln-text-xs);
-    font-weight: 600;
+    font-weight: var(--tln-weight-strong);
     color: var(--tln-fg-muted);
   }
 </style>

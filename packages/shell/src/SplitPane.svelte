@@ -210,19 +210,19 @@
     margin: calc(var(--tln-space) * -1) 0;
   }
 
-  /* Visual 1px divider line inside the wider touch/drag area */
+  /* Visual divider line (a hairline) inside the wider touch/drag area */
   .tln-split-resizer-line {
     background: var(--tln-border);
     transition: background-color var(--tln-transition);
   }
 
   .tln-split-pane[data-direction="horizontal"] .tln-split-resizer-line {
-    width: 1px;
+    width: var(--tln-hairline);
     height: 100%;
   }
 
   .tln-split-pane[data-direction="vertical"] .tln-split-resizer-line {
-    height: 1px;
+    height: var(--tln-hairline);
     width: 100%;
   }
 

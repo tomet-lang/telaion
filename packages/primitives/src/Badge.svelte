@@ -22,7 +22,7 @@
     font-size: var(--tln-text-xs);
     line-height: var(--tln-leading);
     color: var(--tln-fg);
-    border: 1px solid var(--tln-tone);
+    border: var(--tln-hairline) solid var(--tln-tone);
     border-radius: var(--tln-radius);
     background: var(--tln-tone-soft);
     white-space: nowrap;

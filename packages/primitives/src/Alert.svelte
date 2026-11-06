@@ -41,7 +41,7 @@
     line-height: var(--tln-leading);
     color: var(--tln-fg);
     background: var(--tln-tone-soft);
-    border: 1px solid var(--tln-tone);
+    border: var(--tln-hairline) solid var(--tln-tone);
     border-radius: var(--tln-radius);
   }
 

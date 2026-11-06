@@ -270,7 +270,7 @@
     flex-direction: column;
     flex-shrink: 0;
     transition: box-shadow var(--tln-transition), border-color var(--tln-transition);
-    border: 1px solid var(--tln-border);
+    border: var(--tln-hairline) solid var(--tln-border);
   }
 
   .tln-kanban-column.tln-kanban-column-active {
@@ -282,7 +282,7 @@
     align-items: center;
     justify-content: space-between;
     padding: calc(var(--tln-space) * 3);
-    border-bottom: 1px solid var(--tln-border);
+    border-bottom: var(--tln-hairline) solid var(--tln-border);
     font-size: var(--tln-text-sm);
     font-weight: var(--tln-weight-medium);
   }
@@ -305,7 +305,7 @@
 
   .tln-kanban-card {
     background: var(--tln-action);
-    border: 1px solid var(--tln-border);
+    border: var(--tln-hairline) solid var(--tln-border);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-action);
     padding: calc(var(--tln-space) * 3);
@@ -359,7 +359,7 @@
     padding: calc(var(--tln-space) * 4);
     color: var(--tln-fg-muted);
     font-size: var(--tln-text-xs);
-    border: 1px dashed var(--tln-border);
+    border: var(--tln-hairline) dashed var(--tln-border);
     border-radius: var(--tln-radius);
   }
 </style>
