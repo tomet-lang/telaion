@@ -91,6 +91,25 @@
   background: color-mix(in srgb, var(--tln-danger) 85%, var(--tln-fg));
 }
 
+/*
+ * Soft: an action that carries a meaning. It is still an action (raised, lit, shadowed), but its
+ * fill is the soft color of its tone, the one Badge and Alert wear, so a row of them tells
+ * note from warning without a color written in a component. The label stays in the foreground
+ * color (a tone-colored text on its own tint misses AA, as Badge says); the icon takes the tone.
+ * No outline: the tint is what carries the tone.
+ */
+.tln-action[data-variant="soft"] {
+  background: var(--tln-tone-soft);
+  color: var(--tln-fg);
+}
+.tln-action[data-variant="soft"]:enabled:hover {
+  /* One step more of the tone. */
+  background: color-mix(in oklab, var(--tln-tone) 12%, var(--tln-tone-soft));
+}
+.tln-action[data-variant="soft"]:enabled .tln-icon {
+  color: var(--tln-tone);
+}
+
 /* No frame, no shadow: it stays on the content layer, as a link does. */
 .tln-action[data-variant="quiet"] {
   background: transparent;
