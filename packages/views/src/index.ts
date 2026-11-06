@@ -7,8 +7,14 @@ export type {
 } from "./kanban/types.js";
 
 export { default as TreeExplorer } from "./explorer/TreeExplorer.svelte";
-export { default as TreeItem } from "./explorer/TreeItem.svelte";
 export type {
+  TreeCheckResult,
+  TreeCommitEvent,
+  TreeContextMenuEvent,
+  TreeCreateEditing,
+  TreeEditing,
+  TreeMoveEvent,
   TreeNode,
+  TreeRenameEditing,
   TreeSelectEvent,
 } from "./explorer/types.js";
