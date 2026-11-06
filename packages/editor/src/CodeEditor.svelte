@@ -4,7 +4,6 @@
   import {
     drawSelection,
     EditorView,
-    highlightActiveLine,
     highlightActiveLineGutter,
     keymap,
     lineNumbers,
@@ -14,6 +13,7 @@
 
   let {
     content = $bindable(""),
+    variant = "field",
     readOnly = false,
     label = "Document source",
     language,
@@ -22,6 +22,18 @@
     onSave,
   }: {
     content?: string;
+    /**
+     * How the editor sits in its surroundings. Either way it fills the height of its parent,
+     * which therefore needs a height of its own, and the editor scrolls itself.
+     *
+     * - `"field"` (the default): a text field. A well, cut into the surface it is on, with a
+     *   focus ring while it is in use. Use it where the editor is one control among others.
+     * - `"bare"`: the editor is the pane. It draws no surface, radius, shadow or ring: it is text
+     *   on whatever its parent paints. Focus shows in the caret, the selection and the line number of
+     *   the active line, which are only drawn while the editor is in use; a pane that wants more can style
+     *   itself with `:focus-within`.
+     */
+    variant?: "field" | "bare";
     readOnly?: boolean;
     /** The accessible name of the text area. */
     label?: string;
@@ -55,7 +67,8 @@
         extensions: [
           lineNumbers(),
           highlightActiveLineGutter(),
-          highlightActiveLine(),
+          // No highlightActiveLine: a band over the line would also hide the selection on it, which
+          // CodeMirror draws behind the text. The line number of the active line is marked instead.
           drawSelection(),
           history(),
           // No indentWithTab: Tab must still leave the editor for the next control.
@@ -111,12 +124,27 @@
   });
 </script>
 
-<div class="tln-code-editor" bind:this={host}></div>
+<div class="tln-code-editor" data-variant={variant} bind:this={host}></div>
 
 <style>
   .tln-code-editor {
+    box-sizing: border-box;
     height: 100%;
     min-height: 0;
     overflow: hidden;
+  }
+
+  /* A field is a well, like every other thing that is typed into (looks.css: .tln-field-control). */
+  .tln-code-editor[data-variant="field"] {
+    background: var(--tln-well);
+    border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-well);
+  }
+
+  /* The ring is on the host, outside the clip of its own overflow, and stays while focus is in
+     the editor's search panel too. */
+  .tln-code-editor[data-variant="field"]:focus-within {
+    outline: var(--tln-focus-ring);
+    outline-offset: 0;
   }
 </style>

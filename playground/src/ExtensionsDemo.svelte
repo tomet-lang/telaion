@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { closeBrackets } from "@codemirror/autocomplete";
-  import { bracketMatching, foldGutter } from "@codemirror/language";
-  import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
-  import { keymap } from "@codemirror/view";
-  import { CodeEditor } from "@telaion/editor";
+  import { CodeEditor, sourceEditingExtensions } from "@telaion/editor";
   import { Field, Select } from "@telaion/primitives";
 
   const choices = [
@@ -13,17 +9,7 @@
 
   let choice = $state("none");
   let content = $state("::meta{\n  id: a,\n}\n");
-  const extensions = $derived(
-    choice === "extras"
-      ? [
-          foldGutter(),
-          bracketMatching(),
-          closeBrackets(),
-          highlightSelectionMatches(),
-          keymap.of(searchKeymap),
-        ]
-      : undefined,
-  );
+  const extensions = $derived(choice === "extras" ? sourceEditingExtensions : undefined);
 </script>
 
 <div class="demo">
@@ -44,9 +30,5 @@
 
   .frame {
     height: calc(var(--tln-space) * 36);
-    background: var(--tln-content);
-    border-radius: var(--tln-radius);
-    box-shadow: var(--tln-shadow-content);
-    overflow: hidden;
   }
 </style>

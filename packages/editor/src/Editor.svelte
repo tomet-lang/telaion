@@ -97,17 +97,17 @@
     flex: 1;
   }
 
+  /* The text is a field and draws its own well (CodeEditor); only the wait for it is content. */
   .tln-editor-body {
     flex: 1;
     min-height: 0;
-    background: var(--tln-content);
-    border-radius: var(--tln-radius);
-    box-shadow: var(--tln-shadow-content);
-    transition: box-shadow 0.05s ease-out;
-    overflow: hidden;
   }
 
   .tln-editor-loading {
+    box-sizing: border-box;
+    background: var(--tln-content);
+    border-radius: var(--tln-radius);
+    box-shadow: var(--tln-shadow-content);
     display: grid;
     place-items: center;
     height: 100%;

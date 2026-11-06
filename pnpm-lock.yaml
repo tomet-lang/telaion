@@ -26,12 +26,18 @@ importers:
 
   packages/editor:
     dependencies:
+      '@codemirror/autocomplete':
+        specifier: ^6.18.0
+        version: 6.20.4
       '@codemirror/commands':
         specifier: ^6.8.0
         version: 6.11.1
       '@codemirror/language':
         specifier: ^6.11.0
         version: 6.13.1
+      '@codemirror/search':
+        specifier: ^6.5.0
+        version: 6.7.2
       '@codemirror/state':
         specifier: ^6.5.0
         version: 6.7.6
