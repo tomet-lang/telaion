@@ -33,7 +33,11 @@
  *   5. tint is not a layer. It is a passing state on a layer: hover, selection,
  *      a disabled control. Accent and state colors are for meaning, never for depth.
  *   6. Borders are dividers only. Nothing is outlined to make it stand out;
- *      the one exception is state: a danger outline, a focus ring.
+ *      the one exception is state: a danger outline, a focus ring. A divider or a
+ *      permitted outline is one hairline thick (--tln-hairline), never more.
+ *   7. paper is not a layer. It is the colour of a printed page, shown as a document
+ *      (a preview, a print layout), white in both themes. It belongs to the document
+ *      being shown, not to the interface around it, and it is not on the depth scale.
  *
  * Light and dark share one declaration through light-dark(). The default
  * follows the operating system; set data-theme="light" or data-theme="dark"
@@ -215,6 +219,10 @@
   /* Dividers: decoration only */
   --tln-border: light-dark(#e2e6eb, #26262c);
 
+  /* Paper: the colour of a printed page, white in light and in dark. It is a colour of the
+   * document being shown (a page preview, a print layout), not a layer of the interface. */
+  --tln-paper: #ffffff;
+
   /* Accent */
   --tln-accent: light-dark(#2563eb, #3b82f6);
   --tln-accent-hover: light-dark(#1d4ed8, #60a5fa);
@@ -241,12 +249,22 @@
   --tln-text-xs: 0.75rem;
   --tln-text-sm: 0.875rem;
   --tln-text-md: 1rem;
-  --tln-leading: 1.6;
+  --tln-text-lg: 1.25rem; /* headings, from the smallest... */
+  --tln-text-xl: 1.5rem;
+  --tln-text-2xl: 1.875rem; /* ...to the largest */
+  --tln-leading: 1.6; /* the line height of controls and short text */
+  --tln-leading-prose: 1.75; /* the line height of running text that is read */
+  --tln-measure: 48rem; /* the widest a line of read text should be */
+  --tln-weight-medium: 500; /* a name, a title: heavier than text, quieter than strong */
+  --tln-weight-strong: 700; /* emphasis: the heaviest weight there is */
 
   /* Shape and rhythm */
   --tln-space: 4px; /* every gap is a multiple: calc(var(--tln-space) * 3) */
   --tln-radius: 6px;
-  --tln-transition: 0.15s ease;
+  --tln-hairline: 1px; /* the thickness of a divider and of a frame that is allowed (a danger outline) */
+  --tln-duration: 0.15s; /* how long a change of state takes */
+  --tln-ease: ease; /* how it moves */
+  --tln-transition: var(--tln-duration) var(--tln-ease); /* both, to follow a property: `transition: color var(--tln-transition)` */
 }
 
 [data-theme="light"] {

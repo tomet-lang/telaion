@@ -66,6 +66,10 @@
   --color-tln-border: var(--tln-border);
   --color-tln-tint: var(--tln-tint);
 
+  /* Paper, the colour of a printed page (a document shown as it will print): bg-tln-paper.
+   * Not a layer. */
+  --color-tln-paper: var(--tln-paper);
+
   /* Accent, with the ink that sits on it */
   --color-tln-accent: var(--tln-accent);
   --color-tln-accent-hover: var(--tln-accent-hover);
@@ -95,8 +99,11 @@
   /* Shape: rounded-tln */
   --radius-tln: var(--tln-radius);
 
-  /* Type: font-tln-sans, font-tln-mono; text-tln-xs, text-tln-sm, text-tln-md, which bring the
-   * line height of the design with them; leading-tln for the same line height alone. */
+  /* Type: font-tln-sans, font-tln-mono; text-tln-xs, -sm, -md, -lg, -xl, -2xl, which bring the
+   * line height of the design with them (the lg to 2xl headings too: the design has no tighter
+   * line height for them); leading-tln for the same line height alone, and leading-tln-prose for
+   * the looser one of running text that is read; font-tln-medium and font-tln-strong for the two
+   * weights; max-w-tln-measure for the widest a line of read text should be. */
   --font-tln-sans: var(--tln-font-sans);
   --font-tln-mono: var(--tln-font-mono);
   --default-font-family: var(--tln-font-sans);
@@ -107,7 +114,21 @@
   --text-tln-sm--line-height: var(--tln-leading);
   --text-tln-md: var(--tln-text-md);
   --text-tln-md--line-height: var(--tln-leading);
+  --text-tln-lg: var(--tln-text-lg);
+  --text-tln-lg--line-height: var(--tln-leading);
+  --text-tln-xl: var(--tln-text-xl);
+  --text-tln-xl--line-height: var(--tln-leading);
+  --text-tln-2xl: var(--tln-text-2xl);
+  --text-tln-2xl--line-height: var(--tln-leading);
   --leading-tln: var(--tln-leading);
+  --leading-tln-prose: var(--tln-leading-prose);
+  --font-weight-tln-medium: var(--tln-weight-medium);
+  --font-weight-tln-strong: var(--tln-weight-strong);
+  --container-tln-measure: var(--tln-measure);
+
+  /* Motion: Tailwind's bare `transition` (and `duration-*`/`ease-*` left unset) follow the design. */
+  --default-transition-duration: var(--tln-duration);
+  --default-transition-timing-function: var(--tln-ease);
 
   /* Rhythm: every size and gap of Tailwind's spacing scale is a multiple of --tln-space, as in
    * the components (`p-3` is `calc(var(--tln-space) * 3)`). */
