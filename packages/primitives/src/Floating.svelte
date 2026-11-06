@@ -21,6 +21,7 @@
   import { untrack, type Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
   import { place, type Placement } from "./position.js";
+  import "./looks.css";
 
   type Anchor = Element | { x: number; y: number };
 
@@ -110,14 +111,15 @@
 </script>
 
 <!-- manual: this component closes it. The browser's own light dismiss cannot tell a click on the trigger from one elsewhere. -->
-<div bind:this={panel} class="tln-float" popover="manual" data-kind={kind} {...rest}>
+<div bind:this={panel} class="tln-float tln-floating" popover="manual" data-kind={kind} {...rest}>
   {#if open || keepMounted}
     {@render children()}
   {/if}
 </div>
 
 <style>
-  .tln-float {
+  /* What it looks like (content tone, radius, float shadow) is .tln-float in looks.css, shared with Modal. */
+  .tln-floating {
     --tln-float-gap: calc(var(--tln-space) * 1.5);
     --tln-float-margin: calc(var(--tln-space) * 2);
 
@@ -132,11 +134,6 @@
     max-width: calc(100% - var(--tln-float-margin) * 2);
     overflow: auto;
 
-    /* A float: content lifted in front of the page. Its controls are the action layer on it. */
-    color: var(--tln-fg);
-    background: var(--tln-content);
-    border-radius: var(--tln-radius);
-    box-shadow: var(--tln-shadow-float);
     font-family: var(--tln-font-sans);
     font-size: var(--tln-text-sm);
     line-height: var(--tln-leading);
@@ -145,17 +142,17 @@
   }
 
   /* Only while open: `display` on a closed popover would show it. */
-  .tln-float:popover-open {
+  .tln-floating:popover-open {
     display: block;
   }
 
-  .tln-float[data-kind="dialog"] {
+  .tln-floating[data-kind="dialog"] {
     padding: calc(var(--tln-space) * 3);
   }
-  .tln-float[data-kind="menu"] {
+  .tln-floating[data-kind="menu"] {
     padding: var(--tln-space);
   }
-  .tln-float[data-kind="tip"] {
+  .tln-floating[data-kind="tip"] {
     max-width: min(calc(var(--tln-space) * 80), calc(100% - var(--tln-float-margin) * 2));
     padding: var(--tln-space) calc(var(--tln-space) * 2);
     font-size: var(--tln-text-xs);
@@ -163,7 +160,7 @@
   }
 
   /* A panel that is focused as a whole (nothing inside it to focus) has no ring: it is not a control. */
-  .tln-float:focus {
+  .tln-floating:focus {
     outline: none;
   }
 </style>

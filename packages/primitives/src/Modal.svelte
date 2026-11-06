@@ -2,6 +2,7 @@
   import type { Snippet } from "svelte";
   import IconButton from "./IconButton.svelte";
   import { X } from "./icons.generated.js";
+  import "./looks.css";
 
   let {
     open = $bindable(false),
@@ -123,7 +124,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 <dialog
   bind:this={dialog}
-  class="tln-modal"
+  class="tln-modal tln-float"
   data-size={size}
   data-placement={placement}
   {role}
@@ -164,12 +165,8 @@
        is one) sets every margin to 0 and would pin the dialog to a corner, so say it here. */
     margin: auto;
     padding: 0;
-    color: var(--tln-fg);
-    /* A float: content lifted in front of the page. Its buttons are the action layer on it. */
-    background: var(--tln-content);
     border: 0;
-    border-radius: var(--tln-radius);
-    box-shadow: var(--tln-shadow-float);
+    /* What it looks like (content tone, radius, float shadow) is .tln-float in looks.css, shared with Floating. */
     transition: box-shadow 0.05s ease-out;
     max-width: calc(100vw - var(--tln-space) * 8);
     max-height: calc(100vh - var(--tln-space) * 8);
@@ -201,7 +198,8 @@
     max-height: calc(100vh - var(--tln-space) * 24);
   }
 
-  /* After the placement, so that the full size wins over it. */
+  /* After the placement, so that the full size wins over it. It covers the page, so it is no longer
+     lifted in front of it: it casts nothing and has no corners (undoing .tln-float). */
   .tln-modal[data-size="full"] {
     width: 100vw;
     height: 100vh;

@@ -4,8 +4,8 @@
  * Looks that more than one component shares.
  *
  * Only what a second component would otherwise copy lives here: how an action
- * looks (Button, IconButton), how a text field looks (Input, Select), and how a
- * tone looks (Alert, Badge). Layout and anything a single component owns stays
+ * looks (Button, IconButton), how a text field looks (Input, Select), how a
+ * float looks (Modal, Floating), and how a tone looks (Alert, Badge). Layout and anything a single component owns stays
  * in that component. Like the components, this file reads tokens and nothing else.
  *
  * It is not in a cascade layer, as the component styles were not: a CSS reset
@@ -179,6 +179,22 @@
   color: var(--tln-fg-muted);
   box-shadow: none;
   cursor: not-allowed;
+}
+
+/* ---- Float: content lifted in front of the page ------------------------------------------- */
+
+/*
+ * What a Modal, a Popover, a Menu and a Tooltip share: the content tone, the radius, and the
+ * float shadow. Its controls are the action layer on it, its fields are wells. Where it sits,
+ * how big it is and what it is padded with stay in the component. A component that is a float
+ * in one state only (a Modal in full screen covers the page and casts nothing) takes the
+ * radius and the shadow off again, and says so.
+ */
+.tln-float {
+  color: var(--tln-fg);
+  background: var(--tln-content);
+  border-radius: var(--tln-radius);
+  box-shadow: var(--tln-shadow-float);
 }
 
 /* ---- Tone: which color a status carries --------------------------------------------------- */
