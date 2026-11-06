@@ -168,3 +168,50 @@ test.describe("a modal that can refuse to close", () => {
     await expect(page.getByRole("button", { name: "Open guarded modal" })).toBeFocused();
   });
 });
+
+test.describe("a modal without a visible title", () => {
+  const dialog = (page: import("@playwright/test").Page) => page.getByRole("dialog", { name: "Preview" });
+
+  test.beforeEach(async ({ page }) => {
+    await page.getByRole("button", { name: "Modal without a title", exact: true }).click();
+    await expect(dialog(page)).toBeVisible();
+  });
+
+  test("keeps its accessible name, but has no header and no close button", async ({ page }) => {
+    await expect(dialog(page).getByRole("heading")).toHaveCount(0);
+    await expect(dialog(page).getByRole("button")).toHaveCount(0);
+    await expect(dialog(page)).not.toContainText("Preview");
+  });
+
+  test("Escape and the backdrop still close it, and the focus returns to the opener", async ({ page }) => {
+    const opener = page.getByRole("button", { name: "Modal without a title", exact: true });
+    await page.keyboard.press("Escape");
+    await expect(dialog(page)).toBeHidden();
+    await expect(opener).toBeFocused();
+    await opener.click();
+    await page.mouse.click(4, 4);
+    await expect(dialog(page)).toBeHidden();
+  });
+});
+
+test.describe("placement and size", () => {
+  test("the top placement hangs near the top edge and stays centered across", async ({ page }) => {
+    await page.getByRole("button", { name: "Modal at the top", exact: true }).click();
+    const box = (await page.getByRole("dialog", { name: "At the top" }).boundingBox())!;
+    const viewport = page.viewportSize()!;
+    expect(box.y).toBeGreaterThan(0);
+    expect(box.y).toBeLessThan(viewport.height / 4);
+    expect(box.x + box.width / 2).toBeCloseTo(viewport.width / 2, 0);
+  });
+
+  test("the lg size is wider than the default, and closeButton can be turned off", async ({ page }) => {
+    await page.getByRole("button", { name: "Open modal", exact: true }).click();
+    const medium = (await page.getByRole("dialog", { name: "New page" }).boundingBox())!;
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "Modal, lg", exact: true }).click();
+    const wide = page.getByRole("dialog", { name: "Wide" });
+    expect((await wide.boundingBox())!.width).toBeGreaterThan(medium.width);
+    await expect(wide.getByRole("button", { name: "Close", exact: true })).toHaveCount(0);
+    await expect(wide.getByRole("heading", { name: "Wide" })).toBeVisible();
+  });
+});

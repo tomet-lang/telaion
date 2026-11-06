@@ -6,17 +6,39 @@
   let {
     open = $bindable(false),
     title,
+    hideTitle = false,
+    closeButton = true,
     size = "md",
+    placement = "center",
+    flush = false,
+    role = "dialog",
+    describedby,
     onclose,
     onrequestclose,
     children,
     footer,
   }: {
     open?: boolean;
-    /** The accessible name of the dialog, also shown in its header. */
+    /** The accessible name of the dialog. Required, also when it is not shown (see `hideTitle`). */
     title: string;
-    /** sm and md are centered boxes. full covers the whole viewport. */
-    size?: "sm" | "md" | "full";
+    /**
+     * Do not show the title: the dialog has no header, and `title` is only its accessible name.
+     * For a dialog that is plain about what it is, such as a command palette. It then has no
+     * close button either; Escape and the backdrop close it.
+     */
+    hideTitle?: boolean;
+    /** The close button in the header. Turn it off where the footer already offers the way out. */
+    closeButton?: boolean;
+    /** sm, md and lg are boxes of increasing width. full covers the whole viewport. */
+    size?: "sm" | "md" | "lg" | "full";
+    /** center puts the box in the middle of the window, top near the top edge (a palette). */
+    placement?: "center" | "top";
+    /** The body has no padding of its own, for content that brings its own, such as a list. */
+    flush?: boolean;
+    /** alertdialog is for a dialog that interrupts to ask for an answer, as a confirmation does. */
+    role?: "dialog" | "alertdialog";
+    /** The id of the element in the body that describes the dialog; read out after its name. */
+    describedby?: string;
     /** Called whenever the modal closes, however it was closed. */
     onclose?: () => void;
     /**
@@ -103,7 +125,11 @@
   bind:this={dialog}
   class="tln-modal"
   data-size={size}
-  aria-labelledby={titleId}
+  data-placement={placement}
+  {role}
+  aria-labelledby={hideTitle ? undefined : titleId}
+  aria-label={hideTitle ? title : undefined}
+  aria-describedby={describedby}
   onclose={handleClose}
   onclick={handleClick}
   onkeydown={handleKeydown}
@@ -113,11 +139,15 @@
     requestClose();
   }}
 >
-  <header class="tln-modal-header">
-    <h2 class="tln-modal-title" id={titleId}>{title}</h2>
-    <IconButton icon={X} label="Close" onclick={requestClose} />
-  </header>
-  <div class="tln-modal-body">
+  {#if !hideTitle}
+    <header class="tln-modal-header">
+      <h2 class="tln-modal-title" id={titleId}>{title}</h2>
+      {#if closeButton}
+        <IconButton icon={X} label="Close" onclick={requestClose} />
+      {/if}
+    </header>
+  {/if}
+  <div class="tln-modal-body" data-flush={flush || undefined}>
     {@render children()}
   </div>
   {#if footer}
@@ -161,9 +191,21 @@
   .tln-modal[data-size="md"] {
     width: calc(var(--tln-space) * 120);
   }
+  .tln-modal[data-size="lg"] {
+    width: calc(var(--tln-space) * 160);
+  }
+
+  /* Near the top edge, where a palette is looked for. The box takes the room that is left below. */
+  .tln-modal[data-placement="top"] {
+    margin: calc(var(--tln-space) * 16) auto auto;
+    max-height: calc(100vh - var(--tln-space) * 24);
+  }
+
+  /* After the placement, so that the full size wins over it. */
   .tln-modal[data-size="full"] {
     width: 100vw;
     height: 100vh;
+    margin: 0;
     max-width: none;
     max-height: none;
     border-radius: 0;
@@ -189,6 +231,10 @@
     font-size: var(--tln-text-sm);
     overflow: auto;
     flex: 1;
+  }
+
+  .tln-modal-body[data-flush] {
+    padding: 0;
   }
 
   .tln-modal-footer {
