@@ -26,7 +26,7 @@
     align-items: center;
     justify-content: center;
     gap: calc(var(--tln-space) * 2);
-    padding: calc(var(--tln-space) * 1.5) calc(var(--tln-space) * 3);
+    padding: calc(var(--tln-space) * 1.5 + 1px) calc(var(--tln-space) * 3 + 1px);
     font: inherit;
     font-size: var(--tln-text-sm);
     line-height: var(--tln-leading);

@@ -24,7 +24,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: calc(var(--tln-space) * 1.5);
+    padding: calc(var(--tln-space) * 1.5 + 1px);
     font-size: var(--tln-text-md);
     line-height: 1;
   }

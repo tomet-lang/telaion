@@ -58,8 +58,26 @@ for (const scheme of ["light", "dark"] as const) {
       const [canvas, content, action] = (await Promise.all(
         ["canvas", "content", "action"].map((l) => token(page, `--tln-${l}`)),
       )).map(luminance);
-      expect(canvas).toBeLessThan(content);
-      expect(content).toBeLessThanOrEqual(action);
+      // The canvas and the content are the same step of the depth scale: a shadow tells them apart.
+      expect(canvas).toBeLessThanOrEqual(content);
+      expect(content).toBeLessThan(action);
+    });
+
+    test("the depth scale: a well, the content, an action, in that order, between the shadow and the light", async ({
+      page,
+    }) => {
+      const steps = (
+        await Promise.all([1, 2, 3, 4, 5].map((n) => token(page, `--tln-layer-${n}`)))
+      ).map(luminance);
+      for (let i = 1; i < steps.length; i++) expect(steps[i]).toBeGreaterThan(steps[i - 1]);
+      const [well, content, action] = (
+        await Promise.all(["well", "content", "action"].map((l) => token(page, `--tln-${l}`)))
+      ).map(luminance);
+      // A surface is never the colour of a shadow or of a light.
+      expect(well).toBeGreaterThan(steps[0]);
+      expect(action).toBeLessThan(steps[4]);
+      expect(well).toBeLessThan(content);
+      expect(content).toBeLessThan(action);
     });
 
     test("a well is darker than the content it is cut into", async ({ page }) => {

@@ -84,6 +84,7 @@ const theme = EditorView.theme({
     cursor: "pointer",
   },
   ".cm-button:hover": { boxShadow: "var(--tln-shadow-action-hover)" },
+  ".cm-button:active": { boxShadow: "var(--tln-shadow-action-active)" },
   ".cm-textfield:focus-visible, .cm-button:focus-visible": {
     outline: "var(--tln-focus-ring)",
     outlineOffset: "1px",

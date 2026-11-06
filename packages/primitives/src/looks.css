@@ -16,7 +16,7 @@
 /* ---- Action: stands on the action layer, one above content -------------------------------- */
 
 .tln-action {
-  border: 1px solid transparent;
+  border: 0;
   border-radius: var(--tln-radius);
   cursor: pointer;
   box-shadow: var(--tln-shadow-action);
@@ -35,6 +35,11 @@
   box-shadow: var(--tln-shadow-action-hover);
 }
 
+/* Active (click): pressed inward, shadow contracts */
+.tln-action:enabled:active {
+  box-shadow: var(--tln-shadow-action-active);
+}
+
 .tln-action[data-variant="secondary"] {
   background: var(--tln-action);
   color: var(--tln-fg);
@@ -46,6 +51,9 @@
 .tln-action[data-variant="primary"] {
   background: var(--tln-accent);
   color: var(--tln-accent-fg);
+  /* Lit by a lighter shade of its own fill, not by white. */
+  --tln-light: var(--tln-light-on-accent);
+  --tln-light-sub: var(--tln-light-on-accent-sub);
 }
 .tln-action[data-variant="primary"]:enabled:hover {
   background: var(--tln-accent-hover);
@@ -54,16 +62,29 @@
 /* Destructive, outlined. The outline is what tells it from a plain action. */
 .tln-action[data-variant="danger"] {
   background: var(--tln-action);
-  border-color: var(--tln-danger);
   color: var(--tln-danger);
+  box-shadow:
+    inset 0 0 0 1px var(--tln-danger),
+    var(--tln-shadow-action);
 }
 .tln-action[data-variant="danger"]:enabled:hover {
   background: var(--tln-danger-soft);
+  box-shadow:
+    inset 0 0 0 1px var(--tln-danger),
+    var(--tln-shadow-action-hover);
+}
+.tln-action[data-variant="danger"]:enabled:active {
+  box-shadow:
+    inset 0 0 0 1px var(--tln-danger),
+    var(--tln-shadow-action-active);
 }
 
 .tln-action[data-variant="danger-fill"] {
   background: var(--tln-danger);
   color: var(--tln-danger-fg);
+  /* Lit by a lighter shade of its own fill, not by white. */
+  --tln-light: var(--tln-light-on-danger);
+  --tln-light-sub: var(--tln-light-on-danger-sub);
 }
 .tln-action[data-variant="danger-fill"]:enabled:hover {
   /* Toward the foreground: darker in light mode, lighter in dark mode. */
@@ -81,11 +102,13 @@
   color: var(--tln-fg);
   box-shadow: none;
 }
+.tln-action[data-variant="quiet"]:enabled:active {
+  box-shadow: none;
+}
 
 /* One disabled look for every variant: it steps back down onto the content layer. */
 .tln-action:disabled {
   background: var(--tln-tint);
-  border-color: transparent;
   color: var(--tln-fg-muted);
   box-shadow: none;
   cursor: not-allowed;
@@ -100,7 +123,7 @@
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  /* One pixel more than a button's padding: a button has a 1px border, a well has none. */
+  /* Matching button padding: both actions and wells are borderless with identical dimensions */
   padding: calc(var(--tln-space) * 1.5 + 1px) calc(var(--tln-space) * 3 + 1px);
   font: inherit;
   font-size: var(--tln-text-sm);

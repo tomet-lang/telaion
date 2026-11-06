@@ -45,8 +45,8 @@
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    padding: calc(var(--tln-space) * 1.5) calc(var(--tln-space) * 8) calc(var(--tln-space) * 1.5)
-      calc(var(--tln-space) * 3);
+    padding: calc(var(--tln-space) * 1.5 + 1px) calc(var(--tln-space) * 8) calc(var(--tln-space) * 1.5 + 1px)
+      calc(var(--tln-space) * 3 + 1px);
     font: inherit;
     font-size: var(--tln-text-sm);
     line-height: var(--tln-leading);
@@ -54,8 +54,21 @@
     text-align: left;
   }
 
-  .tln-select-control[aria-invalid="true"] {
-    border-color: var(--tln-danger);
+  /* A wrong value is a state, so it may be outlined. The ring stays through hover and press. */
+  .tln-select-control[aria-invalid="true"]:enabled {
+    box-shadow:
+      inset 0 0 0 1px var(--tln-danger),
+      var(--tln-shadow-action);
+  }
+  .tln-select-control[aria-invalid="true"]:enabled:hover {
+    box-shadow:
+      inset 0 0 0 1px var(--tln-danger),
+      var(--tln-shadow-action-hover);
+  }
+  .tln-select-control[aria-invalid="true"]:enabled:active {
+    box-shadow:
+      inset 0 0 0 1px var(--tln-danger),
+      var(--tln-shadow-action-active);
   }
 
   /* The arrow is drawn by us so it follows the theme; clicks pass through to the select. */
