@@ -23,8 +23,8 @@ Telaion is the shared frame. It carries structure and behavior. It carries no th
 -| `@telaion/primitives` -- Generic primitives: actions, fields, dialogs, floating layers (popover, menu, tooltip), tabs and other controls. No Tomet knowledge.
 -| `@telaion/views` -- Self-contained composite views: Kanban and the tree explorer. No Tomet knowledge.
 -| `@telaion/shell` -- Workspace frame and split-pane layout system.
--| `@telaion/editor` -- The editor frame. Takes a storage adapter and a language slot. No Tomet knowledge.
--| `@telaion/tomet` -- Tomet-specific parts: syntax highlighting, conflict blocks and their resolution. It knows the shapes of Tomet data, not the engine that computes them.
+-| `@telaion/editor` -- The editor frame: a source editor (CodeMirror) and a rich-text editor (Tiptap). Takes a storage adapter and a language slot. No Tomet knowledge.
+-| `@telaion/tomet` -- Tomet-specific parts: syntax highlighting, conflict blocks and their resolution, and the Tiptap extensions for Tomet's blocks (callouts, heading markers). It knows the shapes of Tomet data, not the engine that computes them.
 
 The split is by what a package must know and by abstraction layer. `@telaion/primitives` and `@telaion/theme` can be extracted into their own repository later without touching the others.
 
@@ -152,6 +152,44 @@ type CodeEditorProps = {
 -| There is no band over the active line, in either variant: a band would hide the selection on that line, which CodeMirror draws behind the text.
 -| The editor is kept minimal. `sourceEditingExtensions`, a preset exported by `@telaion/editor`, is what a person editing source text expects beyond it: a fold gutter, matching and closing brackets, indentation that follows what was typed, search (Mod-f) and a highlight for other matches of the selection. It is passed as `extensions`, and is not part of `CodeEditor` because a small field (a commit message) is better without it. What it draws is styled by the editor's theme, in tokens.
 
+==[ Rich text ]
+
+`RichText` in `@telaion/editor` is a Tiptap editor (ProseMirror) in the same frame as `CodeEditor`: it takes the same `variant`, `readOnly` and `label`, and the same `onChange` that is not called for a replacement from outside. It knows nothing about Tomet. Its schema is the StarterKit and whatever `extensions` the application brings.
+
+```ts
+type RichTextProps = {
+  content: Content; // $bindable. ProseMirror JSON or an HTML string (Tiptap's own Content)
+  format?: "json" | "html"; // what an edit is written back as; "json" by default
+  editor: Editor | null; // $bindable. Bind it to run commands
+  variant?: "field" | "bare";
+  readOnly?: boolean;
+  label?: string;
+  placeholder?: string;
+  extensions?: Extensions; // more Tiptap extensions; read once
+  starterKit?: Partial<StarterKitOptions> | false;
+  onChange?: (content: Content) => void; // edits by a person, not replacements from outside
+};
+```
+
+===[ Decided ]
+
+-| **A separate entry, not part of the index.** `RichText` is `import { RichText } from "@telaion/editor/rich-text"`, and the Tomet extensions are `@telaion/tomet/rich-text`. Tiptap and ProseMirror are large, and an application that only edits source (the wiki's raw editor) must neither pay for them nor be obliged to install them: `index.ts` imports no Tiptap, and Tiptap is an optional peer dependency.
+-| **Tiptap is a peer dependency.** `@tiptap/core`, `@tiptap/pm` and `@tiptap/starter-kit` are optional peers of `@telaion/editor` (`@tiptap/core` and `@tiptap/pm` of `@telaion/tomet`), in the same major as the application's. A Tiptap extension, whether the application's own, the one of a third party or `Callout`, builds on `@tiptap/core`, and the editor and every extension must share one copy of it: a second copy has its own idea of what a node or a command is. With a peer dependency the package manager installs one.
+-| **The content is Tiptap's `Content`: ProseMirror JSON or an HTML string.** JSON is the exact form: every node and attribute of the schema survives, and it is what the engine of an application produces when it parses a `.tmt` document into blocks. HTML is for what a page already has, and keeps only what the schema parses back (so a node that is not in the schema is lost). `format` chooses the one that an edit is written back as; the component accepts either on the way in. The binding is two-way: an edit written to `content` and coming back through the binding is recognised by its text and not applied again, so the caret and the undo history stay; a value that is not that replaces the document, with no `onChange`.
+-| **The Tiptap `Editor` is a bindable prop**, `bind:editor`, null before the editor is there and after it is gone. An application runs commands on it (`editor?.chain().focus().toggleBold().run()`), reads the selection, or hands it to its own toolbar. A callback for the moment it is ready was not added: a bound value says the same and is reactive.
+-| **Extensions and StarterKit are read once**, when the editor is made, as Tiptap itself does. To change them, make the editor again (`{#key}`). `starterKit={false}` leaves the StarterKit out for an application that brings its own whole schema.
+-| **A field or a pane**, as in `CodeEditor`. `field` (the default) is a well: rich text is typed into, so it is where a text field is. `bare` is the pane: the editor draws no surface, radius, shadow or ring, and is text on whatever its parent paints; focus shows in the caret and the selection. A document that is the whole of a pane (ordiola's editing area) is `bare`. Both fill the height of their parent, scroll the text inside, and keep a click below the last line in the document.
+-| **The look of prose** is `prose.css` of `@telaion/editor`, the class `.tln-prose` (also importable alone, as `@telaion/editor/prose.css`, for HTML that is shown without an editor): the sizes of the three heading tokens (`text-2xl`, `text-xl`, `text-lg`) and `text-md` for the three below, the weights of `weight-strong` and `weight-medium`, the ink, `leading-prose` for text and `leading` for headings, the sans face, the mono face and `tint` for code, the accent and an underline for links, a quote that is quiet and set back, a rule that is one hairline, and a line never wider than `measure`. It paints no ground, so it holds on any layer. A block of code stands out by the tint and not by a frame. A quote's rule and a rule between sections are the dividers that the design allows, one hairline thick.
+-| **The placeholder is a decoration**, drawn from a `data-placeholder` attribute by the stylesheet. It is never in the document, and it is not shown when nobody can type.
+
+===[ Tomet extensions ]
+
+`@telaion/tomet/rich-text` exports Tiptap extensions that know Tomet's blocks. They import `@tiptap/core` (a peer) and nothing of `@telaion/editor`: an extension is not tied to our component, and any Tiptap editor can take it.
+
+-| `Callout` is a node `callout` with the attribute `type` (`note`, `tip`, `warning`, `danger`) that holds blocks. That is the shape of a `::{callout(note)}` block in the ProseMirror JSON that the engine produces, so the name and the attribute are the contract with it. It renders as `<div data-callout="note">`, which it also parses. It is drawn as the tone of its meaning, as `Alert` is (the soft fill and a hairline, from the tone machinery of `looks.css`: `note` is the accent, `tip` ok, `warning` warn, `danger` danger) and says its kind in words, because a colour alone must not be what tells a note from a warning. The commands are `setCallout({ type })` (wraps the selected blocks, or changes the kind when the selection is in a callout), `toggleCallout({ type })` and `unsetCallout()`, which keeps what the callout held.
+-| `HeadingMarkers` draws a heading the way Tomet writes it: `=[ title ]=`, `==[ title ]==`, `===[ title ]===`, quietly, in the code face. The markers are not text of the document and not in its content, and are given an empty text alternative. Whether they are shown is state of the editor and can be changed at any time, `editor.commands.setHeadingMarkers(false)` or `toggleHeadingMarkers()`, so a person can switch between the hybrid view and the plain one without the editor being made again; `shown` is the option for the start.
+-| What stays in the application: turning a `.tmt` source into ProseMirror JSON and back (the engine), when to do it and what to do on failure, inserting a block from its own menu (the commands above are the editor's side of it), the metadata of a document, and everything that talks to the file system. Telaion has no Tomet engine and will not get one.
+
 ==[ Two kinds of conflict ]
 
 The word means two things, and Telaion keeps them apart.
@@ -259,8 +297,8 @@ The most expensive failure so far was look-and-feel that is regenerated with eve
 
 ==[ Open ]
 
--| Typography of a document body (headings, prose, code blocks). The tokens above cover the interface, not the reading surface.
--| Where the Tiptap WYSIWYG mode of `ordiola` lives. Likely a separate entry of `@telaion/tomet`, so that the wiki does not pay for it.
+-| A line height for headings. The tokens have `leading` (1.6, controls) and `leading-prose` (1.75, running text), and a heading at 1.6 is loose; a document body wants about 1.25. Rich text uses `leading` for headings until there is a token.
+-| Italic, underline and strike are not in the tokens. Rich text uses the browser's own for emphasis, links and strikethrough.
 -| Colors for the tags the colors above do not name. `tomet-highlight` also returns `emphasis`, `strong`, `strikethrough` and `link`, which stay in the plain text color here; giving them one needs a decision, since the tokens have no italic or underline.
 -| The plug-in model of `ordiola`, and which extension points the Telaion components must expose for it. The boundary is DOM and TypeScript, as written above.
 -| A formatter and linter for Svelte and TypeScript. The shared `nix/formatter.nix` does not cover them.

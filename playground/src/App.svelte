@@ -8,6 +8,7 @@
   import EditorEmbedDemo from "./EditorEmbedDemo.svelte";
   import ExtensionsDemo from "./ExtensionsDemo.svelte";
   import NewPageDialog from "./NewPageDialog.svelte";
+  import RichTextDemo from "./RichTextDemo.svelte";
   import ConflictDemo from "./ConflictDemo.svelte";
   import ControlsDemo from "./ControlsDemo.svelte";
   import DialogDemo from "./DialogDemo.svelte";
@@ -291,6 +292,11 @@
   <section>
     <h2>CodeEditor: field and pane</h2>
     <EditorEmbedDemo />
+  </section>
+
+  <section>
+    <h2>RichText: field and pane (Tiptap)</h2>
+    <RichTextDemo />
   </section>
 
   <section>
