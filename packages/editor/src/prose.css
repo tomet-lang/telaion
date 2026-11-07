@@ -1,0 +1,200 @@
+@import "@telaion/theme/tokens.css";
+
+/*
+ * The look of text that is read: a document body.
+ *
+ * `.tln-prose` is put on the element that holds the text, and styles the HTML inside it: headings,
+ * paragraphs, lists, links, code, quotes and rules. RichText puts it on the editor's text area, and
+ * a page that shows the same HTML without an editor (a rendered document) puts it on its own
+ * container, so that reading and writing look alike. Like the components, this file reads
+ * tokens and nothing else.
+ *
+ * It is not in a cascade layer, as the component styles were not: a CSS reset such as Tailwind's
+ * preflight, which clears headings, lists and links, lives in a layer and has to lose to it.
+ *
+ * The text is the ink on whatever it is on: it paints no ground, so it holds on any layer.
+ * A line is never wider than the measure. Where something stands out from the text (a block of
+ * code), it is the tint, a passing state that is not a layer, and never a frame.
+ */
+
+.tln-prose {
+  max-width: var(--tln-measure);
+  font-family: var(--tln-font-sans);
+  font-size: var(--tln-text-md);
+  line-height: var(--tln-leading-prose);
+  color: var(--tln-fg);
+}
+
+/* The space between blocks is the block's own margin, and the first and the last have none. */
+.tln-prose > :first-child {
+  margin-top: 0;
+}
+.tln-prose > :last-child {
+  margin-bottom: 0;
+}
+
+.tln-prose :where(p, ul, ol, pre, blockquote) {
+  margin-block: calc(var(--tln-space) * 3);
+}
+
+/* ---- Headings ------------------------------------------------------------------------------ */
+
+/* Three sizes and the weight of strong carry the hierarchy; the three below are text size. */
+.tln-prose :where(h1, h2, h3, h4, h5, h6) {
+  /* There is no tighter line height in the tokens than the one of controls. */
+  line-height: var(--tln-leading);
+  font-weight: var(--tln-weight-strong);
+  margin-block: calc(var(--tln-space) * 6) calc(var(--tln-space) * 2);
+}
+.tln-prose h1 {
+  font-size: var(--tln-text-2xl);
+}
+.tln-prose h2 {
+  font-size: var(--tln-text-xl);
+}
+.tln-prose h3 {
+  font-size: var(--tln-text-lg);
+}
+.tln-prose h4 {
+  font-size: var(--tln-text-md);
+}
+.tln-prose h5 {
+  font-size: var(--tln-text-md);
+  font-weight: var(--tln-weight-medium);
+}
+.tln-prose h6 {
+  font-size: var(--tln-text-sm);
+  font-weight: var(--tln-weight-medium);
+  color: var(--tln-fg-muted);
+}
+
+/* ---- Inline -------------------------------------------------------------------------------- */
+
+.tln-prose :where(strong, b) {
+  font-weight: var(--tln-weight-strong);
+}
+.tln-prose :where(em, i) {
+  font-style: italic;
+}
+.tln-prose :where(s, del) {
+  text-decoration: line-through;
+}
+
+.tln-prose a {
+  color: var(--tln-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.tln-prose a:hover {
+  color: var(--tln-accent-hover);
+}
+
+/* ---- Code ---------------------------------------------------------------------------------- */
+
+.tln-prose :where(code, pre) {
+  font-family: var(--tln-font-mono);
+  font-size: var(--tln-text-sm);
+}
+/* Code in a heading is as large as the heading. */
+.tln-prose :where(h1, h2, h3, h4, h5, h6) code {
+  font-size: inherit;
+}
+
+.tln-prose code {
+  padding: 0 calc(var(--tln-space) * 1.5);
+  background: var(--tln-tint);
+  border-radius: var(--tln-radius);
+}
+
+.tln-prose pre {
+  padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 4);
+  line-height: var(--tln-leading);
+  background: var(--tln-tint);
+  border-radius: var(--tln-radius);
+  overflow-x: auto;
+}
+.tln-prose pre code {
+  padding: 0;
+  font-size: inherit;
+  background: transparent;
+  border-radius: 0;
+}
+
+/* ---- Quote, lists, rule -------------------------------------------------------------------- */
+
+/* A quote is set back and quieter. Its rule is a divider, so one hairline thick; no italics. */
+.tln-prose blockquote {
+  margin-inline: 0;
+  padding-inline-start: calc(var(--tln-space) * 4);
+  color: var(--tln-fg-muted);
+  border-inline-start: var(--tln-hairline) solid var(--tln-fg-muted);
+}
+
+.tln-prose :where(ul, ol) {
+  padding-inline-start: calc(var(--tln-space) * 6);
+}
+.tln-prose ul {
+  list-style-type: disc;
+}
+.tln-prose ul ul {
+  list-style-type: circle;
+}
+.tln-prose ol {
+  list-style-type: decimal;
+}
+.tln-prose li {
+  margin-block: var(--tln-space);
+}
+/* What a quote or a list item holds starts and ends flush: the item already has its space. */
+.tln-prose :is(blockquote, li) > :first-child {
+  margin-top: 0;
+}
+.tln-prose :is(blockquote, li) > :last-child {
+  margin-bottom: 0;
+}
+.tln-prose li::marker {
+  color: var(--tln-fg-muted);
+}
+/* A list inside an item sits against its text. */
+.tln-prose li > :where(ul, ol) {
+  margin-block: var(--tln-space) 0;
+}
+
+.tln-prose hr {
+  margin-block: calc(var(--tln-space) * 8);
+  border: 0;
+  border-top: var(--tln-hairline) solid var(--tln-border);
+}
+
+/* ---- Editing ------------------------------------------------------------------------------- */
+
+/* Selected, as CodeEditor shows a selection: the accent while it is in use. */
+.tln-prose ::selection {
+  background: var(--tln-accent-soft);
+}
+
+/* A node selected as a whole (a rule, a block that is chosen) is marked as a focus is. */
+.tln-prose .ProseMirror-selectednode {
+  outline: var(--tln-focus-ring);
+  outline-offset: 0;
+}
+
+/* The hint in an empty document: quiet ink, taking no room, never the target of a click. */
+.tln-prose .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--tln-fg-muted);
+  pointer-events: none;
+}
+
+/* The caret between two blocks, where there is no text to put one in. */
+.tln-prose .ProseMirror-gapcursor::after {
+  border-top-color: var(--tln-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tln-prose .ProseMirror-gapcursor::after {
+    animation: none;
+  }
+}
