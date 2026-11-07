@@ -1,0 +1,49 @@
+/*
+ * The Tomet markers around a heading (heading-markers.ts): `=[ ` before and ` ]=` after the first
+ * level, one more `=` for each level below. They are not text, so they are drawn as pseudo-elements,
+ * and given an empty text alternative so that a screen reader does not read them out.
+ *
+ * Quiet, in the code face: the muted ink, the weight of ordinary text, and a size one step below
+ * the heading's own. Tokens and nothing else.
+ */
+
+.tln-tomet-markers :where(h1, h2, h3)::before,
+.tln-tomet-markers :where(h1, h2, h3)::after {
+  font-family: var(--tln-font-mono);
+  font-weight: normal;
+  color: var(--tln-fg-muted);
+}
+
+.tln-tomet-markers h1::before {
+  content: "=[ ";
+  content: "=[ " / "";
+}
+.tln-tomet-markers h1::after {
+  content: " ]=";
+  content: " ]=" / "";
+}
+.tln-tomet-markers h2::before {
+  content: "==[ ";
+  content: "==[ " / "";
+}
+.tln-tomet-markers h2::after {
+  content: " ]==";
+  content: " ]==" / "";
+}
+.tln-tomet-markers h3::before {
+  content: "===[ ";
+  content: "===[ " / "";
+}
+.tln-tomet-markers h3::after {
+  content: " ]===";
+  content: " ]===" / "";
+}
+
+.tln-tomet-markers :where(h1, h2)::before,
+.tln-tomet-markers :where(h1, h2)::after {
+  font-size: var(--tln-text-md);
+}
+.tln-tomet-markers h3::before,
+.tln-tomet-markers h3::after {
+  font-size: var(--tln-text-sm);
+}

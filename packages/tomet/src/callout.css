@@ -1,0 +1,38 @@
+/*
+ * The look of a Tomet callout (callout.ts).
+ *
+ * A callout is a block that holds blocks and carries a meaning. It wears the tone of that meaning
+ * (looks.css: `--tln-tone` and `--tln-tone-soft`), as Alert and Badge do: the soft fill, and a
+ * hairline in the tone. The tone is a colour, and a colour alone must not be what tells a note from a
+ * warning, so the kind is also written on it, in the ink of a label. The kind is read from the
+ * block (`data-callout`), so Tomet's own words are shown as they are in the source.
+ *
+ * Tokens and nothing else.
+ */
+
+.tln-callout {
+  margin-block: calc(var(--tln-space) * 4);
+  padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 4);
+  color: var(--tln-fg);
+  background: var(--tln-tone-soft);
+  border: var(--tln-hairline) solid var(--tln-tone);
+  border-radius: var(--tln-radius);
+}
+
+.tln-callout::before {
+  content: attr(data-callout);
+  display: block;
+  font-size: var(--tln-text-xs);
+  font-weight: var(--tln-weight-medium);
+  line-height: var(--tln-leading);
+  color: var(--tln-fg-muted);
+  text-transform: capitalize;
+}
+
+/* What it holds starts and ends flush: the callout already has its padding. */
+.tln-callout > :first-child {
+  margin-top: 0;
+}
+.tln-callout > :last-child {
+  margin-bottom: 0;
+}
