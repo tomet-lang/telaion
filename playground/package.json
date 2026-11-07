@@ -25,6 +25,10 @@
     "@codemirror/autocomplete": "^6.18.0",
     "@codemirror/language": "^6.11.0",
     "@codemirror/search": "^6.5.0",
-    "@codemirror/view": "^6.36.0"
+    "@codemirror/view": "^6.36.0",
+    "@tiptap/core": "^2.11.5",
+    "@tiptap/pm": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
+    "@tiptap/extension-link": "^2.11.5"
   }
 }

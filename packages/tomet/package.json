@@ -1,14 +1,16 @@
 {
   "name": "@telaion/tomet",
   "version": "0.1.5",
-  "description": "Telaion Tomet - Tomet syntax highlighting and conflict resolution that take the Tomet engine from the application",
+  "description": "Telaion Tomet - Tomet syntax highlighting, conflict resolution and rich-text extensions that take the Tomet engine from the application",
   "keywords": [
     "svelte",
     "svelte5",
     "tomet",
     "codemirror",
     "highlighting",
-    "merge-conflict"
+    "merge-conflict",
+    "tiptap",
+    "callout"
   ],
   "license": "MIT OR Apache-2.0",
   "homepage": "https://github.com/tomet-lang/telaion#readme",
@@ -26,6 +28,11 @@
       "types": "./src/index.ts",
       "svelte": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./rich-text": {
+      "types": "./src/rich-text.ts",
+      "svelte": "./src/rich-text.ts",
+      "default": "./src/rich-text.ts"
     }
   },
   "files": [
@@ -47,6 +54,11 @@
         "types": "./dist/index.d.ts",
         "svelte": "./dist/index.js",
         "default": "./dist/index.js"
+      },
+      "./rich-text": {
+        "types": "./dist/rich-text.d.ts",
+        "svelte": "./dist/rich-text.js",
+        "default": "./dist/rich-text.js"
       }
     }
   },
@@ -57,10 +69,22 @@
   "peerDependencies": {
     "svelte": "^5.0.0",
     "@codemirror/state": "^6.5.0",
-    "@codemirror/view": "^6.36.0"
+    "@codemirror/view": "^6.36.0",
+    "@tiptap/core": "^2.11.5",
+    "@tiptap/pm": "^2.11.5"
   },
   "devDependencies": {
     "@codemirror/state": "^6.5.0",
-    "@codemirror/view": "^6.36.0"
+    "@codemirror/view": "^6.36.0",
+    "@tiptap/core": "^2.11.5",
+    "@tiptap/pm": "^2.11.5"
+  },
+  "peerDependenciesMeta": {
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    }
   }
 }
