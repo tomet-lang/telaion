@@ -22,7 +22,7 @@
   box-shadow: var(--tln-shadow-action);
   transition:
     background-color var(--tln-transition),
-    box-shadow 0.05s ease-out;
+    box-shadow var(--tln-track);
 }
 
 .tln-action:focus-visible {
@@ -136,7 +136,18 @@
   background: transparent;
 }
 
-/* ---- Field control: a well, cut into the surface it is on, the opposite of a button ------- */
+/* ---- Well: cut into the surface it is on, the opposite of a button ------------------------ */
+
+/* What every well shares: the tone, the radius, the shadow. A field control and a mark are wells. */
+.tln-well,
+.tln-field-control {
+  background: var(--tln-well);
+  border-radius: var(--tln-radius);
+  box-shadow: var(--tln-shadow-well);
+  transition: box-shadow var(--tln-track);
+}
+
+/* ---- Field control: a well that is typed into --------------------------------------------- */
 
 .tln-field-control {
   box-sizing: border-box;
@@ -148,11 +159,7 @@
   font-size: var(--tln-text-sm);
   line-height: var(--tln-leading);
   color: var(--tln-fg);
-  background: var(--tln-well);
   border: 0;
-  border-radius: var(--tln-radius);
-  box-shadow: var(--tln-shadow-well);
-  transition: box-shadow 0.05s ease-out;
 }
 
 .tln-field-control::placeholder {
@@ -179,6 +186,87 @@
   color: var(--tln-fg-muted);
   box-shadow: none;
   cursor: not-allowed;
+}
+
+/* ---- Mark: a small well that holds a state ------------------------------------------------- */
+
+/*
+ * What a Checkbox, a Radio and a Switch share. The native input is the control (the keyboard, the
+ * form, assistive technology) and lies, invisible, over the whole label; the well drawn right
+ * after it is what is seen. The state shows as a mark in accent, never as a fill: a well stays a
+ * well. Its corners follow the radius, up to half of the shortest side, so that a high radius
+ * makes it round and never makes it bulge.
+ */
+.tln-mark {
+  --tln-mark-size: calc(var(--tln-space) * 5);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--tln-space) * 2);
+  font-size: var(--tln-text-sm);
+  line-height: var(--tln-leading);
+  color: var(--tln-fg);
+  cursor: pointer;
+}
+.tln-mark[data-disabled] {
+  color: var(--tln-fg-muted);
+  cursor: not-allowed;
+}
+
+.tln-mark-input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.tln-mark-input:focus-visible + .tln-well {
+  outline: var(--tln-focus-ring);
+  outline-offset: 2px;
+}
+.tln-mark-input[aria-invalid="true"] + .tln-well {
+  box-shadow:
+    var(--tln-shadow-well),
+    inset 0 0 0 2px var(--tln-danger);
+}
+.tln-mark-input:disabled + .tln-well {
+  box-shadow: none;
+}
+
+/*
+ * The mark of a Checkbox and of a Radio is always there and is shown by the native input
+ * (:checked, :indeterminate), not by a script.
+ */
+.tln-mark-glyph {
+  visibility: hidden;
+}
+.tln-mark-input:checked + .tln-mark-box .tln-mark-glyph[data-for="checked"],
+.tln-mark-input:indeterminate + .tln-mark-box .tln-mark-glyph[data-for="indeterminate"] {
+  visibility: visible;
+}
+/* A box that is indeterminate and checked shows the dash, not the tick. */
+.tln-mark-input:indeterminate + .tln-mark-box .tln-mark-glyph[data-for="checked"] {
+  visibility: hidden;
+}
+
+/* The box of a Checkbox and of a Radio: a square well with the mark in the middle. */
+.tln-mark-box {
+  display: grid;
+  flex: none;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--tln-mark-size);
+  height: var(--tln-mark-size);
+  border-radius: min(var(--tln-radius), calc(var(--tln-mark-size) / 2));
+  font-size: calc(var(--tln-mark-size) - var(--tln-space));
+  color: var(--tln-accent);
+}
+.tln-mark-input:disabled + .tln-mark-box {
+  color: var(--tln-fg-muted);
 }
 
 /* ---- Float: content lifted in front of the page ------------------------------------------- */

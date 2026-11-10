@@ -43,6 +43,7 @@ Svelte 5 is a peer dependency.
 ==[ Components ]
 
 -| `Button`, `IconButton`, `Input`, `Select`, `Field`
+-| `Checkbox`, `Radio`, `Switch`, `Slider`
 -| `Modal`, `ConfirmDialog`, `CommandPalette`
 -| `Popover`, `Menu`, `ContextMenu`, `Tooltip`
 -| `Tabs`, `SegmentedControl`, `Toolbar`
