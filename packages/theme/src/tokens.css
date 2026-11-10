@@ -83,30 +83,28 @@
   --tln-action: var(--tln-layer-4);
   --tln-action-hover: color-mix(in oklab, var(--tln-layer-5) 50%, var(--tln-layer-4));
 
-  /* The shadow tokens (--tln-shadow-*) are declared below, on every element, so that
-   * the per-element lamp offsets resolve there. The rest of the tokens follow them, on the root. */
+  /* What a shadow is made of, and the shadows, follow below; the rest of the tokens follow them. */
 }
 
 /*
- * Shadow tokens declared on all elements so that element-level inline
- * custom properties (--tln-lamp-shadow-x/y) resolve dynamically on each element.
+ * What a shadow is made of is declared once, on the root: a change of the sun, the height or the
+ * softness is then one change, and not one on each of the thousands of elements of a page.
  */
-*,
-*::before,
-*::after {
+:root {
   /*
    * LIGHT AND SHADOW. One sun, so light and shadow always agree.
    *
    * Every offset below is built from the sun (--tln-sun-shadow-x/y, the way a shadow falls;
-   * 1px 1px when nothing sets it: the sun is at the top left). A second light, the hand-held lamp
-   * (--tln-lamp-shadow-x/y, set per element), only softens the ambient shadow. When the sun moves,
-   * every light and every shadow below moves with it, so they never end up on the same side.
+   * 1px 1px when nothing sets it: the sun is at the top left). When the sun moves, every light
+   * and every shadow below moves with it, so they never end up on the same side. It is set on the
+   * root, for the whole page.
    *
    * HEIGHT. --tln-height is a plain number (1 in the design, 0 flat) that scales every cast
-   * shadow: how far it falls (--tln-cast-x/y from the sun, --tln-cast-lamp-x/y from the lamp) and
+   * shadow: how far it falls (--tln-cast-x/y, from the sun) and
    * how soft the ambient one is. A shadow is only ever a multiple of the sun's offset, never the
    * sun plus a fixed length: a fixed length would win over a small offset and turn the shadow
-   * toward the wrong side. The ambient shadow leans the way the sun says, and the lamp moves it. A shadow is not a light: a higher layer casts a longer shadow,
+   * toward the wrong side. The ambient shadow leans the way the sun says.
+   * A shadow is not a light: a higher layer casts a longer shadow,
    * but its lit edge is as thick as ever, so the lights below do not scale. They are built from
    * --tln-lit-x/y, twice the sun: the shadow reaches the sun's offset, the light lays a band
    * twice as thick.
@@ -151,72 +149,87 @@
    */
   --tln-lit-x: calc(var(--tln-sun-shadow-x, 1px) * 2);
   --tln-lit-y: calc(var(--tln-sun-shadow-y, 1px) * 2);
-  --tln-rim-main: calc(var(--tln-lit-x) / 2) calc(var(--tln-lit-y) / 2) 0 calc(max(abs(var(--tln-lit-x)), abs(var(--tln-lit-y))) / 2);
-  --tln-rim-sub: 0px 0px 0 max(abs(var(--tln-lit-x)), abs(var(--tln-lit-y)));
+  --tln-blur-light: calc(var(--tln-soft) * 6px);
+  --tln-rim-main: calc(var(--tln-lit-x) / 2) calc(var(--tln-lit-y) / 2) var(--tln-blur-light) calc(max(abs(var(--tln-lit-x)), abs(var(--tln-lit-y))) / 2);
+  --tln-rim-sub: 0px 0px var(--tln-blur-light) max(abs(var(--tln-lit-x)), abs(var(--tln-lit-y)));
+  --tln-belly: inset calc(var(--tln-lit-x) * -1) calc(var(--tln-lit-y) * -1) calc(var(--tln-soft) * 10px) 0 light-dark(color-mix(in srgb, var(--tln-shade) min(100%, calc(var(--tln-soft) * 60%)), transparent), color-mix(in srgb, var(--tln-shade) min(100%, calc(var(--tln-soft) * 22%)), transparent));
   --tln-cast-x: calc(var(--tln-sun-shadow-x, 1px) * var(--tln-height));
   --tln-cast-y: calc(var(--tln-sun-shadow-y, 1px) * var(--tln-height));
-  --tln-cast-lamp-x: calc(var(--tln-lamp-shadow-x, 0px) * var(--tln-height));
-  --tln-cast-lamp-y: calc(var(--tln-lamp-shadow-y, 0px) * var(--tln-height));
   --tln-cut-sun: var(--tln-cast-x) var(--tln-cast-y) 1px max(abs(var(--tln-cast-x)), abs(var(--tln-cast-y)));
-  --tln-cut-lamp: calc((var(--tln-cast-lamp-x) + var(--tln-cast-x)) / 2) calc((var(--tln-cast-lamp-y) + var(--tln-cast-y)) / 2) 1px calc(max(abs(var(--tln-cast-lamp-x) + var(--tln-cast-x)), abs(var(--tln-cast-lamp-y) + var(--tln-cast-y))) / 2);
+  --tln-cut-ambient: calc(var(--tln-cast-x) / 2) calc(var(--tln-cast-y) / 2) 1px calc(max(abs(var(--tln-cast-x)), abs(var(--tln-cast-y))) / 2);
+}
 
+/*
+ * The shadows. Declared on the root, and again on an element that is lit by a light of its own
+ * (--tln-light: a primary or a danger-fill action, the thumb of a switch that is on), so that its
+ * shadows are made of that light and not of the root's. That is the one variation from element to
+ * element there is.
+ */
+:root,
+.tln-action,
+.tln-switch-thumb {
   /* - Action & Content:
    *   1. Light: inside, on the lit edge (the same offset as the sun)
    *   2. Sub light: inside, on the opposite edge
-   *   3. Sun: outside, crisp edge, twice the sun's offset, with 1px soft blur
-   *   4. Ambient: outside, soft contact shadow, leaning the way the sun says and fleeing from the lamp
+   *   3. Belly: inside, a shade on the edge across from the sun, so that the surface looks
+   *      plump. Nothing at --tln-soft 0.
+   *   4. Sun: outside, twice the sun's offset, crisp
+   *   5. Ambient: outside, soft contact shadow, leaning the way the sun says
    */
   --tln-shadow-action:
     inset var(--tln-rim-main) var(--tln-light),
     inset var(--tln-rim-sub) var(--tln-light-sub),
+    var(--tln-belly),
     calc(var(--tln-cast-x) * 2) calc(var(--tln-cast-y) * 2) 1px 0 var(--tln-shade),
-    calc(var(--tln-cast-lamp-x) + var(--tln-cast-x)) calc(var(--tln-cast-lamp-y) + var(--tln-cast-y)) calc(2.5px * var(--tln-height)) 0 var(--tln-shade-soft);
+    var(--tln-cast-x) var(--tln-cast-y) calc(2.5px * var(--tln-height)) 0 var(--tln-shade-soft);
   --tln-shadow-content: var(--tln-shadow-action);
 
   /* - Well: the action turned inside out. Shadow inside, light outside.
    *   1. Light: outside, on the lip the sun reaches (the same offset as the sun, not inset)
    *   2. Sub light: outside, on the opposite lip
    *   3. Sun: inside, crisp inward shadow on the near wall
-   *   4. Ambient: inside, tight inward shadow from the lamp
+   *   4. Ambient: inside, tight inward shadow
    */
   --tln-shadow-well:
-    var(--tln-lit-x) var(--tln-lit-y) 0 0 var(--tln-light),
+    var(--tln-lit-x) var(--tln-lit-y) var(--tln-blur-light) 0 var(--tln-light),
     var(--tln-rim-sub) var(--tln-light-sub),
     inset var(--tln-cut-sun) var(--tln-shade),
-    inset var(--tln-cut-lamp) var(--tln-shade-soft);
+    inset var(--tln-cut-ambient) var(--tln-shade-soft);
 
   /* - Action hover: the mouse casts warm yellow light as the object lifts.
    *   The lit edge turns warm on dark; the sun shadow falls farther (2.5 times across, 3 times
-   *   down); the lamp shadow grows (a warm amber glow on dark).
+   *   down); the ambient shadow grows (a warm amber glow on dark).
    */
   --tln-shadow-action-hover:
     inset var(--tln-rim-main) light-dark(var(--tln-light), rgb(254 243 199 / 0.30)),
     inset var(--tln-rim-sub) light-dark(var(--tln-light-sub), rgb(254 243 199 / 0.12)),
+    var(--tln-belly),
     calc(var(--tln-cast-x) * 2.5) calc(var(--tln-cast-y) * 3) 1px 0 var(--tln-shade),
-    calc(var(--tln-cast-lamp-x) + var(--tln-cast-x)) calc(var(--tln-cast-lamp-y) + var(--tln-cast-y)) calc(10px * var(--tln-height)) calc(1px * var(--tln-height)) light-dark(var(--tln-shade-soft), rgb(251 191 36 / 0.15));
+    var(--tln-cast-x) var(--tln-cast-y) calc(10px * var(--tln-height)) calc(1px * var(--tln-height)) light-dark(var(--tln-shade-soft), rgb(251 191 36 / 0.15));
 
   /* - Action active (click): pressed toward the surface.
-   *   The lit edges dim to half; the sun shadow pulls in to half its length; the lamp sits centered with a 1px contact blur.
+   *   The lit edges dim to half; the sun shadow pulls in to half its length; the ambient one is a 1px contact blur.
    */
   --tln-shadow-action-active:
     inset var(--tln-rim-main) color-mix(in srgb, var(--tln-light) 50%, transparent),
     inset var(--tln-rim-sub) color-mix(in srgb, var(--tln-light-sub) 50%, transparent),
+    var(--tln-belly),
     calc(var(--tln-cast-x) * 0.5) calc(var(--tln-cast-y) * 0.5) 1px 0 var(--tln-shade),
-    var(--tln-cast-lamp-x) var(--tln-cast-lamp-y) 1px 0 var(--tln-shade-soft);
+    0 0 1px 0 var(--tln-shade-soft);
 
   /* - Float: high surface floating far above the page. The shadows scale with the height; the lit edges do not. */
   --tln-shadow-float:
     inset var(--tln-rim-main) light-dark(var(--tln-light), rgb(254 243 199 / 0.32)),
     inset var(--tln-rim-sub) light-dark(var(--tln-light-sub), rgb(254 243 199 / 0.12)),
+    var(--tln-belly),
     calc(var(--tln-cast-x) * 3.5) calc(var(--tln-cast-y) * 3.5) 1px 0 var(--tln-shade),
-    calc(var(--tln-cast-lamp-x) * 1.5 + var(--tln-cast-x)) calc(var(--tln-cast-lamp-y) * 1.5 + var(--tln-cast-y)) calc(16px * var(--tln-height)) 0 light-dark(var(--tln-shade-soft), rgb(251 191 36 / 0.16));
+    var(--tln-cast-x) var(--tln-cast-y) calc(16px * var(--tln-height)) 0 light-dark(var(--tln-shade-soft), rgb(251 191 36 / 0.16));
 
 }
 
 /*
  * Everything else is declared once, on the root, so that an application re-themes by overriding a
- * value on :root (or on any element, for its subtree). Only the shadows above are declared on
- * every element: they depend on the sun and the lamp, which differ from element to element.
+ * value on :root. The sun, the height and the softness are set there too, for the whole page.
  */
 :root {
   /* The colour of light and shadow (see THE COLOUR OF LIGHT AND SHADOW above) */
@@ -286,12 +299,13 @@
   --tln-space: 4px; /* every gap is a multiple: calc(var(--tln-space) * 3) */
   --tln-radius: 14px;
   --tln-height: 1; /* how high a raised layer stands: a plain number that scales every cast shadow (0 is flat, 1 the design). Lights do not scale. */
+  --tln-soft: 0.2; /* how plump and soft the upper layer looks: a plain number, 0 is crisp, 0.2 the design, 1 soft, 2 puffy. It widens the blur of the lights and adds a shade inside a raised layer, across from the sun. What is cast onto the layer below is not touched. */
   --tln-hairline: 1px; /* the thickness of a divider and of a frame that is allowed (a danger outline) */
   --tln-duration: 0.15s; /* how long a change of state takes */
   --tln-ease: ease; /* how it moves */
   --tln-transition: var(--tln-duration) var(--tln-ease); /* both, to follow a property: `transition: color var(--tln-transition)` */
 
-  --tln-track: 0.05s ease-out; /* how fast a surface follows the light of the pointer: quick, so that it does not trail behind it */
+  --tln-track: 0.05s ease-out; /* how fast a shadow changes (hover, press): quick */
 }
 
 [data-theme="light"] {

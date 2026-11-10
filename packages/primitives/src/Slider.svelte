@@ -123,7 +123,7 @@
     background: var(--tln-accent);
     box-shadow:
       inset var(--tln-cut-sun) var(--tln-shade),
-      inset var(--tln-cut-lamp) var(--tln-shade-soft);
+      inset var(--tln-cut-ambient) var(--tln-shade-soft);
   }
 
   .tln-slider-thumb {

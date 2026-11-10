@@ -22,8 +22,7 @@
  * INLINE. Every value is `inline`: the utility reads the token itself (`var(--tln-action)`),
  * not a copy of it that Tailwind would declare once on :root. That is what lets the tokens
  * keep working where they are changed or where they differ per element: a subtree that sets
- * `data-theme`, or overrides `--tln-canvas`; the sun and the lamp of a shadow, which are set
- * per element.
+ * `data-theme`, or overrides `--tln-canvas`.
  *
  * Not here, because they are not for utilities: the depth scale (--tln-layer-*, --tln-depth-*)
  * and the parts a shadow is made of (--tln-light*, --tln-shade*, --tln-rim-*, --tln-cut-*).

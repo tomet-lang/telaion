@@ -33,7 +33,6 @@
     Tabs,
   } from "@telaion/primitives";
   import { Check, Plus, Trash, TriangleAlert, X } from "@telaion/primitives/icons";
-  import { mouseLight } from "./mouse-light.js";
 
   type Theme = "system" | "light" | "dark";
 
@@ -51,12 +50,12 @@
   };
   let reset = $state(remembered("playground-reset"));
   let spaced = $state(remembered("playground-spaced"));
-  let followMouse = $state(remembered("playground-mouse-light"));
   // The shape and the height of the design, from the tokens, so the sliders start where the design is.
   const tokenNumber = (name: string) =>
     parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
   let radius = $state(tokenNumber("--tln-radius"));
   let height = $state(tokenNumber("--tln-height"));
+  let soft = $state(tokenNumber("--tln-soft"));
   let splitRatio = $state(0.4);
   let verticalSplitRatio = $state(0.5);
 
@@ -87,12 +86,6 @@
   let lastMovedCard = $state<string>("none");
 
   $effect(() => {
-    try {
-      localStorage.setItem("playground-mouse-light", followMouse ? "1" : "0");
-    } catch {}
-  });
-
-  $effect(() => {
     document.getElementById("playground-reset")?.remove();
     if (reset) {
       const style = document.createElement("style");
@@ -111,6 +104,10 @@
 
   $effect(() => {
     document.documentElement.style.setProperty("--tln-height", String(height));
+  });
+
+  $effect(() => {
+    document.documentElement.style.setProperty("--tln-soft", String(soft));
   });
 
   $effect(() => {
@@ -195,16 +192,16 @@
   ];
 </script>
 
-<header class="bar" use:mouseLight={{ enabled: followMouse }}>
+<header class="bar">
   <h1>Telaion playground</h1>
   <div class="conditions">
     <Checkbox bind:checked={reset} label="Tailwind reset" />
     <Checkbox bind:checked={spaced} label="Wide letter spacing" />
-    <Checkbox bind:checked={followMouse} label="Mouse shadow" />
   </div>
   <div class="shape">
     <Slider label="Radius" min={0} max={24} step={1} bind:value={radius} showValue format={(v) => `${v}px`} />
     <Slider label="Height" min={0} max={4} step={0.1} bind:value={height} showValue format={(v) => v.toFixed(1)} />
+    <Slider label="Soft" min={0} max={2} step={0.05} bind:value={soft} showValue format={(v) => v.toFixed(2)} />
   </div>
   <ColorPanel />
   <div class="themes" role="group" aria-label="Theme">
@@ -214,7 +211,7 @@
   </div>
 </header>
 
-<main use:mouseLight={{ enabled: followMouse }}>
+<main>
   <section>
     <h2>Layers</h2>
     <div class="layer-content">

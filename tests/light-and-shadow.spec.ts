@@ -77,7 +77,10 @@ for (const scheme of ["light", "dark"] as const) {
 
       test("an action is lit on the inside and casts its shadow on the outside", async ({ page }) => {
         const all = layers(await shadowOf(page, '.tln-btn[data-variant="secondary"]'));
-        const inside = all.filter((l) => l.inset);
+        // Inside there are two lights and then the belly, a shade across from the sun that makes the
+        // surface look plump. The belly is not a light: it is told by its colour.
+        const inside = all.filter((l) => l.inset && isLight(l));
+        const belly = all.filter((l) => l.inset && !isLight(l));
         const outside = all.filter((l) => !l.inset);
 
         // Inside there is light, on the edge the sun reaches: a band twice as thick as the sun's
@@ -90,6 +93,10 @@ for (const scheme of ["light", "dark"] as const) {
         // A weaker sub: a ring of the same thickness all around, under the main light.
         expect(inside[1]).toMatchObject({ x: 0, y: 0, spread: reach * 2 });
         expect(inside[1].color[3]).toBeLessThan(inside[0].color[3]);
+        // The belly lies across from the sun.
+        expect(belly).toHaveLength(1);
+        expect(Math.sign(belly[0].x)).toBe(-Math.sign(sun.x));
+        expect(Math.sign(belly[0].y)).toBe(-Math.sign(sun.y));
 
         // Outside there is shadow only, falling the way the sun says.
         expect(outside.length).toBeGreaterThan(0);

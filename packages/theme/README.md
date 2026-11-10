@@ -51,18 +51,19 @@ applyTheme(document.documentElement, "dark");
 
 ## Shape and height
 
-Two tokens set how the whole design feels, and an application overrides them on `:root` (or on any element, for its subtree).
+Three tokens set how the whole design feels, and an application overrides them on `:root`.
 
 - `--tln-radius` -- the one radius of the design. Small parts (a checkbox, a switch, the thumb of a slider) follow it up to half of their shortest side, so a high radius makes them round and never makes them bulge.
 - `--tln-height` -- how high a raised layer stands above the ground, a plain number: `1` is the design, `0` is flat. It scales how far every shadow falls and how soft the ambient one is. The lit edges do not scale. A shadow is only ever a multiple of the sun's offset (`--tln-sun-shadow-x` and `--tln-sun-shadow-y`, 1px when nothing sets them), so it always falls the way the sun says.
+- `--tln-soft` -- how plump and soft the upper layer looks, a plain number: `0` is crisp, `0.2` is the design, `1` is soft and `2` puffy. It widens the blur of the lights, and adds a shade inside a raised layer, across from the sun, so that it looks inflated. On a well the upper layer is the lip around it, whose light it softens. What is cast onto the layer below (the shadow outside an action) is not touched, and neither is the groove inside a well.
 
 ## Motion
 
 - `--tln-duration`, `--tln-ease` and `--tln-transition` (both together) are the motion of a change of state: a colour, an opacity. It does not overshoot.
-- `--tln-track` is how fast a surface follows the light of the pointer. It is quick, so that a shadow does not trail behind the pointer.
+- `--tln-track` is how fast a shadow changes (hover, press). It is quick.
 - Every motion is off for a person who asks for less of it (`prefers-reduced-motion`).
 
-Only the shadow tokens are declared on every element, because they depend on the sun and the lamp of each element. Every other token is declared once on `:root`.
+Every token is declared once on `:root`, and an application overrides it there; the sun, the height and the softness are set there for the whole page. The one exception is a shadow that is made of a light of its own: a filled action (primary, danger-fill) and the thumb of a switch that is on declare the shadows again, so that they are made of their own light.
 
 ## License
 
