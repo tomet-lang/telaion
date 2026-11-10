@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import { MemoryAdapter } from "./memory-adapter.js";
   import ButtonDemo from "./ButtonDemo.svelte";
+  import ColorPanel from "./ColorPanel.svelte";
   import EditorEmbedDemo from "./EditorEmbedDemo.svelte";
   import ExtensionsDemo from "./ExtensionsDemo.svelte";
   import NewPageDialog from "./NewPageDialog.svelte";
@@ -20,12 +21,14 @@
     Alert,
     Badge,
     Button,
+    Checkbox,
     Field,
     Icon,
     IconButton,
     Input,
     Modal,
     Select,
+    Slider,
     Spinner,
     Tabs,
   } from "@telaion/primitives";
@@ -49,6 +52,11 @@
   let reset = $state(remembered("playground-reset"));
   let spaced = $state(remembered("playground-spaced"));
   let followMouse = $state(remembered("playground-mouse-light"));
+  // The shape and the height of the design, from the tokens, so the sliders start where the design is.
+  const tokenNumber = (name: string) =>
+    parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+  let radius = $state(tokenNumber("--tln-radius"));
+  let height = $state(tokenNumber("--tln-height"));
   let splitRatio = $state(0.4);
   let verticalSplitRatio = $state(0.5);
 
@@ -95,6 +103,14 @@
     try {
       localStorage.setItem("playground-reset", reset ? "1" : "0");
     } catch {}
+  });
+
+  $effect(() => {
+    document.documentElement.style.setProperty("--tln-radius", `${radius}px`);
+  });
+
+  $effect(() => {
+    document.documentElement.style.setProperty("--tln-height", String(height));
   });
 
   $effect(() => {
@@ -182,10 +198,15 @@
 <header class="bar" use:mouseLight={{ enabled: followMouse }}>
   <h1>Telaion playground</h1>
   <div class="conditions">
-    <label><input type="checkbox" bind:checked={reset} /> Tailwind reset</label>
-    <label><input type="checkbox" bind:checked={spaced} /> Wide letter spacing</label>
-    <label><input type="checkbox" bind:checked={followMouse} /> Mouse shadow</label>
+    <Checkbox bind:checked={reset} label="Tailwind reset" />
+    <Checkbox bind:checked={spaced} label="Wide letter spacing" />
+    <Checkbox bind:checked={followMouse} label="Mouse shadow" />
   </div>
+  <div class="shape">
+    <Slider label="Radius" min={0} max={24} step={1} bind:value={radius} showValue format={(v) => `${v}px`} />
+    <Slider label="Height" min={0} max={4} step={0.1} bind:value={height} showValue format={(v) => v.toFixed(1)} />
+  </div>
+  <ColorPanel />
   <div class="themes" role="group" aria-label="Theme">
     {#each ["system", "light", "dark"] as const as t}
       <button type="button" aria-pressed={theme === t} onclick={() => (theme = t)}>{t}</button>
@@ -507,13 +528,14 @@
 <style>
   .bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: calc(var(--tln-space) * 4);
     padding: calc(var(--tln-space) * 3) calc(var(--tln-space) * 6);
     background: var(--tln-content);
     box-shadow: var(--tln-shadow-content);
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
   }
 
   h1 {
@@ -543,11 +565,10 @@
     font-size: var(--tln-text-sm);
   }
 
-  .conditions label {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(var(--tln-space) * 2);
-    cursor: pointer;
+  .shape {
+    display: flex;
+    gap: calc(var(--tln-space) * 4);
+    font-size: var(--tln-text-sm);
   }
 
   .themes {
@@ -564,7 +585,7 @@
     border: 1px solid transparent;
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-action);
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
     cursor: pointer;
   }
 
@@ -619,7 +640,7 @@
     background: var(--tln-well);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-well);
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
     white-space: pre-wrap;
   }
 
@@ -630,7 +651,7 @@
     background: var(--tln-content);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-content);
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
   }
 
   .layer-content p {
@@ -644,7 +665,7 @@
     background: var(--tln-well);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-well);
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
   }
 
   .layer-row {

@@ -1,5 +1,20 @@
 <script lang="ts">
-  import { Button, EmptyState, Icon, IconButton, Input, Kbd, SegmentedControl, Tabs, Toolbar } from "@telaion/primitives";
+  import {
+    Button,
+    Checkbox,
+    EmptyState,
+    Field,
+    Icon,
+    IconButton,
+    Input,
+    Kbd,
+    Radio,
+    SegmentedControl,
+    Slider,
+    Switch,
+    Tabs,
+    Toolbar,
+  } from "@telaion/primitives";
   import {
     Bold,
     Code,
@@ -58,6 +73,19 @@
   let typed = $state("nothing yet");
   let entered = $state(0);
   let slug = $state("first-draft");
+
+  // ---- Checkbox, Radio, Switch, Slider -------------------------------------------------------
+  let agreed = $state(true);
+  let plain = $state(false);
+  let partial = $state(false);
+  let parts = $state([true, false, false]);
+  const allParts = $derived(parts.every(Boolean) ? "all" : parts.some(Boolean) ? "some" : "none");
+  let plan = $state("monthly");
+  let notifications = $state(true);
+  let autosave = $state(false);
+  let volume = $state(40);
+  let opacity = $state(0.5);
+  let confirmed = $state(false);
 </script>
 
 <div class="demo">
@@ -103,6 +131,54 @@
     <div class="row">
       <SegmentedControl label="Editing mode, disabled" disabled items={modes} bind:value={disabledMode} />
       <span class="muted">disabled</span>
+    </div>
+  </div>
+
+  <h3>Checkbox, Radio, Switch, Slider</h3>
+  <div class="card">
+    <div class="row">
+      <Checkbox bind:checked={agreed} label="Checked" />
+      <Checkbox bind:checked={plain} label="Unchecked" />
+      <Checkbox
+        indeterminate={allParts === "some"}
+        checked={allParts === "all"}
+        onchange={(e) => (parts = parts.map(() => e.currentTarget.checked))}
+        label="Some of three"
+      />
+      <Checkbox checked disabled label="Disabled, checked" />
+      <Checkbox disabled label="Disabled" />
+      <Checkbox bind:checked={partial} invalid label="Invalid" />
+    </div>
+    <div class="row">
+      {#each parts as _, i}
+        <Checkbox bind:checked={parts[i]} label={`Part ${i + 1}`} />
+      {/each}
+      <span class="muted">state = <code>{allParts}</code></span>
+    </div>
+    <div class="row">
+      <Radio name="plan" value="monthly" bind:group={plan} label="Monthly" />
+      <Radio name="plan" value="yearly" bind:group={plan} label="Yearly" />
+      <Radio name="plan" value="never" bind:group={plan} label="Never" disabled />
+      <span class="muted">plan = <code>{plan}</code></span>
+    </div>
+    <div class="row">
+      <Switch bind:checked={notifications} label="Notifications" />
+      <Switch bind:checked={autosave} label="Autosave" />
+      <Switch checked disabled label="Disabled, on" />
+      <Switch disabled label="Disabled, off" />
+      <span class="muted">notifications = <code>{notifications}</code> · autosave = <code>{autosave}</code></span>
+    </div>
+    <div class="row">
+      <Slider label="Volume" bind:value={volume} showValue />
+      <Slider label="Opacity" min={0} max={1} step={0.05} bind:value={opacity} showValue format={(v) => v.toFixed(2)} />
+    </div>
+    <div class="row">
+      <Slider label="Disabled" value={60} disabled showValue />
+    </div>
+    <div class="form">
+      <Field label="Confirmation" hint="Both are needed." error={confirmed ? undefined : "Confirm to continue."}>
+        <Checkbox bind:checked={confirmed} label="I have read it" />
+      </Field>
     </div>
   </div>
 
