@@ -20,6 +20,11 @@ const DEFAULT_SELECTOR = [
   ".tln-icon-btn",
   ".tln-input",
   ".tln-select-control",
+  ".tln-mark-box",
+  ".tln-switch-track",
+  ".tln-switch-thumb",
+  ".tln-slider-track",
+  ".tln-slider-thumb",
   ".tln-modal[open]",
   ".tln-editor-bar",
   ".tln-editor-body",
@@ -71,7 +76,7 @@ function update() {
   const screenCy = window.innerHeight / 2;
   const snx = Math.max(-1, Math.min(1, (pointerX - screenCx) / screenCx));
   const sny = Math.max(-1, Math.min(1, (pointerY - screenCy) / screenCy));
-  const sunMax = 4; // px
+  const sunMax = 2; // px
   const sunX = (snx * sunMax).toFixed(1);
   const sunY = (sny * sunMax).toFixed(1);
 
@@ -89,7 +94,7 @@ function update() {
     }
 
     const { node, options } = target;
-    const defaultOffset = options.maxOffset ?? 6;
+    const defaultOffset = options.maxOffset ?? 3;
 
     if (options.selector) {
       const matched = node.querySelectorAll<HTMLElement>(options.selector);
@@ -97,7 +102,7 @@ function update() {
         const offset = el.dataset.mouseLightOffset
           ? parseFloat(el.dataset.mouseLightOffset)
           : el.matches(".tln-modal")
-            ? 12
+            ? 6
             : defaultOffset;
         elements.set(el, offset);
       }
@@ -107,7 +112,7 @@ function update() {
         const offset = el.dataset.mouseLightOffset
           ? parseFloat(el.dataset.mouseLightOffset)
           : el.matches(".tln-modal")
-            ? 12
+            ? 6
             : defaultOffset;
         elements.set(el, offset);
       }
@@ -119,7 +124,7 @@ function update() {
   if (typeof document !== "undefined") {
     const openModals = document.querySelectorAll<HTMLElement>(".tln-modal[open]");
     for (const modal of openModals) {
-      elements.set(modal, 12);
+      elements.set(modal, 6);
     }
   }
 

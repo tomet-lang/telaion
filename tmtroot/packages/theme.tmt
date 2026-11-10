@@ -60,6 +60,21 @@ applyTheme(document.documentElement, "dark");
 -| `action` -- What acts (buttons, tabs). One layer above what holds it.
 -| `float` -- What floats above the page (modals, dialogs, popovers). Scrim and float shadow.
 
+==[ Shape and height ]
+
+Two tokens set how the whole design feels, and an application overrides them on `:root` (or on any element, for its subtree).
+
+-| `--tln-radius` -- the one radius of the design. Small parts (a checkbox, a switch, the thumb of a slider) follow it up to half of their shortest side, so a high radius makes them round and never makes them bulge.
+-| `--tln-height` -- how high a raised layer stands above the ground, a plain number: `1` is the design, `0` is flat. It scales how far every shadow falls and how soft the ambient one is. The lit edges do not scale. A shadow is only ever a multiple of the sun's offset (`--tln-sun-shadow-x` and `--tln-sun-shadow-y`, 1px when nothing sets them), so it always falls the way the sun says.
+
+==[ Motion ]
+
+-| `--tln-duration`, `--tln-ease` and `--tln-transition` (both together) are the motion of a change of state: a colour, an opacity. It does not overshoot.
+-| `--tln-track` is how fast a surface follows the light of the pointer. It is quick, so that a shadow does not trail behind the pointer.
+-| Every motion is off for a person who asks for less of it (`prefers-reduced-motion`).
+
+Only the shadow tokens are declared on every element, because they depend on the sun and the lamp of each element. Every other token is declared once on `:root`.
+
 ==[ License ]
 
 Licensed under either of MIT or Apache-2.0, at your option.

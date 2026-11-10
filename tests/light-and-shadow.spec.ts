@@ -45,10 +45,10 @@ const shadowOf = (page: Page, selector: string) =>
 
 // Where the sun is, as the way a shadow falls: the default, the other side, and two mixed.
 const suns = [
-  { x: 2, y: 2 },
-  { x: -3, y: -3 },
-  { x: 3, y: -2 },
-  { x: -2, y: 3 },
+  { x: 1, y: 1 },
+  { x: -1.5, y: -1.5 },
+  { x: 1.5, y: -1 },
+  { x: -1, y: 1.5 },
 ];
 
 for (const scheme of ["light", "dark"] as const) {
@@ -80,15 +80,15 @@ for (const scheme of ["light", "dark"] as const) {
         const inside = all.filter((l) => l.inset);
         const outside = all.filter((l) => !l.inset);
 
-        // Inside there is light, on the edge the sun reaches: the same offset as the sun.
+        // Inside there is light, on the edge the sun reaches: a band twice as thick as the sun's
+        // offset (the lit edge, --tln-lit), made of half of it and a spread of the same half, so
+        // that the hole stays in the box and every corner stays round.
         expect(inside.length).toBeGreaterThan(0);
         expect(inside.every(isLight)).toBe(true);
-        // A band as thick as the sun's offset, made of half the offset and a spread of the same
-        // half, so that the hole stays in the box and every corner stays round.
         const reach = Math.max(Math.abs(sun.x), Math.abs(sun.y));
-        expect(inside[0]).toMatchObject({ x: sun.x / 2, y: sun.y / 2, spread: reach / 2 });
+        expect(inside[0]).toMatchObject({ x: sun.x, y: sun.y, spread: reach });
         // A weaker sub: a ring of the same thickness all around, under the main light.
-        expect(inside[1]).toMatchObject({ x: 0, y: 0, spread: reach });
+        expect(inside[1]).toMatchObject({ x: 0, y: 0, spread: reach * 2 });
         expect(inside[1].color[3]).toBeLessThan(inside[0].color[3]);
 
         // Outside there is shadow only, falling the way the sun says.
@@ -110,15 +110,15 @@ for (const scheme of ["light", "dark"] as const) {
         expect(Math.sign(inside[0].x)).toBe(Math.sign(sun.x));
         expect(Math.sign(inside[0].y)).toBe(Math.sign(sun.y));
 
-        // Outside there is light, on the lip the sun reaches: the same offset as the sun.
+        // Outside there is light, on the lip the sun reaches: the lit edge, twice the sun's offset.
         expect(outside.length).toBeGreaterThan(0);
         expect(outside.every(isLight)).toBe(true);
-        expect(outside[0]).toMatchObject({ x: sun.x, y: sun.y });
+        expect(outside[0]).toMatchObject({ x: sun.x * 2, y: sun.y * 2 });
         // A weaker sub: a ring of the same thickness all around, under the main light.
         expect(outside[1]).toMatchObject({
           x: 0,
           y: 0,
-          spread: Math.max(Math.abs(sun.x), Math.abs(sun.y)),
+          spread: Math.max(Math.abs(sun.x), Math.abs(sun.y)) * 2,
         });
         expect(outside[1].color[3]).toBeLessThan(outside[0].color[3]);
       });

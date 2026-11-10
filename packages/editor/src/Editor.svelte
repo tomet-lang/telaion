@@ -81,7 +81,7 @@
     background: var(--tln-content);
     border-radius: var(--tln-radius);
     box-shadow: var(--tln-shadow-content);
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
   }
 
   .tln-editor-path {

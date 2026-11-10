@@ -167,7 +167,7 @@
     padding: 0;
     border: 0;
     /* What it looks like (content tone, radius, float shadow) is .tln-float in looks.css, shared with Floating. */
-    transition: box-shadow 0.05s ease-out;
+    transition: box-shadow var(--tln-track);
     max-width: calc(100vw - var(--tln-space) * 8);
     max-height: calc(100vh - var(--tln-space) * 8);
   }
